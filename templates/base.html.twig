@@ -21,6 +21,7 @@
             {% if app.user %}
                 <a href="{{ path('app_cart') }}">Cart</a>
                 <a href="{{ path('app_wishlist') }}">Wishlist</a>
+                <a href="{{ path('app_orders') }}">Orders</a>
                 <a href="{{ path('app_account') }}">Account</a>
                 <a href="{{ logout_path() }}">Log out</a>
             {% else %}

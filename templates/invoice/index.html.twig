@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Invoice {{ order.orderNumber }} - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Invoice {{ order.orderNumber }}</h1>
+    <p>Date: {{ order.createdAt|date('F j, Y') }}</p>
+
+    <h2>Bill to</h2>
+    {% set address = order.shippingAddress %}
+    <address>
+        {{ address.recipient }}<br>
+        {{ address.line1 }}<br>
+        {{ address.city }}, {{ address.province }} {{ address.postalCode }}<br>
+        {{ address.phone }}
+    </address>
+
+    <table>
+        <thead><tr><th>Item</th><th>Quantity</th><th>Unit price</th></tr></thead>
+        <tbody>
+            {% for item in order.items %}
+                <tr><td>{{ item.productName }} - {{ item.variantName }}</td><td>{{ item.quantity }}</td><td>{{ item.unitPrice|peso }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <dl>
+        <dt>Subtotal</dt><dd>{{ order.subtotal|peso }}</dd>
+        <dt>Shipping</dt><dd>{{ order.shippingFee|peso }}</dd>
+        <dt>Assembly</dt><dd>{{ order.assemblyFee|peso }}</dd>
+        <dt>Discount</dt><dd>{{ order.discount|peso }}</dd>
+        <dt>Total</dt><dd>{{ order.total|peso }}</dd>
+        <dt>Payment</dt><dd>{{ order.payment.method|upper }} ({{ order.payment.status }})</dd>
+    </dl>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Verify your email - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Verify your email</h1>
+    <p>Please verify {{ app.user.email }} before checking out. Use the link we emailed you.</p>
+    <form method="post">
+        <input type="hidden" name="_token" value="{{ csrf_token('verify-resend') }}">
+        <button type="submit">Resend verification email</button>
+    </form>
+{% endblock %}

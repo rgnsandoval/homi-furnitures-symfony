@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Your orders - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Your orders</h1>
+
+    <form method="get" action="{{ path('app_orders') }}">
+        <label>Status
+            <select name="status">
+                <option value="">All</option>
+                {% for option in statuses %}
+                    <option value="{{ option }}" {{ status == option ? 'selected' }}>{{ option|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit">Filter</button>
+    </form>
+
+    <table>
+        <thead><tr><th>Order</th><th>Placed</th><th>Status</th><th>Total</th></tr></thead>
+        <tbody>
+            {% for order in orders %}
+                <tr class="order">
+                    <td><a href="{{ path('app_order_detail', {id: order.id}) }}">{{ order.orderNumber }}</a></td>
+                    <td>{{ order.createdAt|date('M j, Y') }}</td>
+                    <td>{{ order.status|capitalize }}</td>
+                    <td>{{ order.total|peso }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4">No orders found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <twig:Pagination :total="orders|length" :page="page" />
+{% endblock %}
