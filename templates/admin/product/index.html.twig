@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Products - Admin{% endblock %}
+
+{% block body %}
+    <h1>Products</h1>
+
+    <form method="get">
+        <label>Search <input type="search" name="q" value="{{ q }}"></label>
+        <button type="submit">Search</button>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr><th>Name</th><th>SKU</th><th>Price</th><th>Sale price</th><th>Status</th><th>Featured</th><th>actions</th></tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.sku }}</td>
+                <td>{{ product.price|peso }}</td>
+                <td>{{ product.salePrice ? product.salePrice|peso }}</td>
+                <td>{{ product.status }}</td>
+                <td>{{ product.isFeatured ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_admin_product_show', {'id': product.id}) }}">show</a>
+                    <a href="{{ path('app_admin_product_edit', {'id': product.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="7">no records found</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <twig:Pagination :total="products|length" :page="page" />
+
+    <a href="{{ path('app_admin_product_new') }}">Create new</a>
+{% endblock %}

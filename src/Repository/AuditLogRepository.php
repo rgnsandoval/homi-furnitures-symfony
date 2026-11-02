@@ -37,4 +37,18 @@ class AuditLogRepository extends ServiceEntityRepository
             ->setFirstResult(max(0, $page - 1) * $perPage)
             ->setMaxResults($perPage), false);
     }
+
+    /**
+     * @param array<string, mixed>|null $detail
+     */
+    public function record(\App\Entity\User $admin, string $action, string $entityType, int|string $entityId, ?array $detail = null): void
+    {
+        $this->getEntityManager()->persist((new AuditLog())
+            ->setAdminUser($admin)
+            ->setAction($action)
+            ->setEntityType($entityType)
+            ->setEntityId((string) $entityId)
+            ->setDetail($detail));
+        $this->getEntityManager()->flush();
+    }
 }

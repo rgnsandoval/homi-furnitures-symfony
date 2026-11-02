@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payment queues - Admin{% endblock %}
+
+{% block body %}
+    <h1>Payment queues</h1>
+
+    <h2>Bank transfers to verify</h2>
+    <table id="bank-queue">
+        <tbody>
+            {% for payment in bankTransfers %}
+                {% set token = csrf_token('payment' ~ payment.id) %}
+                <tr>
+                    <td>{{ payment.parentOrder.orderNumber }}</td>
+                    <td>{{ payment.amount|peso }}</td>
+                    <td><a href="{{ path('app_payment_proof', {id: payment.id}) }}">View proof</a></td>
+                    <td>
+                        <form method="post" action="{{ path('app_admin_payment_approve', {id: payment.id}) }}">
+                            <input type="hidden" name="_token" value="{{ token }}">
+                            <button type="submit">Approve</button>
+                        </form>
+                        <form method="post" action="{{ path('app_admin_payment_reject', {id: payment.id}) }}">
+                            <input type="hidden" name="_token" value="{{ token }}">
+                            <button type="submit">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td>Nothing to verify.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Cash on delivery to collect</h2>
+    <table id="cod-queue">
+        <tbody>
+            {% for payment in collectableCod %}
+                <tr>
+                    <td>{{ payment.parentOrder.orderNumber }}</td>
+                    <td>{{ payment.amount|peso }}</td>
+                    <td>
+                        <form method="post" action="{{ path('app_admin_payment_collect', {id: payment.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('payment' ~ payment.id) }}">
+                            <button type="submit">Mark collected</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td>Nothing to collect.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Paid payments</h2>
+    <table id="paid-list">
+        <tbody>
+            {% for payment in paid %}
+                <tr>
+                    <td>{{ payment.parentOrder.orderNumber }}</td>
+                    <td>{{ payment.method }}</td>
+                    <td>{{ payment.amount|peso }}</td>
+                    <td>
+                        <form method="post" action="{{ path('app_admin_payment_refund', {id: payment.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('payment' ~ payment.id) }}">
+                            <button type="submit">Refund</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td>No paid payments.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

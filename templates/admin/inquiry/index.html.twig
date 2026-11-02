@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inquiries - Admin{% endblock %}
+
+{% block body %}
+    <h1>Inquiries</h1>
+
+    {% for inquiry in inquiries %}
+        <article class="inquiry">
+            <h2>{{ inquiry.subject }}</h2>
+            <p>From {{ inquiry.name }} ({{ inquiry.email }}) on {{ inquiry.createdAt|date('M j, Y g:i A') }}</p>
+            <p>{{ inquiry.message }}</p>
+            <form method="post" action="{{ path('app_admin_inquiry_status', {id: inquiry.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('inquiry' ~ inquiry.id) }}">
+                <label>Status
+                    <select name="status">
+                        {% for status in statuses %}
+                            <option value="{{ status }}" {{ inquiry.status == status ? 'selected' }}>{{ status|capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <button type="submit">Save status</button>
+            </form>
+        </article>
+    {% else %}
+        <p>No inquiries yet.</p>
+    {% endfor %}
+
+    <twig:Pagination :total="inquiries|length" :page="page" />
+{% endblock %}

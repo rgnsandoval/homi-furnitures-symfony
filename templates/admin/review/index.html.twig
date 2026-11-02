@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Review moderation - Admin{% endblock %}
+
+{% block body %}
+    <h1>Reviews waiting for approval</h1>
+
+    {% for review in reviews %}
+        {% set token = csrf_token('review' ~ review.id) %}
+        <article class="review">
+            <h2>{{ review.product.name }}: {{ review.rating }} / 5</h2>
+            <p>{{ review.body }}</p>
+            <p>By {{ review.author.email }} on {{ review.createdAt|date('M j, Y') }}</p>
+            {% if review.photo %}<img src="{{ asset('uploads/reviews/' ~ review.photo) }}" alt="Review photo" width="200">{% endif %}
+            <form method="post" action="{{ path('app_admin_review_approve', {id: review.id}) }}">
+                <input type="hidden" name="_token" value="{{ token }}">
+                <button type="submit">Approve</button>
+            </form>
+            <form method="post" action="{{ path('app_admin_review_delete', {id: review.id}) }}">
+                <input type="hidden" name="_token" value="{{ token }}">
+                <button type="submit">Delete</button>
+            </form>
+        </article>
+    {% else %}
+        <p>No reviews are waiting.</p>
+    {% endfor %}
+
+    <twig:Pagination :total="reviews|length" :page="page" />
+{% endblock %}

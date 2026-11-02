@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ProductVariant index{% endblock %}
+
+{% block body %}
+    <h1>ProductVariant index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Sku</th>
+                <th>Name</th>
+                <th>Color</th>
+                <th>Size</th>
+                <th>Finish</th>
+                <th>PriceAdjustment</th>
+                <th>Stock</th>
+                <th>LowStockThreshold</th>
+                <th>IsActive</th>
+                <th>Image</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product_variant in product_variants %}
+            <tr>
+                <td>{{ product_variant.id }}</td>
+                <td>{{ product_variant.sku }}</td>
+                <td>{{ product_variant.name }}</td>
+                <td>{{ product_variant.color }}</td>
+                <td>{{ product_variant.size }}</td>
+                <td>{{ product_variant.finish }}</td>
+                <td>{{ product_variant.priceAdjustment }}</td>
+                <td>{{ product_variant.stock }}</td>
+                <td>{{ product_variant.lowStockThreshold }}</td>
+                <td>{{ product_variant.isActive ? 'Yes' : 'No' }}</td>
+                <td>{{ product_variant.image }}</td>
+                <td>
+                    <a href="{{ path('app_admin_product_variant_show', {'id': product_variant.id}) }}">show</a>
+                    <a href="{{ path('app_admin_product_variant_edit', {'id': product_variant.id}) }}">edit</a>
+                    <a href="{{ path('app_admin_stock', {'id': product_variant.id}) }}">adjust stock</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="12">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <twig:Pagination :total="product_variants|length" :page="page" />
+
+    <a href="{{ path('app_admin_product_variant_new') }}">Create new</a>
+{% endblock %}

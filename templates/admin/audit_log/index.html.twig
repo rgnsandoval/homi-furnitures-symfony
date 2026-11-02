@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Audit log - Admin{% endblock %}
+
+{% block body %}
+    <h1>Audit log</h1>
+
+    <table>
+        <thead><tr><th>When</th><th>Admin</th><th>Action</th><th>Record</th><th>Detail</th></tr></thead>
+        <tbody>
+            {% for entry in entries %}
+                <tr class="audit-entry">
+                    <td>{{ entry.createdAt|date('M j, Y g:i A') }}</td>
+                    <td>{{ entry.adminUser.email }}</td>
+                    <td>{{ entry.action }}</td>
+                    <td>{{ entry.entityType }} #{{ entry.entityId }}</td>
+                    <td>{{ entry.detail ? entry.detail|json_encode }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5">Nothing recorded yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <twig:Pagination :total="entries|length" :page="page" />
+{% endblock %}

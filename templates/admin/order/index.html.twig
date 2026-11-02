@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Orders - Admin{% endblock %}
+
+{% block body %}
+    <h1>Orders</h1>
+
+    <form method="get">
+        <label>Search <input type="search" name="q" value="{{ filters.q }}"></label>
+        <label>Status
+            <select name="status">
+                <option value="">All</option>
+                {% for option in statuses %}
+                    <option value="{{ option }}" {{ filters.status == option ? 'selected' }}>{{ option|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>From <input type="date" name="from" value="{{ filters.from }}"></label>
+        <label>To <input type="date" name="to" value="{{ filters.to }}"></label>
+        <button type="submit">Filter</button>
+    </form>
+
+    <table>
+        <thead><tr><th>Order</th><th>Customer</th><th>Placed</th><th>Status</th><th>Payment</th><th>Total</th></tr></thead>
+        <tbody>
+            {% for order in orders %}
+                <tr class="order">
+                    <td><a href="{{ path('app_admin_order_show', {id: order.id}) }}">{{ order.orderNumber }}</a></td>
+                    <td>{{ order.customer.email }}</td>
+                    <td>{{ order.createdAt|date('M j, Y g:i A') }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>{{ order.payment.method }} ({{ order.payment.status }})</td>
+                    <td>{{ order.total|peso }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6">No orders found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <twig:Pagination :total="orders|length" :page="page" />
+{% endblock %}

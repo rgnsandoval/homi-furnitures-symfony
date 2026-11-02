@@ -71,4 +71,16 @@ class CategoryRepository extends ServiceEntityRepository
             ->setParameter('to', $to)
             ->getArrayResult();
     }
+
+    /**
+     * @return \Doctrine\ORM\Tools\Pagination\Paginator<Category>
+     */
+    public function findPage(int $page = 1, int $perPage = 20): \Doctrine\ORM\Tools\Pagination\Paginator
+    {
+        return new \Doctrine\ORM\Tools\Pagination\Paginator($this->createQueryBuilder('c')
+            ->orderBy('c.displayOrder', 'ASC')
+            ->addOrderBy('c.id', 'ASC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
 }

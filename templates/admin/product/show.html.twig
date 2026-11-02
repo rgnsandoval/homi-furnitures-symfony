@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product{% endblock %}
+
+{% block body %}
+    <h1>Product</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ product.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ product.name }}</td>
+            </tr>
+            <tr>
+                <th>Sku</th>
+                <td>{{ product.sku }}</td>
+            </tr>
+            <tr>
+                <th>Slug</th>
+                <td>{{ product.slug }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ product.description }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ product.price }}</td>
+            </tr>
+            <tr>
+                <th>CostPrice</th>
+                <td>{{ product.costPrice }}</td>
+            </tr>
+            <tr>
+                <th>SalePrice</th>
+                <td>{{ product.salePrice }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ product.status }}</td>
+            </tr>
+            <tr>
+                <th>IsFeatured</th>
+                <td>{{ product.isFeatured ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>{{ product.image }}</td>
+            </tr>
+            <tr>
+                <th>Material</th>
+                <td>{{ product.material }}</td>
+            </tr>
+            <tr>
+                <th>DefaultColor</th>
+                <td>{{ product.defaultColor }}</td>
+            </tr>
+            <tr>
+                <th>WidthCm</th>
+                <td>{{ product.widthCm }}</td>
+            </tr>
+            <tr>
+                <th>DepthCm</th>
+                <td>{{ product.depthCm }}</td>
+            </tr>
+            <tr>
+                <th>HeightCm</th>
+                <td>{{ product.heightCm }}</td>
+            </tr>
+            <tr>
+                <th>WeightKg</th>
+                <td>{{ product.weightKg }}</td>
+            </tr>
+            <tr>
+                <th>AssemblyRequired</th>
+                <td>{{ product.assemblyRequired ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>WarrantyMonths</th>
+                <td>{{ product.warrantyMonths }}</td>
+            </tr>
+            <tr>
+                <th>LeadTimeDays</th>
+                <td>{{ product.leadTimeDays }}</td>
+            </tr>
+            <tr>
+                <th>Specifications</th>
+                <td>{{ product.specifications ? product.specifications|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_product_index') }}">back to list</a>
+
+    <a href="{{ path('app_admin_product_edit', {'id': product.id}) }}">edit</a>
+
+    {{ include('admin/product/_delete_form.html.twig') }}
+{% endblock %}

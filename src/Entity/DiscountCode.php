@@ -65,7 +65,7 @@ class DiscountCode
 
     public function setCode(string $code): static
     {
-        $this->code = $code;
+        $this->code = strtoupper(trim($code));
 
         return $this;
     }

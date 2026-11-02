@@ -30,4 +30,15 @@ class PlatformSettingRepository extends ServiceEntityRepository
     {
         return bcadd($this->getValue($key) ?? $default, '0', 2);
     }
+
+    /**
+     * @return \Doctrine\ORM\Tools\Pagination\Paginator<PlatformSetting>
+     */
+    public function findPage(int $page = 1, int $perPage = 20): \Doctrine\ORM\Tools\Pagination\Paginator
+    {
+        return new \Doctrine\ORM\Tools\Pagination\Paginator($this->createQueryBuilder('s')
+            ->orderBy('s.settingKey', 'ASC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
 }

@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Order {{ order.orderNumber }} - Admin{% endblock %}
+
+{% block body %}
+    {% set token = csrf_token('admin-order' ~ order.id) %}
+    <h1>Order {{ order.orderNumber }}</h1>
+    <p>Status: <strong id="order-status">{{ order.status }}</strong></p>
+    <p>Customer: {{ order.customer.fullName }} ({{ order.customer.email }})</p>
+    <p>Payment: {{ order.payment.method }} ({{ order.payment.status }}), {{ order.payment.amount|peso }}</p>
+    {% if order.payment.proofFile %}<p><a href="{{ path('app_payment_proof', {id: order.payment.id}) }}">View payment proof</a></p>{% endif %}
+    {% if order.cancelReason %}<p>Cancel reason: {{ order.cancelReason }}</p>{% endif %}
+    {% if order.notes %}<p>Customer notes: {{ order.notes }}</p>{% endif %}
+    <p><a href="{{ path('app_invoice', {id: order.id}) }}">Invoice</a></p>
+
+    <h2>Items</h2>
+    <ul>
+        {% for item in order.items %}
+            <li>{{ item.quantity }} x {{ item.productName }} - {{ item.variantName }} at {{ item.unitPrice|peso }}</li>
+        {% endfor %}
+    </ul>
+    <p>Total: {{ order.total|peso }}{{ order.assemblyRequested ? ' (assembly requested)' }}</p>
+
+    <h2>Move order</h2>
+    {% for status in nextStatuses %}
+        <form method="post" action="{{ path('app_admin_order_transition', {id: order.id}) }}">
+            <input type="hidden" name="_token" value="{{ token }}">
+            <input type="hidden" name="to" value="{{ status }}">
+            <button type="submit">Mark {{ status }}</button>
+        </form>
+    {% else %}
+        <p>No further moves.</p>
+    {% endfor %}
+
+    {% if canCancel %}
+        <form method="post" action="{{ path('app_admin_order_cancel', {id: order.id}) }}">
+            <input type="hidden" name="_token" value="{{ token }}">
+            <label>Reason <input name="reason" maxlength="255" required></label>
+            <button type="submit">Cancel order</button>
+        </form>
+    {% endif %}
+
+    <h2>Tracking and notes</h2>
+    <form method="post" action="{{ path('app_admin_order_details', {id: order.id}) }}">
+        <input type="hidden" name="_token" value="{{ token }}">
+        <label>Tracking number <input name="trackingNumber" maxlength="80" value="{{ order.trackingNumber }}"></label>
+        <label>Internal note <textarea name="internalNote">{{ order.internalNote }}</textarea></label>
+        <button type="submit">Save details</button>
+    </form>
+
+    <h2>History</h2>
+    <ol>
+        {% for entry in history %}
+            <li>{{ entry.createdAt|date('M j, Y g:i A') }}: {{ entry.fromStatus ?? 'new' }} to {{ entry.toStatus }}{% if entry.changedBy %} by {{ entry.changedBy.email }}{% endif %}{% if entry.note %} ({{ entry.note }}){% endif %}</li>
+        {% endfor %}
+    </ol>
+{% endblock %}

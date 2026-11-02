@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ProductVariant{% endblock %}
+
+{% block body %}
+    <h1>ProductVariant</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ product_variant.id }}</td>
+            </tr>
+            <tr>
+                <th>Sku</th>
+                <td>{{ product_variant.sku }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ product_variant.name }}</td>
+            </tr>
+            <tr>
+                <th>Color</th>
+                <td>{{ product_variant.color }}</td>
+            </tr>
+            <tr>
+                <th>Size</th>
+                <td>{{ product_variant.size }}</td>
+            </tr>
+            <tr>
+                <th>Finish</th>
+                <td>{{ product_variant.finish }}</td>
+            </tr>
+            <tr>
+                <th>PriceAdjustment</th>
+                <td>{{ product_variant.priceAdjustment }}</td>
+            </tr>
+            <tr>
+                <th>Stock</th>
+                <td>{{ product_variant.stock }}</td>
+            </tr>
+            <tr>
+                <th>LowStockThreshold</th>
+                <td>{{ product_variant.lowStockThreshold }}</td>
+            </tr>
+            <tr>
+                <th>IsActive</th>
+                <td>{{ product_variant.isActive ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>{{ product_variant.image }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_product_variant_index') }}">back to list</a>
+
+    <a href="{{ path('app_admin_product_variant_edit', {'id': product_variant.id}) }}">edit</a>
+
+    {{ include('admin/product_variant/_delete_form.html.twig') }}
+{% endblock %}

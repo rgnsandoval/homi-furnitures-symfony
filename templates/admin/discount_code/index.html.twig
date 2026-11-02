@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DiscountCode index{% endblock %}
+
+{% block body %}
+    <h1>DiscountCode index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>DiscountType</th>
+                <th>DiscountValue</th>
+                <th>MinSpend</th>
+                <th>UsageLimit</th>
+                <th>TimesUsed</th>
+                <th>ExpiresAt</th>
+                <th>IsActive</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for discount_code in discount_codes %}
+            <tr>
+                <td>{{ discount_code.id }}</td>
+                <td>{{ discount_code.code }}</td>
+                <td>{{ discount_code.discountType }}</td>
+                <td>{{ discount_code.discountValue }}</td>
+                <td>{{ discount_code.minSpend }}</td>
+                <td>{{ discount_code.usageLimit }}</td>
+                <td>{{ discount_code.timesUsed }}</td>
+                <td>{{ discount_code.expiresAt ? discount_code.expiresAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ discount_code.isActive ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_admin_discount_code_show', {'id': discount_code.id}) }}">show</a>
+                    <a href="{{ path('app_admin_discount_code_edit', {'id': discount_code.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <twig:Pagination :total="discount_codes|length" :page="page" />
+
+    <a href="{{ path('app_admin_discount_code_new') }}">Create new</a>
+{% endblock %}

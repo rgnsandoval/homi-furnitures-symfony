@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payments - Admin{% endblock %}
+
+{% block body %}
+    <h1>Payments</h1>
+    <p><a href="{{ path('app_admin_payment_queue') }}">Open the payment queues</a></p>
+
+    <table>
+        <thead><tr><th>Order</th><th>Method</th><th>Status</th><th>Amount</th><th>Reference</th><th>Paid at</th></tr></thead>
+        <tbody>
+            {% for payment in payments %}
+                <tr class="payment">
+                    <td><a href="{{ path('app_admin_order_show', {id: payment.parentOrder.id}) }}">{{ payment.parentOrder.orderNumber }}</a></td>
+                    <td>{{ payment.method }}</td>
+                    <td>{{ payment.status }}</td>
+                    <td>{{ payment.amount|peso }}</td>
+                    <td>{{ payment.reference }}</td>
+                    <td>{{ payment.paidAt ? payment.paidAt|date('M j, Y g:i A') }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6">No payments yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <twig:Pagination :total="payments|length" :page="page" />
+{% endblock %}
