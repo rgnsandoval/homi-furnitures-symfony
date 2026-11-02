@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Adjust stock - Admin{% endblock %}
+
+{% block body %}
+    <h1>Adjust stock: {{ variant }}</h1>
+    <p>Current stock: <strong id="current-stock">{{ variant.stock }}</strong></p>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit">Save adjustment</button>
+    {{ form_end(form) }}
+
+    <p><a href="{{ path('app_admin_product_variant_index') }}">Back to variants</a></p>
+{% endblock %}

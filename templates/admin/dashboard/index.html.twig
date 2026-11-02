@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard - Admin{% endblock %}
+
+{% block body %}
+    <h1>Admin dashboard</h1>
+
+    <nav aria-label="Admin">
+        <a href="{{ path('app_admin_order') }}">Orders</a>
+        <a href="{{ path('app_admin_payment') }}">Payments</a>
+        <a href="{{ path('app_admin_payment_queue') }}">Payment queues</a>
+        <a href="{{ path('app_admin_product_index') }}">Products</a>
+        <a href="{{ path('app_admin_product_variant_index') }}">Variants and stock</a>
+        <a href="{{ path('app_admin_category_index') }}">Categories</a>
+        <a href="{{ path('app_admin_brand_index') }}">Brands</a>
+        <a href="{{ path('app_admin_discount_code_index') }}">Discount codes</a>
+        <a href="{{ path('app_admin_user') }}">Users</a>
+        <a href="{{ path('app_admin_review') }}">Reviews</a>
+        <a href="{{ path('app_admin_inquiry') }}">Inquiries ({{ openInquiries }})</a>
+        <a href="{{ path('app_admin_report') }}">Sales report</a>
+        <a href="{{ path('app_admin_platform_setting_index') }}">Settings</a>
+        <a href="{{ path('app_admin_audit_log') }}">Audit log</a>
+    </nav>
+
+    <h2>Revenue</h2>
+    <table id="revenue">
+        <thead><tr><th>Period</th><th>Revenue</th><th>Change</th></tr></thead>
+        <tbody>
+            {% for label, period in revenue %}
+                <tr><td>{{ label }}</td><td>{{ period.amount|peso }}</td><td>{{ period.change is null ? 'n/a' : period.change ~ '%' }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>This month</h2>
+    <dl>
+        <dt>Average order value</dt><dd>{{ averageOrderValue|peso }}</dd>
+        <dt>New users</dt><dd>{{ newUsers }}</dd>
+        <dt>Cancellation rate</dt><dd>{{ cancellationRate }}%</dd>
+        <dt>Inventory value at cost</dt><dd>{{ inventoryValue|peso }}</dd>
+    </dl>
+
+    <h2>Orders by status</h2>
+    <ul>
+        {% for status, count in ordersByStatus %}
+            <li>{{ status|capitalize }}: {{ count }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Pending longer than {{ escalationHours }} hours</h2>
+    <ul>
+        {% for order in overdueOrders %}
+            <li><a href="{{ path('app_admin_order_show', {id: order.id}) }}">{{ order.orderNumber }}</a> since {{ order.createdAt|date('M j, g:i A') }}</li>
+        {% else %}
+            <li>None.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Low stock</h2>
+    <ul>
+        {% for variant in lowStock %}
+            <li>{{ variant }}: {{ variant.stock }} left</li>
+        {% else %}
+            <li>None.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Out of stock</h2>
+    <ul>
+        {% for variant in outOfStock %}
+            <li>{{ variant }}</li>
+        {% else %}
+            <li>None.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Best sellers</h2>
+    <ol>
+        {% for row in bestSellers %}
+            <li>{{ row.product.name }}: {{ row.sold }} sold</li>
+        {% else %}
+            <li>No sales yet.</li>
+        {% endfor %}
+    </ol>
+
+    <h2>Revenue by category this month</h2>
+    <ul>
+        {% for row in revenueByCategory %}
+            <li>{{ row.name }}: {{ row.revenue|peso }}</li>
+        {% else %}
+            <li>No revenue yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Sales trend, last 30 days</h2>
+    <table id="sales-trend">
+        <thead><tr><th>Day</th><th>Orders</th><th>Revenue</th></tr></thead>
+        <tbody>
+            {% for row in salesTrend %}
+                <tr><td>{{ row.day }}</td><td>{{ row.orders }}</td><td>{{ row.revenue|peso }}</td></tr>
+            {% else %}
+                <tr><td colspan="3">No sales yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

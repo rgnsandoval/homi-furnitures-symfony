@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit ProductVariant{% endblock %}
+
+{% block body %}
+    <h1>Edit ProductVariant</h1>
+
+    {{ include('admin/product_variant/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_admin_product_variant_index') }}">back to list</a>
+
+    {{ include('admin/product_variant/_delete_form.html.twig') }}
+{% endblock %}

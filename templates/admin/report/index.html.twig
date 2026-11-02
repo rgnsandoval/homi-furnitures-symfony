@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sales report - Admin{% endblock %}
+
+{% block body %}
+    <h1>Sales report</h1>
+
+    <form method="get">
+        <label>From <input type="date" name="from" value="{{ from|date('Y-m-d') }}"></label>
+        <label>To <input type="date" name="to" value="{{ to|date('Y-m-d') }}"></label>
+        <button type="submit">Run report</button>
+    </form>
+    <p><a href="{{ path('app_admin_report_export', {from: from|date('Y-m-d'), to: to|date('Y-m-d')}) }}">Export CSV</a></p>
+
+    <dl id="report-summary">
+        <dt>Revenue</dt><dd id="report-revenue">{{ revenue|peso }}</dd>
+        <dt>Orders placed</dt><dd>{{ orderCount }}</dd>
+        <dt>Average order value</dt><dd>{{ averageOrderValue|peso }}</dd>
+        <dt>Cancellation rate</dt><dd>{{ cancellationRate }}%</dd>
+        <dt>Average fulfillment</dt><dd>{{ fulfillmentHours }} hours</dd>
+    </dl>
+
+    <h2>By day</h2>
+    <table>
+        <thead><tr><th>Day</th><th>Orders</th><th>Revenue</th></tr></thead>
+        <tbody>
+            {% for row in days %}
+                <tr><td>{{ row.day }}</td><td>{{ row.orders }}</td><td>{{ row.revenue|peso }}</td></tr>
+            {% else %}
+                <tr><td colspan="3">No sales in this range.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>By category</h2>
+    <ul>
+        {% for row in byCategory %}
+            <li>{{ row.name }}: {{ row.revenue|peso }}</li>
+        {% else %}
+            <li>No sales in this range.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
