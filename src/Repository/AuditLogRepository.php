@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\AuditLog;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +17,24 @@ class AuditLogRepository extends ServiceEntityRepository
         parent::__construct($registry, AuditLog::class);
     }
 
-//    /**
-//     * @return AuditLog[] Returns an array of AuditLog objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return list<AuditLog>
+     */
+    public function findRecent(int $limit = 20): array
+    {
+        return $this->findBy([], ['createdAt' => 'DESC', 'id' => 'DESC'], $limit);
+    }
 
-//    public function findOneBySomeField($value): ?AuditLog
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Paginator<AuditLog>
+     */
+    public function findPage(int $page = 1, int $perPage = 20): Paginator
+    {
+        return new Paginator($this->createQueryBuilder('a')
+            ->join('a.adminUser', 'u')->addSelect('u')
+            ->orderBy('a.createdAt', 'DESC')
+            ->addOrderBy('a.id', 'DESC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
 }

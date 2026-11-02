@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Inquiry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +17,23 @@ class InquiryRepository extends ServiceEntityRepository
         parent::__construct($registry, Inquiry::class);
     }
 
-//    /**
-//     * @return Inquiry[] Returns an array of Inquiry objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('i')
-//            ->andWhere('i.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('i.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function countUnresolved(): int
+    {
+        return (int) $this->createQueryBuilder('i')
+            ->select('COUNT(i.id)')
+            ->andWhere('i.status != :resolved')->setParameter('resolved', Inquiry::STATUS_RESOLVED)
+            ->getQuery()->getSingleScalarResult();
+    }
 
-//    public function findOneBySomeField($value): ?Inquiry
-//    {
-//        return $this->createQueryBuilder('i')
-//            ->andWhere('i.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Paginator<Inquiry>
+     */
+    public function findPage(int $page = 1, int $perPage = 20): Paginator
+    {
+        return new Paginator($this->createQueryBuilder('i')
+            ->orderBy('i.createdAt', 'DESC')
+            ->addOrderBy('i.id', 'DESC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
 }

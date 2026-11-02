@@ -16,28 +16,16 @@ class DiscountCodeRepository extends ServiceEntityRepository
         parent::__construct($registry, DiscountCode::class);
     }
 
-//    /**
-//     * @return DiscountCode[] Returns an array of DiscountCode objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('d')
-//            ->andWhere('d.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('d.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?DiscountCode
-//    {
-//        return $this->createQueryBuilder('d')
-//            ->andWhere('d.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Active, not expired, and under its usage limit. Minimum spend is checked by the caller.
+     */
+    public function findValidByCode(string $code): ?DiscountCode
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.code = :code')->setParameter('code', strtoupper(trim($code)))
+            ->andWhere('d.isActive = true')
+            ->andWhere('d.expiresAt IS NULL OR d.expiresAt > :now')->setParameter('now', new \DateTimeImmutable())
+            ->andWhere('d.usageLimit IS NULL OR d.timesUsed < d.usageLimit')
+            ->getQuery()->getOneOrNullResult();
+    }
 }
