@@ -71,4 +71,15 @@ class ProductVariantRepository extends ServiceEntityRepository
 
         return $locked;
     }
+
+    /**
+     * @return \Doctrine\ORM\Tools\Pagination\Paginator<ProductVariant>
+     */
+    public function findPage(int $page = 1, int $perPage = 20): \Doctrine\ORM\Tools\Pagination\Paginator
+    {
+        return new \Doctrine\ORM\Tools\Pagination\Paginator($this->createQueryBuilder('v')
+            ->orderBy('v.id', 'DESC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
 }

@@ -58,4 +58,15 @@ class DiscountCodeRepository extends ServiceEntityRepository
             ->getQuery()->execute();
         $this->getEntityManager()->refresh($code);
     }
+
+    /**
+     * @return \Doctrine\ORM\Tools\Pagination\Paginator<DiscountCode>
+     */
+    public function findPage(int $page = 1, int $perPage = 20): \Doctrine\ORM\Tools\Pagination\Paginator
+    {
+        return new \Doctrine\ORM\Tools\Pagination\Paginator($this->createQueryBuilder('d')
+            ->orderBy('d.id', 'DESC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
 }
