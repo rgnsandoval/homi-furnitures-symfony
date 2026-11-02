@@ -20,16 +20,18 @@ class ReviewRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return list<Review>
+     * @return Paginator<Review>
      */
-    public function findApprovedForProduct(Product $product): array
+    public function findApprovedForProduct(Product $product, int $page = 1, int $perPage = 20): Paginator
     {
-        return $this->createQueryBuilder('r')
+        return new Paginator($this->createQueryBuilder('r')
             ->join('r.author', 'a')->addSelect('a')
             ->andWhere('r.product = :product')->setParameter('product', $product)
             ->andWhere('r.isApproved = true')
             ->orderBy('r.createdAt', 'DESC')
-            ->getQuery()->getResult();
+            ->addOrderBy('r.id', 'DESC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
     }
 
     /**

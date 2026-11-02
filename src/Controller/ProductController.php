@@ -61,10 +61,13 @@ final class ProductController extends AbstractController
             return $this->redirectToRoute(null === $user ? 'app_login' : 'app_product', null === $user ? [] : ['slug' => $slug], Response::HTTP_SEE_OTHER);
         }
 
+        $page = max(1, $request->query->getInt('page', 1));
+
         return $this->render('product/index.html.twig', [
             'product' => $product,
+            'page' => $page,
             'variants' => $product->getVariants()->filter(static fn ($variant) => $variant->isActive()),
-            'reviews' => $reviews->findApprovedForProduct($product),
+            'reviews' => $reviews->findApprovedForProduct($product, $page),
             'averageRating' => $reviews->averageRating($product),
             'related' => $products->findRelated($product),
             'reviewForm' => $reviewForm,

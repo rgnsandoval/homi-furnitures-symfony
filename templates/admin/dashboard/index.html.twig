@@ -48,27 +48,27 @@
         {% endfor %}
     </ul>
 
-    <h2>Pending longer than {{ escalationHours }} hours</h2>
+    <h2>Pending longer than {{ escalationHours }} hours ({{ overdueOrders|length }})</h2>
     <ul>
-        {% for order in overdueOrders %}
+        {% for order in overdueOrders|slice(0, 20) %}
             <li><a href="{{ path('app_admin_order_show', {id: order.id}) }}">{{ order.orderNumber }}</a> since {{ order.createdAt|date('M j, g:i A') }}</li>
         {% else %}
             <li>None.</li>
         {% endfor %}
     </ul>
 
-    <h2>Low stock</h2>
+    <h2>Low stock ({{ lowStock|length }})</h2>
     <ul>
-        {% for variant in lowStock %}
+        {% for variant in lowStock|slice(0, 20) %}
             <li>{{ variant }}: {{ variant.stock }} left</li>
         {% else %}
             <li>None.</li>
         {% endfor %}
     </ul>
 
-    <h2>Out of stock</h2>
+    <h2>Out of stock ({{ outOfStock|length }})</h2>
     <ul>
-        {% for variant in outOfStock %}
+        {% for variant in outOfStock|slice(0, 20) %}
             <li>{{ variant }}</li>
         {% else %}
             <li>None.</li>
