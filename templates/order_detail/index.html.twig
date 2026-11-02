@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Order {{ order.orderNumber }} - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Order {{ order.orderNumber }}</h1>
+    <p>Status: <strong id="order-status">{{ order.status|capitalize }}</strong></p>
+    {% if order.estimatedDeliveryDate %}<p>Estimated delivery: {{ order.estimatedDeliveryDate|date('F j, Y') }}</p>{% endif %}
+    {% if order.trackingNumber %}<p>Tracking number: {{ order.trackingNumber }}</p>{% endif %}
+    {% if order.cancelReason %}<p>Cancelled: {{ order.cancelReason }}</p>{% endif %}
+
+    <h2>Items</h2>
+    <table>
+        <thead><tr><th>Item</th><th>Quantity</th><th>Unit price</th></tr></thead>
+        <tbody>
+            {% for item in order.items %}
+                <tr><td>{{ item.productName }} - {{ item.variantName }}</td><td>{{ item.quantity }}</td><td>{{ item.unitPrice|peso }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <dl>
+        <dt>Subtotal</dt><dd>{{ order.subtotal|peso }}</dd>
+        <dt>Shipping ({{ order.shippingMethod }})</dt><dd>{{ order.shippingFee|peso }}</dd>
+        <dt>Assembly</dt><dd>{{ order.assemblyFee|peso }}</dd>
+        <dt>Discount</dt><dd>{{ order.discount|peso }}</dd>
+        <dt>Total</dt><dd id="order-total">{{ order.total|peso }}</dd>
+    </dl>
+
+    <p><a href="{{ path('app_invoice', {id: order.id}) }}">View invoice</a></p>
+
+    <h2>Payment</h2>
+    <p>{{ payment.method|upper }}: <strong id="payment-status">{{ payment.status|capitalize }}</strong></p>
+    {% if payment.proofFile %}
+        <p><a href="{{ path('app_payment_proof', {id: payment.id}) }}">View uploaded proof</a></p>
+    {% endif %}
+    {% if proofForm %}
+        {{ form_start(proofForm) }}
+            {{ form_widget(proofForm) }}
+            <button type="submit">Upload proof</button>
+        {{ form_end(proofForm) }}
+    {% endif %}
+
+    <h2>Tracking</h2>
+    <ol id="timeline">
+        {% for entry in history %}
+            <li>{{ entry.createdAt|date('M j, Y g:i A') }}: {{ entry.toStatus|capitalize }}{% if entry.note %} ({{ entry.note }}){% endif %}</li>
+        {% endfor %}
+    </ol>
+
+    {% if order.status == 'pending' %}
+        <form method="post" action="{{ path('app_order_cancel', {id: order.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ order.id) }}">
+            <label>Reason <input name="reason" maxlength="255"></label>
+            <button type="submit">Cancel order</button>
+        </form>
+    {% endif %}
+{% endblock %}
