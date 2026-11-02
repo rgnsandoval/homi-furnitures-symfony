@@ -198,4 +198,14 @@ class ProductVariant
 
         return $this;
     }
+
+    public function getUnitPrice(): string
+    {
+        return bcadd($this->product->getEffectivePrice(), (string) $this->priceAdjustment, 2);
+    }
+
+    public function __toString(): string
+    {
+        return $this->product?->getName().' - '.$this->name;
+    }
 }

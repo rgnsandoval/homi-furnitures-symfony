@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }} - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>{{ product.name }}</h1>
+
+    <p>
+        {% if product.onSale %}<s>{{ product.price|peso }}</s>{% endif %}
+        <strong>{{ product.effectivePrice|peso }}</strong>
+    </p>
+    <p>{{ product.description }}</p>
+
+    <h2>Details</h2>
+    <dl>
+        <dt>Material</dt><dd>{{ product.material }}</dd>
+        {% if product.widthCm %}<dt>Dimensions (W x D x H)</dt><dd>{{ product.widthCm }} x {{ product.depthCm }} x {{ product.heightCm }} cm</dd>{% endif %}
+        {% if product.weightKg %}<dt>Weight</dt><dd>{{ product.weightKg }} kg</dd>{% endif %}
+        <dt>Assembly</dt><dd>{{ product.assemblyRequired ? 'Assembly required; our assembly service is available at checkout.' : 'Delivered assembled.' }}</dd>
+        {% if product.warrantyMonths %}<dt>Warranty</dt><dd>{{ product.warrantyMonths }} months</dd>{% endif %}
+        <dt>Lead time</dt><dd>{{ product.leadTimeDays }} days</dd>
+        {% for label, value in product.specifications ?? {} %}
+            <dt>{{ label }}</dt><dd>{{ value }}</dd>
+        {% endfor %}
+    </dl>
+
+    {% for image in product.images %}
+        <img src="{{ asset('uploads/products/' ~ image.filename) }}" alt="{{ image.altText ?? product.name }}" width="200">
+    {% endfor %}
+
+    {% if variants is empty %}
+        <p>Currently unavailable.</p>
+    {% else %}
+        <form method="post" action="{{ path('app_cart_add') }}" id="add-to-cart">
+            <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
+            {% if variants|length == 1 %}
+                <input type="hidden" name="variant" value="{{ variants|first.id }}">
+                <p>{{ variants|first.stock > 0 ? 'In stock' : 'Out of stock' }}</p>
+            {% else %}
+                <label>Option
+                    <select name="variant" id="variant-selector">
+                        {% for variant in variants %}
+                            <option value="{{ variant.id }}" {{ variant.stock <= 0 ? 'disabled' }}>
+                                {{ variant.name }} - {{ variant.unitPrice|peso }}{{ variant.stock <= 0 ? ' (out of stock)' }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </label>
+            {% endif %}
+            <label>Quantity <input type="number" name="quantity" value="1" min="1"></label>
+            <button type="submit">Add to cart</button>
+        </form>
+    {% endif %}
+
+    {% if app.user %}
+        <form method="post" action="{{ path('app_wishlist_toggle', {id: product.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('wishlist') }}">
+            <button type="submit">{{ inWishlist ? 'Remove from wishlist' : 'Add to wishlist' }}</button>
+        </form>
+    {% endif %}
+
+    <h2>Reviews{% if averageRating %} ({{ averageRating }} / 5){% endif %}</h2>
+    {% for review in reviews %}
+        <article class="review">
+            <strong>{{ review.rating }} / 5</strong> by {{ review.author.fullName }}
+            <p>{{ review.body }}</p>
+            {% if review.photo %}<img src="{{ asset('uploads/reviews/' ~ review.photo) }}" alt="Photo from {{ review.author.fullName }}" width="200">{% endif %}
+        </article>
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endfor %}
+
+    {% if reviewForm %}
+        <h3>Write a review</h3>
+        {{ form_start(reviewForm) }}
+            {{ form_widget(reviewForm) }}
+            <button type="submit">Submit review</button>
+        {{ form_end(reviewForm) }}
+    {% endif %}
+
+    <h2>Related products</h2>
+    <ul>
+        {% for item in related %}
+            <li><a href="{{ path('app_product', {slug: item.slug}) }}">{{ item.name }}</a> {{ item.effectivePrice|peso }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
