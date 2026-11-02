@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Wishlist - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Wishlist</h1>
+
+    <ul>
+        {% for item in items %}
+            <li class="wishlist-item">
+                <a href="{{ path('app_product', {slug: item.product.slug}) }}">{{ item.product.name }}</a>
+                {{ item.product.effectivePrice|peso }}
+                <form method="post" action="{{ path('app_wishlist_toggle', {id: item.product.id}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('wishlist') }}">
+                    <button type="submit">Remove</button>
+                </form>
+            </li>
+        {% else %}
+            <li>Your wishlist is empty.</li>
+        {% endfor %}
+    </ul>
+
+    <twig:Pagination :total="items|length" :page="page" />
+{% endblock %}

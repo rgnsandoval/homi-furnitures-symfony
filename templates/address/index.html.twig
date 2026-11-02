@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Saved addresses - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Saved addresses</h1>
+
+    <table class="table">
+        <thead>
+            <tr><th>Label</th><th>Recipient</th><th>Phone</th><th>Address</th><th>Default</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for address in addresses %}
+            <tr class="address">
+                <td>{{ address.label }}</td>
+                <td>{{ address.recipient }}</td>
+                <td>{{ address.phone }}</td>
+                <td>{{ address.line1 }}, {{ address.city }}, {{ address.province }} {{ address.postalCode }}</td>
+                <td>{{ address.isDefault ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_address_show', {'id': address.id}) }}">show</a>
+                    <a href="{{ path('app_address_edit', {'id': address.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6">You have no saved addresses yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <twig:Pagination :total="addresses|length" :page="page" />
+
+    <a href="{{ path('app_address_new') }}">Add an address</a>
+{% endblock %}

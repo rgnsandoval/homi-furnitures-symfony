@@ -40,4 +40,34 @@ class AddressRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * @return \Doctrine\ORM\Tools\Pagination\Paginator<Address>
+     */
+    public function findForUser(\App\Entity\User $user, int $page = 1, int $perPage = 20): \Doctrine\ORM\Tools\Pagination\Paginator
+    {
+        return new \Doctrine\ORM\Tools\Pagination\Paginator($this->createQueryBuilder('a')
+            ->andWhere('a.owner = :user')->setParameter('user', $user)
+            ->orderBy('a.isDefault', 'DESC')
+            ->addOrderBy('a.id', 'ASC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
+
+    public function countForUser(\App\Entity\User $user): int
+    {
+        return $this->count(['owner' => $user]);
+    }
+
+    /**
+     * Keeps a single default address per user.
+     */
+    public function clearDefaultExcept(\App\Entity\User $user, Address $keep): void
+    {
+        foreach ($this->findBy(['owner' => $user, 'isDefault' => true]) as $address) {
+            if ($address !== $keep) {
+                $address->setIsDefault(false);
+            }
+        }
+    }
 }

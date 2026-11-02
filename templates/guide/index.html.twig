@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Material and fit guide - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Material and fit guide</h1>
+
+    <h2>Will it fit?</h2>
+    <form method="get" action="{{ path('app_guide') }}">
+        <label>Room width (m) <input name="roomWidth" inputmode="decimal" value="{{ roomWidth }}"></label>
+        <label>Room depth (m) <input name="roomDepth" inputmode="decimal" value="{{ roomDepth }}"></label>
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if maxWidth %}
+        <p id="fit-result">Look for pieces up to {{ maxWidth }} cm wide and {{ maxDepth }} cm deep.</p>
+        <ul id="suggestions">
+            {% for product in suggestions %}
+                <li><a href="{{ path('app_product', {slug: product.slug}) }}">{{ product.name }}</a> ({{ product.widthCm }} x {{ product.depthCm }} cm) {{ product.effectivePrice|peso }}</li>
+            {% else %}
+                <li>No in-stock pieces with listed dimensions fit that room.</li>
+            {% endfor %}
+        </ul>
+    {% elseif roomWidth or roomDepth %}
+        <p>Enter both room measurements in metres, for example 3.5.</p>
+    {% endif %}
+
+    <h2>Materials</h2>
+    <dl>
+        {% for name, advice in materials %}
+            <dt>{{ name }}</dt><dd>{{ advice }}</dd>
+        {% endfor %}
+    </dl>
+{% endblock %}

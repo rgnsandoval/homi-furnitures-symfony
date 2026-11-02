@@ -105,4 +105,9 @@ class CartItem
 
         return $this;
     }
+
+    public function getLineTotal(): string
+    {
+        return bcmul($this->variant->getUnitPrice(), (string) $this->quantity, 2);
+    }
 }

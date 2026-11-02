@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Shop - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Shop</h1>
+
+    <p>
+        Rooms:
+        {% for room in rooms %}
+            <a href="{{ path('app_shop', {room: room.slug}) }}">{{ room.name }}</a>
+        {% endfor %}
+    </p>
+
+    <form method="get" action="{{ path('app_shop') }}">
+        <label>Search <input type="search" name="q" value="{{ filters.q }}"></label>
+        <label>Room
+            <select name="room">
+                <option value="">Any</option>
+                {% for room in rooms %}
+                    <option value="{{ room.slug }}" {{ filters.room == room.slug ? 'selected' }}>{{ room.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Brand
+            <select name="brand">
+                <option value="">Any</option>
+                {% for brand in brands %}
+                    <option value="{{ brand.id }}" {{ filters.brand == brand.id ? 'selected' }}>{{ brand.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Material
+            <select name="material">
+                <option value="">Any</option>
+                {% for material in materials %}
+                    <option value="{{ material }}" {{ filters.material == material ? 'selected' }}>{{ material }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Color <input name="color" value="{{ filters.color }}"></label>
+        <label>Min price <input name="minPrice" inputmode="decimal" value="{{ filters.minPrice }}"></label>
+        <label>Max price <input name="maxPrice" inputmode="decimal" value="{{ filters.maxPrice }}"></label>
+        <label>Max width (cm) <input name="maxWidth" inputmode="decimal" value="{{ filters.maxWidth }}"></label>
+        <label>Max depth (cm) <input name="maxDepth" inputmode="decimal" value="{{ filters.maxDepth }}"></label>
+        <label>Max height (cm) <input name="maxHeight" inputmode="decimal" value="{{ filters.maxHeight }}"></label>
+        <label><input type="checkbox" name="inStock" value="1" {{ filters.inStock ? 'checked' }}> In stock</label>
+        <label>Sort
+            <select name="sort">
+                <option value="newest" {{ sort == 'newest' ? 'selected' }}>Newest</option>
+                <option value="price_asc" {{ sort == 'price_asc' ? 'selected' }}>Price: low to high</option>
+                <option value="price_desc" {{ sort == 'price_desc' ? 'selected' }}>Price: high to low</option>
+                <option value="name" {{ sort == 'name' ? 'selected' }}>Name</option>
+            </select>
+        </label>
+        <button type="submit">Apply</button>
+    </form>
+
+    <p>{{ products|length }} products</p>
+    <ul id="products">
+        {% for product in products %}
+            <li>
+                <a href="{{ path('app_product', {slug: product.slug}) }}">{{ product.name }}</a>
+                {% if product.onSale %}<s>{{ product.price|peso }}</s>{% endif %}
+                {{ product.effectivePrice|peso }}
+            </li>
+        {% else %}
+            <li>No products match these filters.</li>
+        {% endfor %}
+    </ul>
+
+    <twig:Pagination :total="products|length" :page="page" />
+{% endblock %}

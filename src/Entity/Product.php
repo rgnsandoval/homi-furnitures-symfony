@@ -515,4 +515,19 @@ class Product
 
         return $this;
     }
+
+    public function getEffectivePrice(): string
+    {
+        return $this->salePrice ?? (string) $this->price;
+    }
+
+    public function isOnSale(): bool
+    {
+        return null !== $this->salePrice && -1 === bccomp($this->salePrice, (string) $this->price, 2);
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->name;
+    }
 }

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Your cart - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Your cart</h1>
+
+    {% if items is empty %}
+        <p>Your cart is empty. <a href="{{ path('app_shop') }}">Browse the shop</a>.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr><th>Item</th><th>Unit price</th><th>Quantity</th><th>Total</th><th></th></tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr class="cart-item">
+                        <td><a href="{{ path('app_product', {slug: item.variant.product.slug}) }}">{{ item.variant.product.name }}</a> - {{ item.variant.name }}</td>
+                        <td>{{ item.variant.unitPrice|peso }}</td>
+                        <td>
+                            <form method="post" action="{{ path('app_cart_update', {id: item.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="0" aria-label="Quantity">
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                        <td>{{ item.lineTotal|peso }}</td>
+                        <td>
+                            <form method="post" action="{{ path('app_cart_remove', {id: item.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
+                                <button type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>Subtotal: <strong id="subtotal">{{ subtotal|peso }}</strong></p>
+    {% endif %}
+{% endblock %}
