@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Request a return - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Return order {{ order.orderNumber }}</h1>
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit">Request return</button>
+    {{ form_end(form) }}
+    <p><a href="{{ path('app_order_detail', {id: order.id}) }}">Back to order</a></p>
+{% endblock %}

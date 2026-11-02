@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Returns - Admin{% endblock %}
+
+{% block body %}
+    <h1>Open returns</h1>
+
+    {% for return in returns %}
+        {% set token = csrf_token('return' ~ return.id) %}
+        <article class="return">
+            <h2><a href="{{ path('app_admin_order_show', {id: return.parentOrder.id}) }}">{{ return.parentOrder.orderNumber }}</a>: {{ return.status }}</h2>
+            <p>From {{ return.customer.email }} on {{ return.createdAt|date('M j, Y') }}</p>
+            <p>{{ return.returnReason }}</p>
+            <p>Payment: {{ return.parentOrder.payment.method }} ({{ return.parentOrder.payment.status }}), {{ return.parentOrder.payment.amount|peso }}</p>
+            {% if return.photo %}<p><a href="{{ path('app_return_photo', {id: return.id}) }}">View photo</a></p>{% endif %}
+
+            {% if return.status == 'requested' %}
+                <form method="post" action="{{ path('app_admin_return_approve', {id: return.id}) }}">
+                    <input type="hidden" name="_token" value="{{ token }}">
+                    <label>Note <input name="adminNote"></label>
+                    <button type="submit">Approve return</button>
+                </form>
+                <form method="post" action="{{ path('app_admin_return_reject', {id: return.id}) }}">
+                    <input type="hidden" name="_token" value="{{ token }}">
+                    <label>Note <input name="adminNote"></label>
+                    <button type="submit">Reject return</button>
+                </form>
+            {% else %}
+                <form method="post" action="{{ path('app_admin_return_refund', {id: return.id}) }}">
+                    <input type="hidden" name="_token" value="{{ token }}">
+                    <label>Note <input name="adminNote"></label>
+                    <button type="submit">Refund return</button>
+                </form>
+            {% endif %}
+        </article>
+    {% else %}
+        <p>No open returns.</p>
+    {% endfor %}
+
+    <twig:Pagination :total="returns|length" :page="page" />
+{% endblock %}

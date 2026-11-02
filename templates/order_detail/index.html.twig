@@ -48,6 +48,10 @@
         {% endfor %}
     </ol>
 
+    {% if order.status == 'delivered' %}
+        <p><a href="{{ path('app_return_new', {id: order.id}) }}">Request a return</a></p>
+    {% endif %}
+
     {% if order.status == 'pending' %}
         <form method="post" action="{{ path('app_order_cancel', {id: order.id}) }}">
             <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ order.id) }}">

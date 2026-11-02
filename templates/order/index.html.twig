@@ -4,6 +4,7 @@
 
 {% block body %}
     <h1>Your orders</h1>
+    <p><a href="{{ path('app_return_list') }}">Your returns</a></p>
 
     <form method="get" action="{{ path('app_orders') }}">
         <label>Status

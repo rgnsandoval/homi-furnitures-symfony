@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Your returns - Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Your returns</h1>
+    <table>
+        <thead><tr><th>Order</th><th>Requested</th><th>Status</th><th>Response</th></tr></thead>
+        <tbody>
+            {% for return in returns %}
+                <tr class="return">
+                    <td><a href="{{ path('app_order_detail', {id: return.parentOrder.id}) }}">{{ return.parentOrder.orderNumber }}</a></td>
+                    <td>{{ return.createdAt|date('M j, Y') }}</td>
+                    <td>{{ return.status|capitalize }}</td>
+                    <td>{{ return.adminNote }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4">You have no return requests.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <twig:Pagination :total="returns|length" :page="page" />
+{% endblock %}
