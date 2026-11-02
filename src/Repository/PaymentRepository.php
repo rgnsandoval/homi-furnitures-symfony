@@ -59,6 +59,53 @@ class PaymentRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
+    /**
+     * @return Paginator<Payment>
+     */
+    public function findPendingBankTransfersPage(int $page = 1, int $perPage = 20): Paginator
+    {
+        return new Paginator($this->createQueryBuilder('p')
+            ->join('p.parentOrder', 'o')->addSelect('o')
+            ->andWhere('p.method = :bank')->setParameter('bank', Payment::METHOD_BANK)
+            ->andWhere('p.status = :pending')->setParameter('pending', Payment::STATUS_PENDING)
+            ->andWhere('p.proofFile IS NOT NULL')
+            ->andWhere('o.status != :cancelled')->setParameter('cancelled', Order::STATUS_CANCELLED)
+            ->orderBy('p.createdAt', 'ASC')
+            ->addOrderBy('p.id', 'ASC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
+
+    /**
+     * @return Paginator<Payment>
+     */
+    public function findCollectableCodPage(int $page = 1, int $perPage = 20): Paginator
+    {
+        return new Paginator($this->createQueryBuilder('p')
+            ->join('p.parentOrder', 'o')->addSelect('o')
+            ->andWhere('p.method = :cod')->setParameter('cod', Payment::METHOD_COD)
+            ->andWhere('p.status = :pending')->setParameter('pending', Payment::STATUS_PENDING)
+            ->andWhere('o.status = :delivered')->setParameter('delivered', Order::STATUS_DELIVERED)
+            ->orderBy('o.deliveredAt', 'ASC')
+            ->addOrderBy('p.id', 'ASC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
+
+    /**
+     * @return Paginator<Payment>
+     */
+    public function findPaidPage(int $page = 1, int $perPage = 20): Paginator
+    {
+        return new Paginator($this->createQueryBuilder('p')
+            ->join('p.parentOrder', 'o')->addSelect('o')
+            ->andWhere('p.status = :paid')->setParameter('paid', Payment::STATUS_PAID)
+            ->orderBy('p.paidAt', 'DESC')
+            ->addOrderBy('p.id', 'DESC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
+
     public function totalPaidBetween(\DateTimeImmutable $from, \DateTimeImmutable $to): string
     {
         $total = $this->createQueryBuilder('p')

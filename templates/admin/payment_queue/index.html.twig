@@ -30,6 +30,7 @@
             {% endfor %}
         </tbody>
     </table>
+    <twig:Pagination :total="bankTransfers|length" :page="bankPage" param="bankPage" />
 
     <h2>Cash on delivery to collect</h2>
     <table id="cod-queue">
@@ -50,6 +51,7 @@
             {% endfor %}
         </tbody>
     </table>
+    <twig:Pagination :total="collectableCod|length" :page="codPage" param="codPage" />
 
     <h2>Paid payments</h2>
     <table id="paid-list">
@@ -71,4 +73,5 @@
             {% endfor %}
         </tbody>
     </table>
+    <twig:Pagination :total="paid|length" :page="paidPage" param="paidPage" />
 {% endblock %}

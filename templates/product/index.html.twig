@@ -69,6 +69,7 @@
     {% else %}
         <p>No reviews yet.</p>
     {% endfor %}
+    <twig:Pagination :total="reviews|length" :page="page" />
 
     {% if reviewForm %}
         <h3>Write a review</h3>

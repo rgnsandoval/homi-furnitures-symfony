@@ -22,17 +22,19 @@ final class PaymentQueueController extends AbstractController
     }
 
     #[Route('/admin/payments/queue', name: 'app_admin_payment_queue', methods: ['GET'])]
-    public function index(PaymentRepository $payments): Response
+    public function index(Request $request, PaymentRepository $payments): Response
     {
+        $bankPage = max(1, $request->query->getInt('bankPage', 1));
+        $codPage = max(1, $request->query->getInt('codPage', 1));
+        $paidPage = max(1, $request->query->getInt('paidPage', 1));
+
         return $this->render('admin/payment_queue/index.html.twig', [
-            'bankTransfers' => $payments->findPendingBankTransfers(),
-            'collectableCod' => $payments->findCollectableCod(),
-            'paid' => array_merge(
-                $payments->findByMethodAndStatus(Payment::METHOD_GCASH, Payment::STATUS_PAID),
-                $payments->findByMethodAndStatus(Payment::METHOD_CARD, Payment::STATUS_PAID),
-                $payments->findByMethodAndStatus(Payment::METHOD_BANK, Payment::STATUS_PAID),
-                $payments->findByMethodAndStatus(Payment::METHOD_COD, Payment::STATUS_PAID),
-            ),
+            'bankTransfers' => $payments->findPendingBankTransfersPage($bankPage),
+            'collectableCod' => $payments->findCollectableCodPage($codPage),
+            'paid' => $payments->findPaidPage($paidPage),
+            'bankPage' => $bankPage,
+            'codPage' => $codPage,
+            'paidPage' => $paidPage,
         ]);
     }
 

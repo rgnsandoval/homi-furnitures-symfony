@@ -3,11 +3,11 @@
         {% set route = app.request.attributes.get('_route') %}
         {% set params = app.request.attributes.get('_route_params', {})|merge(app.request.query.all) %}
         {% if page > 1 %}
-            <a rel="prev" href="{{ path(route, params|merge({page: page - 1})) }}">Previous</a>
+            <a rel="prev" href="{{ path(route, params|merge({(param): page - 1})) }}">Previous</a>
         {% endif %}
         <span>Page {{ page }} of {{ this.pages }}</span>
         {% if page < this.pages %}
-            <a rel="next" href="{{ path(route, params|merge({page: page + 1})) }}">Next</a>
+            <a rel="next" href="{{ path(route, params|merge({(param): page + 1})) }}">Next</a>
         {% endif %}
     {% endif %}
 </nav>
