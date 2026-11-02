@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Homi Furniture{% endblock %}
+
+{% block body %}
+    <h1>Homi Furniture</h1>
+    {% if app.user %}
+        <p>Signed in as {{ app.user.fullName }}. <a href="{{ logout_path() }}">Log out</a></p>
+    {% else %}
+        <p><a href="{{ path('app_login') }}">Log in</a> or <a href="{{ path('app_register') }}">register</a>.</p>
+    {% endif %}
+{% endblock %}
