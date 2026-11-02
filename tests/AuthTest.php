@@ -113,7 +113,7 @@ class AuthTest extends WebTestCase
         $this->login('user@homi.test');
         $this->assertResponseRedirects();
         $this->client->followRedirect();
-        $this->assertSelectorTextContains('body', 'Signed in as Test User');
+        $this->assertSelectorTextContains('body', 'Log out');
 
         $this->client->request('GET', '/logout');
         $this->client->followRedirect();

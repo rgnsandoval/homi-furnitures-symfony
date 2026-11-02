@@ -111,8 +111,8 @@ abstract class BaseWebTest extends WebTestCase
             ->setSku('VAR-'.$n)
             ->setName('Variant '.$n)
             ->setPriceAdjustment($adjustment)
-            ->setStock($stock)
-            ->setProduct($product ?? $this->makeProduct());
+            ->setStock($stock);
+        ($product ?? $this->makeProduct())->addVariant($variant);
 
         foreach ($set as $setter => $value) {
             $variant->{'set'.ucfirst($setter)}($value);
