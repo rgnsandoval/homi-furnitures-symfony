@@ -110,6 +110,9 @@ class Order
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'parentOrder', orphanRemoval: true)]
     private Collection $items;
 
+    #[ORM\OneToOne(mappedBy: 'parentOrder', cascade: ['persist', 'remove'])]
+    private ?Payment $payment = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -387,6 +390,23 @@ class Order
                 $item->setParentOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPayment(): ?Payment
+    {
+        return $this->payment;
+    }
+
+    public function setPayment(Payment $payment): static
+    {
+        // set the owning side of the relation if necessary
+        if ($payment->getParentOrder() !== $this) {
+            $payment->setParentOrder($this);
+        }
+
+        $this->payment = $payment;
 
         return $this;
     }
