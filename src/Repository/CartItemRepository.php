@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\CartItem;
+use App\Entity\ProductVariant;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +18,38 @@ class CartItemRepository extends ServiceEntityRepository
         parent::__construct($registry, CartItem::class);
     }
 
-//    /**
-//     * @return CartItem[] Returns an array of CartItem objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return list<CartItem>
+     */
+    public function findForUser(User $user): array
+    {
+        return $this->createQueryBuilder('i')
+            ->join('i.variant', 'v')->addSelect('v')
+            ->join('v.product', 'p')->addSelect('p')
+            ->andWhere('i.owner = :user')->setParameter('user', $user)
+            ->orderBy('i.createdAt', 'ASC')
+            ->addOrderBy('i.id', 'ASC')
+            ->getQuery()->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?CartItem
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findOneForUserAndVariant(User $user, ProductVariant $variant): ?CartItem
+    {
+        return $this->findOneBy(['owner' => $user, 'variant' => $variant]);
+    }
+
+    public function countUnits(User $user): int
+    {
+        return (int) $this->createQueryBuilder('i')
+            ->select('COALESCE(SUM(i.quantity), 0)')
+            ->andWhere('i.owner = :user')->setParameter('user', $user)
+            ->getQuery()->getSingleScalarResult();
+    }
+
+    public function clearForUser(User $user): int
+    {
+        return $this->createQueryBuilder('i')
+            ->delete()
+            ->andWhere('i.owner = :user')->setParameter('user', $user)
+            ->getQuery()->execute();
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ProductVariant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +17,58 @@ class ProductVariantRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductVariant::class);
     }
 
-//    /**
-//     * @return ProductVariant[] Returns an array of ProductVariant objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return list<ProductVariant>
+     */
+    public function findLowStock(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.isActive = true')
+            ->andWhere('v.stock > 0')
+            ->andWhere('v.stock <= v.lowStockThreshold')
+            ->orderBy('v.stock', 'ASC')
+            ->addOrderBy('v.id', 'ASC')
+            ->getQuery()->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?ProductVariant
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return list<ProductVariant>
+     */
+    public function findOutOfStock(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.isActive = true')
+            ->andWhere('v.stock <= 0')
+            ->orderBy('v.id', 'ASC')
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * Must run inside a transaction. Rows lock in id order so concurrent checkouts cannot deadlock.
+     *
+     * @param list<int> $ids
+     *
+     * @return array<int, ProductVariant> keyed by variant id
+     */
+    public function lockForUpdate(array $ids): array
+    {
+        if ([] === $ids) {
+            return [];
+        }
+
+        $variants = $this->createQueryBuilder('v')
+            ->andWhere('v.id IN (:ids)')->setParameter('ids', $ids)
+            ->orderBy('v.id', 'ASC')
+            ->getQuery()
+            ->setLockMode(LockMode::PESSIMISTIC_WRITE)
+            ->getResult();
+
+        $locked = [];
+        foreach ($variants as $variant) {
+            $this->getEntityManager()->refresh($variant);
+            $locked[$variant->getId()] = $variant;
+        }
+
+        return $locked;
+    }
 }
