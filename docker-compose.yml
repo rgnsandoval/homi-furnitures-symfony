@@ -8,6 +8,7 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
+      - homi_var:/var/www/html/var
     environment:
       TZ: Asia/Manila
     depends_on:
@@ -80,5 +81,7 @@ networks:
     name: homi_net
 
 volumes:
+  homi_var:
+    name: homi_var
   homi_db_data:
     name: homi_db_data
