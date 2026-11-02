@@ -29,3 +29,4 @@
 project_info
 /scripts/
 /.githooks/
+/config/reference.php
