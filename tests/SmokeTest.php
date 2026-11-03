@@ -33,11 +33,10 @@ class SmokeTest extends BaseWebTest
         $product = $this->makeProduct();
         $variant = $this->makeVariant($product);
         $order = $this->makeOrder($this->customer, Order::STATUS_DELIVERED, Payment::STATUS_PAID, '2000.00', $variant);
-        $this->save(
-            (new Review())->setRating(5)->setBody('Nice')->setAuthor($this->makeUser())->setProduct($product),
-            (new Inquiry())->setName('A')->setEmail('a@homi.test')->setSubject('S')->setMessage('M'),
-            (new ReturnRequest())->setReturnReason('R')->setParentOrder($order)->setCustomer($this->customer),
-        );
+        $review = (new Review())->setRating(5)->setBody('Nice')->setAuthor($this->makeUser())->setProduct($product);
+        $inquiry = (new Inquiry())->setName('A')->setEmail('a@homi.test')->setSubject('S')->setMessage('M');
+        $return = (new ReturnRequest())->setReturnReason('R')->setParentOrder($order)->setCustomer($this->customer);
+        $this->save($review, $inquiry, $return);
 
         $brand = $this->makeBrand();
         $code = (new \App\Entity\DiscountCode())->setCode('SMOKE')->setDiscountType('fixed')->setDiscountValue('1.00');
@@ -64,6 +63,13 @@ class SmokeTest extends BaseWebTest
             'app_admin_discount_code_edit' => ['id' => (int) $code->getId()],
             'app_admin_platform_setting_show' => ['id' => (int) $setting->getId()],
             'app_admin_platform_setting_edit' => ['id' => (int) $setting->getId()],
+            'app_admin_user_show' => ['id' => (int) $this->customer->getId()],
+            'app_admin_user_edit' => ['id' => (int) $this->customer->getId()],
+            'app_admin_user_address_new' => ['id' => (int) $this->customer->getId()],
+            'app_admin_address_edit' => ['id' => (int) $order->getShippingAddress()->getId()],
+            'app_admin_review_edit' => ['id' => (int) $review->getId()],
+            'app_admin_inquiry_show' => ['id' => (int) $inquiry->getId()],
+            'app_admin_return_show' => ['id' => (int) $return->getId()],
         ];
     }
 

@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Order;
 use App\Entity\Payment;
 use App\Entity\User;
+use App\Repository\AddressRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\OrderRepository;
 use App\Service\OrderDeletionService;
@@ -18,10 +19,11 @@ use Symfony\Component\Routing\Attribute\Route;
 final class OrderShowController extends AbstractController
 {
     #[Route('/admin/orders/{id}', name: 'app_admin_order_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function index(Order $order, OrderRepository $orders, OrderTransitionService $transitions, OrderDeletionService $deletion): Response
+    public function index(Order $order, OrderRepository $orders, OrderTransitionService $transitions, OrderDeletionService $deletion, AddressRepository $addresses): Response
     {
         return $this->render('admin/order_show/index.html.twig', [
             'order' => $order,
+            'customerAddresses' => $addresses->findBy(['owner' => $order->getCustomer()], ['isDefault' => 'DESC', 'id' => 'ASC']),
             'history' => $orders->statusHistory($order),
             'nextStatuses' => array_values(array_diff($transitions->allowedFrom((string) $order->getStatus()), [Order::STATUS_CANCELLED])),
             'canCancel' => in_array(Order::STATUS_CANCELLED, $transitions->allowedFrom((string) $order->getStatus()), true),
@@ -132,7 +134,7 @@ final class OrderShowController extends AbstractController
     }
 
     #[Route('/admin/orders/{id}/details', name: 'app_admin_order_details', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function details(Order $order, Request $request, EntityManagerInterface $em): Response
+    public function details(Order $order, Request $request, EntityManagerInterface $em, AddressRepository $addresses, AuditLogRepository $audit): Response
     {
         $this->checkToken($request, $order);
         $tracking = mb_substr(trim($request->request->getString('trackingNumber')), 0, 80);
@@ -140,7 +142,27 @@ final class OrderShowController extends AbstractController
 
         $order->setTrackingNumber('' === $tracking ? null : $tracking);
         $order->setInternalNote('' === $note ? null : $note);
+
+        if ($request->request->has('notes')) {
+            $notes = mb_substr(trim($request->request->getString('notes')), 0, 500);
+            $order->setNotes('' === $notes ? null : $notes);
+        }
+
+        // The address must be one of this customer's own.
+        if (0 !== $addressId = $request->request->getInt('address')) {
+            $address = $addresses->find($addressId);
+            if (null !== $address && $address->getOwner() === $order->getCustomer()) {
+                $order->setShippingAddress($address);
+            }
+        }
+
+        $date = $request->request->getString('estimatedDeliveryDate');
+        if (1 === preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) && false !== $parsed = \DateTimeImmutable::createFromFormat('!Y-m-d', $date)) {
+            $order->setEstimatedDeliveryDate($parsed);
+        }
+
         $em->flush();
+        $audit->record($this->admin(), 'order.update', 'Order', (int) $order->getId(), ['tracking' => $order->getTrackingNumber()]);
         $this->addFlash('success', 'Order details saved.');
 
         return $this->redirectToRoute('app_admin_order_show', ['id' => $order->getId()], Response::HTTP_SEE_OTHER);

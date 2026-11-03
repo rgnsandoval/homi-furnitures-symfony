@@ -1,0 +1,95 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ user.email }} - Admin{% endblock %}
+
+{% block body %}
+    <p class="mb-2"><a href="{{ path('app_admin_user') }}">← All users</a></p>
+    <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+            <h1 class="mb-1">{{ user.fullName }}</h1>
+            <p class="mb-0 text-stone-500">{{ user.email }}{% if user.phone %} · {{ user.phone }}{% endif %}</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <a class="btn btn-secondary" href="{{ path('app_admin_user_edit', {id: user.id}) }}">Edit</a>
+            <a class="btn btn-primary" href="{{ path('app_admin_order_new', {customer: user.id}) }}">+ New order for this customer</a>
+        </div>
+    </div>
+
+    <dl class="mt-6">
+        <dt>Role</dt><dd>{{ isAdmin ? 'Administrator' : 'Customer' }}</dd>
+        <dt>Status</dt><dd>{{ user.active ? 'Active' : 'Deactivated' }}</dd>
+        <dt>Email verified</dt><dd>{{ user.verified ? 'Yes' : 'No' }}</dd>
+        <dt>Joined</dt><dd>{{ user.createdAt|date('M j, Y') }}</dd>
+    </dl>
+
+    {% if user != app.user %}
+        <form method="post" action="{{ path('app_admin_user_toggle', {id: user.id}) }}" class="mt-2">
+            <input type="hidden" name="_token" value="{{ csrf_token('user' ~ user.id) }}">
+            <input type="hidden" name="_back" value="show">
+            <button type="submit">{{ user.active ? 'Deactivate account' : 'Activate account' }}</button>
+        </form>
+    {% endif %}
+
+    <section class="mt-10">
+        <div class="flex items-center justify-between gap-3">
+            <h2 class="my-0">Addresses</h2>
+            <a href="{{ path('app_admin_user_address_new', {id: user.id}) }}">+ Add address</a>
+        </div>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            {% for address in addresses %}
+                <article class="rounded-2xl border border-stone-200 bg-white p-4 text-sm">
+                    <p class="mb-1 font-semibold text-army-950">{{ address.label }}{% if address.isDefault %} <span class="status-pill">Default</span>{% endif %}</p>
+                    <p class="mb-3 text-stone-600">{{ address.recipient }}, {{ address.phone }}<br>{{ address.line1 }}, {{ address.city }}, {{ address.province }} {{ address.postalCode }}</p>
+                    <div class="flex items-center gap-3">
+                        <a href="{{ path('app_admin_address_edit', {id: address.id}) }}">Edit</a>
+                        <form method="post" action="{{ path('app_admin_address_delete', {id: address.id}) }}" onsubmit="return confirm('Delete this address?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('address-delete' ~ address.id) }}">
+                            <button type="submit" class="unstyled font-semibold text-clay">Delete</button>
+                        </form>
+                    </div>
+                </article>
+            {% else %}
+                <p class="text-sm text-stone-500">No saved addresses.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mt-10">
+        <h2>Recent orders</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Order</th><th>Placed</th><th>Status</th><th>Total</th></tr></thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td><a href="{{ path('app_admin_order_show', {id: order.id}) }}">{{ order.orderNumber }}</a></td>
+                            <td>{{ order.createdAt|date('M j, Y') }}</td>
+                            <td><span class="status-pill is-{{ order.status }}">{{ order.status }}</span></td>
+                            <td>{{ order.total|peso }}</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="4">No orders yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="danger-zone" class="mt-10 rounded-2xl border border-red-200 p-5">
+        <h2 class="mt-0 text-clay">Delete account</h2>
+        {% if user == app.user %}
+            <p class="mb-0 text-sm text-stone-600">You cannot delete your own account.</p>
+        {% elseif blockers is not empty %}
+            <p class="mb-0 text-sm text-stone-600">
+                This account has {% for label, count in blockers %}{{ count }} {{ label }}{{ not loop.last ? ', ' }}{% endfor %}, which must be kept for the records.
+                Deactivate it instead; deactivated accounts cannot log in or order.
+            </p>
+        {% else %}
+            <p class="text-sm text-stone-600">Permanently deletes the account with its cart, wishlist, addresses and reviews.</p>
+            <form method="post" action="{{ path('app_admin_user_delete', {id: user.id}) }}" onsubmit="return confirm('Delete {{ user.email }} permanently?')">
+                <input type="hidden" name="_token" value="{{ csrf_token('user-delete' ~ user.id) }}">
+                <button type="submit" style="background: var(--color-clay)">Delete account</button>
+            </form>
+        {% endif %}
+    </section>
+{% endblock %}

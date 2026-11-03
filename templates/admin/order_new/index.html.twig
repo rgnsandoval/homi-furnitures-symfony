@@ -1,0 +1,84 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}New order - Admin{% endblock %}
+
+{% block body %}
+    <p class="mb-2"><a href="{{ path('app_admin_order') }}">← Orders</a></p>
+    <h1>New order</h1>
+
+    {% if customer is null %}
+        <div class="max-w-xl rounded-3xl border border-stone-200 bg-white p-6">
+            <p class="text-sm text-stone-600">Choose the customer the order is for. To order for someone new, <a href="{{ path('app_admin_user_new') }}">create their account</a> and add an address first.</p>
+            <form method="get" action="{{ path('app_admin_order_new') }}">
+                <label>Customer
+                    <select name="customer" required>
+                        <option value="">Choose a customer…</option>
+                        {% for user in customers %}
+                            <option value="{{ user.id }}">{{ user.fullName }} · {{ user.email }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <button type="submit" class="mt-2">Continue</button>
+            </form>
+        </div>
+    {% else %}
+        <p class="text-stone-600">For <a href="{{ path('app_admin_user_show', {id: customer.id}) }}">{{ customer.fullName }}</a> ({{ customer.email }}) · <a href="{{ path('app_admin_order_new') }}">change customer</a></p>
+
+        {% if addresses is empty %}
+            <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm">
+                This customer has no saved address yet. <a href="{{ path('app_admin_user_address_new', {id: customer.id}) }}">Add one</a>, then come back.
+            </div>
+        {% else %}
+            <form method="post" action="{{ path('app_admin_order_new', {customer: customer.id}) }}" class="grid gap-6 lg:grid-cols-[1fr_20rem]" id="admin-order-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin-order-new') }}">
+                <input type="hidden" name="customer" value="{{ customer.id }}">
+                <input type="hidden" name="idempotencyKey" value="{{ idempotencyKey }}">
+
+                <section class="min-w-0 rounded-3xl border border-stone-200 bg-white p-5">
+                    <h2 class="mt-0">Items</h2>
+                    <p class="text-sm text-stone-500">Type a SKU or product name and pick from the list. Prices and stock are checked again when you place the order.</p>
+                    <datalist id="variant-options">
+                        {% for variant in variants %}
+                            <option value="{{ variant.sku }} · {{ variant }}">{{ variant.unitPrice|peso }} · {{ variant.stock }} in stock</option>
+                        {% endfor %}
+                    </datalist>
+                    <div class="space-y-2">
+                        {% for i in 0..(lineCount - 1) %}
+                            {% set line = values.lines[i] ?? {sku: '', quantity: 1} %}
+                            <div class="grid grid-cols-[1fr_5.5rem] gap-2">
+                                <input name="sku[]" list="variant-options" value="{{ line.sku }}" placeholder="{{ i == 0 ? 'SKU or product name' : 'Another item (optional)' }}" aria-label="Item {{ i + 1 }}" autocomplete="off" {{ i == 0 ? 'required' }}>
+                                <input name="quantity[]" type="number" min="1" value="{{ line.quantity }}" aria-label="Quantity for item {{ i + 1 }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <label class="mt-5 block">Customer notes (optional) <textarea name="notes" maxlength="500">{{ values.input.notes }}</textarea></label>
+                </section>
+
+                <section class="h-fit space-y-4 rounded-3xl border border-stone-200 bg-white p-5">
+                    <label>Ship to
+                        <select name="address" required>
+                            {% for address in addresses %}
+                                <option value="{{ address.id }}" {{ values.input.address == address.id ? 'selected' }}>{{ address.label }}: {{ address.line1 }}, {{ address.city }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label>Shipping
+                        <select name="shippingMethod">
+                            {% for method in shippingMethods %}<option value="{{ method }}" {{ values.input.shippingMethod == method ? 'selected' }}>{{ method|capitalize }}</option>{% endfor %}
+                        </select>
+                    </label>
+                    <label>Payment
+                        <select name="paymentMethod">
+                            {% for method in paymentMethods %}<option value="{{ method }}" {{ values.input.paymentMethod == method ? 'selected' }}>{{ method|upper }}</option>{% endfor %}
+                        </select>
+                    </label>
+                    <label>Voucher (optional) <input name="voucher" value="{{ values.input.voucher }}"></label>
+                    <label class="flex items-center gap-2"><input type="checkbox" name="assembly" value="1" {{ values.input.assembly ? 'checked' }}> Assembly service</label>
+                    <p class="text-xs text-stone-500">GCash and card are charged through the simulated gateway, the same as in the shop.</p>
+                    <button type="submit" class="w-full">Place order</button>
+                </section>
+            </form>
+        {% endif %}
+    {% endif %}
+{% endblock %}

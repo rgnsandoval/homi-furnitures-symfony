@@ -3,27 +3,45 @@
 {% block title %}Review moderation - Admin{% endblock %}
 
 {% block body %}
-    <h1>Reviews waiting for approval</h1>
+    <h1>Reviews</h1>
 
-    {% for review in reviews %}
-        {% set token = csrf_token('review' ~ review.id) %}
-        <article class="review">
-            <h2>{{ review.product.name }}: {{ review.rating }} / 5</h2>
-            <p>{{ review.body }}</p>
-            <p>By {{ review.author.email }} on {{ review.createdAt|date('M j, Y') }}</p>
-            {% if review.photo %}<img src="{{ asset('uploads/reviews/' ~ review.photo) }}" alt="Review photo" width="200">{% endif %}
-            <form method="post" action="{{ path('app_admin_review_approve', {id: review.id}) }}">
-                <input type="hidden" name="_token" value="{{ token }}">
-                <button type="submit">Approve</button>
-            </form>
-            <form method="post" action="{{ path('app_admin_review_delete', {id: review.id}) }}">
-                <input type="hidden" name="_token" value="{{ token }}">
-                <button type="submit">Delete</button>
-            </form>
-        </article>
-    {% else %}
-        <p>No reviews are waiting.</p>
-    {% endfor %}
+    <nav class="mb-6 flex flex-wrap gap-2" aria-label="Filter reviews">
+        {% for key, label in {pending: 'Waiting for approval', approved: 'Approved', all: 'All'} %}
+            <a class="pill-filter {{ show == key ? 'is-active' }}" href="{{ path('app_admin_review', {show: key}) }}">{{ label }}</a>
+        {% endfor %}
+    </nav>
+
+    <div class="space-y-4">
+        {% for review in reviews %}
+            {% set token = csrf_token('review' ~ review.id) %}
+            <article class="review rounded-2xl border border-stone-200 bg-white p-5">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                    <h2 class="m-0 text-lg">{{ review.product.name }}: {{ review.rating }} / 5</h2>
+                    <span class="status-pill {{ review.isApproved ? '' : 'is-pending' }}">{{ review.isApproved ? 'Approved' : 'Waiting' }}</span>
+                </div>
+                <p class="mt-2">{{ review.body }}</p>
+                <p class="text-sm text-stone-500">By {{ review.author.email }} on {{ review.createdAt|date('M j, Y') }}</p>
+                {% if review.photo %}<img src="{{ asset('uploads/reviews/' ~ review.photo) }}" alt="Review photo" width="200" class="mb-3 rounded-xl">{% endif %}
+                <div class="flex flex-wrap items-center gap-3">
+                    {% if not review.isApproved %}
+                        <form method="post" action="{{ path('app_admin_review_approve', {id: review.id}) }}">
+                            <input type="hidden" name="_token" value="{{ token }}">
+                            <input type="hidden" name="_show" value="{{ show }}">
+                            <button type="submit">Approve</button>
+                        </form>
+                    {% endif %}
+                    <a href="{{ path('app_admin_review_edit', {id: review.id}) }}">Edit</a>
+                    <form method="post" action="{{ path('app_admin_review_delete', {id: review.id}) }}" onsubmit="return confirm('Delete this review?')">
+                        <input type="hidden" name="_token" value="{{ token }}">
+                        <input type="hidden" name="_show" value="{{ show }}">
+                        <button type="submit" style="background: var(--color-clay)">Delete</button>
+                    </form>
+                </div>
+            </article>
+        {% else %}
+            <p>{{ show == 'pending' ? 'No reviews are waiting.' : 'No reviews here.' }}</p>
+        {% endfor %}
+    </div>
 
     <twig:Pagination :total="reviews|length" :page="page" />
 {% endblock %}

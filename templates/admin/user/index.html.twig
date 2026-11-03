@@ -3,30 +3,35 @@
 {% block title %}Users - Admin{% endblock %}
 
 {% block body %}
-    <h1>Users</h1>
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <h1 class="mb-0">Users</h1>
+        <a class="btn btn-primary" href="{{ path('app_admin_user_new') }}">+ New user</a>
+    </div>
 
-    <form method="get">
-        <label>Search <input type="search" name="q" value="{{ q }}"></label>
+    <form method="get" class="mt-6 flex flex-wrap items-end gap-3">
+        <label class="min-w-0 flex-1">Search <input type="search" name="q" value="{{ q }}" placeholder="Name or email"></label>
         <button type="submit">Search</button>
     </form>
 
-    <div class="table-wrap">
-
+    <div class="table-wrap mt-4">
         <table>
-        <thead><tr><th>Name</th><th>Email</th><th>Roles</th><th>Verified</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Verified</th><th>Status</th><th></th></tr></thead>
         <tbody>
             {% for user in users %}
                 <tr class="user">
-                    <td>{{ user.fullName }}</td>
+                    <td><a href="{{ path('app_admin_user_show', {id: user.id}) }}">{{ user.fullName }}</a></td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.roles|join(', ') }}</td>
+                    <td>{{ 'ROLE_ADMIN' in user.roles ? 'Admin' : 'Customer' }}</td>
                     <td>{{ user.verified ? 'Yes' : 'No' }}</td>
-                    <td>{{ user.active ? 'Active' : 'Deactivated' }}</td>
+                    <td><span class="status-pill {{ user.active ? '' : 'is-cancelled' }}">{{ user.active ? 'Active' : 'Deactivated' }}</span></td>
                     <td>
-                        <form method="post" action="{{ path('app_admin_user_toggle', {id: user.id}) }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token('user' ~ user.id) }}">
-                            <button type="submit">{{ user.active ? 'Deactivate' : 'Activate' }}</button>
-                        </form>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <a href="{{ path('app_admin_user_edit', {id: user.id}) }}">Edit</a>
+                            <form method="post" action="{{ path('app_admin_user_toggle', {id: user.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('user' ~ user.id) }}">
+                                <button type="submit">{{ user.active ? 'Deactivate' : 'Activate' }}</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             {% else %}
