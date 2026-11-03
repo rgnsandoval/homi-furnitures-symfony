@@ -34,12 +34,22 @@ export default class extends Controller {
             }
 
             this.fieldTargets.forEach((node) => {
-                node.textContent = quote[node.dataset.field] ?? '';
+                const value = quote[node.dataset.field] ?? '';
+                node.textContent = 'money' in node.dataset ? this.peso(value) : value;
             });
             this.showErrors(quote.errors ?? []);
         } catch {
             this.showErrors(['We could not update the totals. Your order total is confirmed when you place the order.']);
         }
+    }
+
+    /* Display formatting only, done on the string so the amount never becomes a float. */
+    peso(amount) {
+        const match = /^(-?)(\d+)\.(\d{2})$/.exec(String(amount));
+        if (!match) {
+            return amount;
+        }
+        return `${match[1]}₱${match[2].replace(/\B(?=(\d{3})+$)/g, ',')}.${match[3]}`;
     }
 
     showErrors(messages) {

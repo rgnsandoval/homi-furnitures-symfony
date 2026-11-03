@@ -89,7 +89,7 @@
   .ui a:not(.btn, .pill-filter):hover { color: var(--color-army-500); text-decoration: underline; }
   .ui label { font-size: .875rem; font-weight: 600; color: var(--color-army-950); }
   .ui form > div > div, .ui form > div:not([class]) { margin-bottom: 1rem; }
-  .ui form ul { margin-top: .25rem; font-size: .8125rem; color: var(--color-clay); }
+  .ui form ul:not([class]) { margin-top: .25rem; font-size: .8125rem; color: var(--color-clay); }
   .ui table { width: 100%; border-collapse: collapse; font-size: .875rem; }
   .ui thead th { border-bottom: 1px solid var(--color-stone-300); padding: .625rem .75rem; text-align: left; font-size: .6875rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--color-stone-500); white-space: nowrap; }
   .ui tbody th { padding: .625rem .75rem; text-align: left; font-weight: 600; color: var(--color-army-950); }

@@ -61,11 +61,11 @@
                     {% endfor %}
                 </ul>
                 <dl id="preview" class="!grid-cols-[1fr_auto]">
-                    <dt>Subtotal</dt><dd class="text-right tabular-nums" data-field="subtotal" data-checkout-target="field"></dd>
-                    <dt>Shipping</dt><dd class="text-right tabular-nums" data-field="shippingFee" data-checkout-target="field"></dd>
-                    <dt>Assembly</dt><dd class="text-right tabular-nums" data-field="assemblyFee" data-checkout-target="field"></dd>
-                    <dt>Discount</dt><dd class="text-right tabular-nums" data-field="discount" data-checkout-target="field"></dd>
-                    <dt class="text-base">Total</dt><dd class="text-right text-base font-bold tabular-nums text-army-950" data-field="total" data-checkout-target="field"></dd>
+                    <dt>Subtotal</dt><dd class="text-right tabular-nums" data-field="subtotal" data-checkout-target="field" data-money></dd>
+                    <dt>Shipping</dt><dd class="text-right tabular-nums" data-field="shippingFee" data-checkout-target="field" data-money></dd>
+                    <dt>Assembly</dt><dd class="text-right tabular-nums" data-field="assemblyFee" data-checkout-target="field" data-money></dd>
+                    <dt>Discount</dt><dd class="text-right tabular-nums" data-field="discount" data-checkout-target="field" data-money></dd>
+                    <dt class="text-base">Total</dt><dd class="text-right text-base font-bold tabular-nums text-army-950" data-field="total" data-checkout-target="field" data-money></dd>
                     <dt>Estimated delivery</dt><dd class="text-right" data-field="estimatedDeliveryDate" data-checkout-target="field"></dd>
                 </dl>
                 <ul id="preview-errors" class="mt-4 space-y-1 text-sm font-semibold text-clay" data-checkout-target="errors" aria-live="polite"></ul>

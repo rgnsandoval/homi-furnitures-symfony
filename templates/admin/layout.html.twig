@@ -2,8 +2,8 @@
 
 {% block main %}
     <div class="page-container py-8 md:py-12">
-        <div class="grid gap-8 lg:grid-cols-[14rem_1fr]">
-            <aside class="lg:sticky lg:top-24 lg:h-fit">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-[14rem_1fr]">
+            <aside class="min-w-0 lg:sticky lg:top-24 lg:h-fit">
                 <p class="eyebrow mb-3">Admin</p>
                 <nav aria-label="Admin" class="no-scrollbar flex gap-1 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
                     {% set current = app.request.attributes.get('_route') %}
