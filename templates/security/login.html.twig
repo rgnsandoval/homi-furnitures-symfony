@@ -1,33 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Log in - Homi Furniture{% endblock %}
 
-{% block body %}
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+{% block main %}
+    <div class="page-container ui grid min-h-[70vh] place-items-center py-12">
+        <form method="post" class="card w-full max-w-md">
+            <p class="eyebrow">Welcome back</p>
+            <h1 class="mt-3">Log in</h1>
 
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
-            </div>
-        {% endif %}
+            {% if error %}
+                <div class="alert-danger mb-4 rounded-xl bg-[#f6e4df] px-4 py-3 text-sm font-semibold text-[#8a3a25]" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
 
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="username">Email</label>
-        <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
-        <label for="password">Password</label>
-        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
-        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+            {% if app.user %}
+                <p class="mb-4 text-sm">You are logged in as {{ app.user.userIdentifier }}. <a href="{{ logout_path() }}">Log out</a></p>
+            {% endif %}
 
-        <div class="checkbox mb-3">
-            <input type="checkbox" name="_remember_me" id="_remember_me">
-            <label for="_remember_me">Remember me</label>
-        </div>
+            <label for="username">Email</label>
+            <input type="email" value="{{ last_username }}" name="_username" id="username" autocomplete="email" required autofocus>
+            <label for="password" class="mt-4 block">Password</label>
+            <input type="password" name="_password" id="password" autocomplete="current-password" required>
+            <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
-        <button class="btn btn-lg btn-primary" type="submit">
-            Sign in
-        </button>
-    </form>
+            <label class="mt-4 flex items-center gap-2 font-normal" for="_remember_me">
+                <input type="checkbox" name="_remember_me" id="_remember_me"> Remember me
+            </label>
+
+            <button class="btn btn-primary mt-6 w-full" type="submit">Sign in</button>
+            <p class="mt-5 text-center text-sm">New to Homi? <a href="{{ path('app_register') }}">Create an account</a></p>
+        </form>
+    </div>
 {% endblock %}

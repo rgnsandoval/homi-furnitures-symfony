@@ -5,11 +5,18 @@
 {% block body %}
     <h1>Your account</h1>
     <p>Signed in as {{ app.user.email }}{{ app.user.verified ? '' : ' (email not verified)' }}</p>
-    <p><a href="{{ path('app_address_index') }}">Saved addresses</a></p>
+    <div class="no-scrollbar mb-8 flex gap-2 overflow-x-auto pb-2">
+        <a class="pill-filter" href="{{ path('app_orders') }}">Orders</a>
+        <a class="pill-filter" href="{{ path('app_return_list') }}">Returns</a>
+        <a class="pill-filter" href="{{ path('app_wishlist') }}">Wishlist</a>
+        <a class="pill-filter" href="{{ path('app_address_index') }}">Saved addresses</a>
+    </div>
 
     <h2>Profile</h2>
+    <div class="card max-w-xl">
     {{ form_start(form) }}
         {{ form_widget(form) }}
         <button type="submit">Save profile</button>
     {{ form_end(form) }}
+    </div>
 {% endblock %}

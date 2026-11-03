@@ -6,7 +6,7 @@
     <h1>Material and fit guide</h1>
 
     <h2>Will it fit?</h2>
-    <form method="get" action="{{ path('app_guide') }}">
+    <form method="get" action="{{ path('app_guide') }}" class="card flex max-w-xl flex-wrap items-end gap-4 [&>label]:flex-1">
         <label>Room width (m) <input name="roomWidth" inputmode="decimal" value="{{ roomWidth }}"></label>
         <label>Room depth (m) <input name="roomDepth" inputmode="decimal" value="{{ roomDepth }}"></label>
         <button type="submit">Calculate</button>

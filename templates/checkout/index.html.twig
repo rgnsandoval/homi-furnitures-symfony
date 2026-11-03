@@ -5,84 +5,73 @@
 {% block body %}
     <h1>Checkout</h1>
 
-    <ul>
-        {% for item in items %}
-            <li>{{ item.quantity }} x {{ item.variant.product.name }} - {{ item.variant.name }}</li>
-        {% endfor %}
-    </ul>
-
     {% if addresses is empty %}
-        <p>You need a saved address first. <a href="{{ path('app_address_new') }}">Add an address</a>.</p>
+        <div class="card max-w-xl">
+            <p>You need a saved address first.</p>
+            <a class="btn btn-primary" href="{{ path('app_address_new') }}">Add an address</a>
+        </div>
+        <ul class="mt-6 text-sm">
+            {% for item in items %}
+                <li>{{ item.quantity }} x {{ item.variant.product.name }} - {{ item.variant.name }}</li>
+            {% endfor %}
+        </ul>
     {% else %}
-        <form method="post" action="{{ path('app_checkout_submit') }}" id="checkout-form" data-preview-url="{{ path('app_checkout_preview') }}" data-csrf="{{ csrf_token('checkout') }}">
+        <form method="post" action="{{ path('app_checkout_submit') }}" id="checkout-form"
+            data-preview-url="{{ path('app_checkout_preview') }}" data-csrf="{{ csrf_token('checkout') }}"
+            data-controller="checkout" data-checkout-url-value="{{ path('app_checkout_preview') }}" data-checkout-csrf-value="{{ csrf_token('checkout') }}"
+            data-action="change->checkout#refresh"
+            class="grid gap-8 lg:grid-cols-[1fr_24rem]">
             <input type="hidden" name="_token" value="{{ csrf_token('checkout') }}">
             <input type="hidden" name="idempotencyKey" value="{{ idempotencyKey }}">
 
-            <label>Deliver to
-                <select name="address">
-                    {% for address in addresses %}
-                        <option value="{{ address.id }}">{{ address }}</option>
-                    {% endfor %}
-                </select>
-            </label>
-            <label>Shipping
-                <select name="shippingMethod">
-                    {% for method in shippingMethods %}
-                        <option value="{{ method }}">{{ method|capitalize }}</option>
-                    {% endfor %}
-                </select>
-            </label>
-            <label>Payment
-                <select name="paymentMethod">
-                    {% for method in paymentMethods %}
-                        <option value="{{ method }}">{{ {cod: 'Cash on delivery', gcash: 'GCash (simulated)', card: 'Card (simulated)', bank: 'Bank transfer'}[method] }}</option>
-                    {% endfor %}
-                </select>
-            </label>
-            <label>Voucher <input name="voucher" autocomplete="off"></label>
-            <label><input type="checkbox" name="assembly" value="1"> Add assembly service</label>
-            <label>Notes <textarea name="notes" maxlength="500"></textarea></label>
+            <div class="card space-y-5">
+                <h2 class="!mt-0">Delivery and payment</h2>
+                <label class="field">Deliver to
+                    <select name="address">
+                        {% for address in addresses %}
+                            <option value="{{ address.id }}">{{ address }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <p class="!-mt-2 text-sm"><a href="{{ path('app_address_new') }}">Add another address</a></p>
+                <label class="field">Shipping
+                    <select name="shippingMethod">
+                        {% for method in shippingMethods %}
+                            <option value="{{ method }}">{{ method|capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label class="field">Payment
+                    <select name="paymentMethod">
+                        {% for method in paymentMethods %}
+                            <option value="{{ method }}">{{ {cod: 'Cash on delivery', gcash: 'GCash (simulated)', card: 'Card (simulated)', bank: 'Bank transfer'}[method] }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label class="field">Voucher <input name="voucher" autocomplete="off" data-action="input->checkout#refresh"></label>
+                <label class="flex items-center gap-2"><input type="checkbox" name="assembly" value="1"> Add assembly service</label>
+                <label class="field">Notes <textarea name="notes" maxlength="500" rows="3"></textarea></label>
+            </div>
 
-            <button type="button" id="preview-button">Preview totals</button>
-            <dl id="preview" hidden>
-                <dt>Subtotal</dt><dd data-field="subtotal"></dd>
-                <dt>Shipping</dt><dd data-field="shippingFee"></dd>
-                <dt>Assembly</dt><dd data-field="assemblyFee"></dd>
-                <dt>Discount</dt><dd data-field="discount"></dd>
-                <dt>Total</dt><dd data-field="total"></dd>
-                <dt>Estimated delivery</dt><dd data-field="estimatedDeliveryDate"></dd>
-            </dl>
-            <ul id="preview-errors"></ul>
-
-            <button type="submit">Place order</button>
+            <aside class="card h-fit lg:sticky lg:top-24">
+                <h2 class="!mt-0">Your order</h2>
+                <ul class="mb-5 space-y-2 border-b border-stone-200 pb-5 text-sm">
+                    {% for item in items %}
+                        <li>{{ item.quantity }} x {{ item.variant.product.name }} - {{ item.variant.name }}</li>
+                    {% endfor %}
+                </ul>
+                <dl id="preview" class="!grid-cols-[1fr_auto]">
+                    <dt>Subtotal</dt><dd class="text-right tabular-nums" data-field="subtotal" data-checkout-target="field"></dd>
+                    <dt>Shipping</dt><dd class="text-right tabular-nums" data-field="shippingFee" data-checkout-target="field"></dd>
+                    <dt>Assembly</dt><dd class="text-right tabular-nums" data-field="assemblyFee" data-checkout-target="field"></dd>
+                    <dt>Discount</dt><dd class="text-right tabular-nums" data-field="discount" data-checkout-target="field"></dd>
+                    <dt class="text-base">Total</dt><dd class="text-right text-base font-bold tabular-nums text-army-950" data-field="total" data-checkout-target="field"></dd>
+                    <dt>Estimated delivery</dt><dd class="text-right" data-field="estimatedDeliveryDate" data-checkout-target="field"></dd>
+                </dl>
+                <ul id="preview-errors" class="mt-4 space-y-1 text-sm font-semibold text-clay" data-checkout-target="errors" aria-live="polite"></ul>
+                <button type="button" id="preview-button" class="btn btn-secondary mt-5 w-full" data-action="checkout#refresh">Preview totals</button>
+                <button type="submit" class="btn btn-primary mt-2 w-full">Place order</button>
+            </aside>
         </form>
-
-        <script>
-            document.getElementById('preview-button').addEventListener('click', async () => {
-                const form = document.getElementById('checkout-form');
-                const data = new FormData(form);
-                const response = await fetch(form.dataset.previewUrl, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json', 'X-CSRF-Token': form.dataset.csrf},
-                    body: JSON.stringify({
-                        address: data.get('address'),
-                        shippingMethod: data.get('shippingMethod'),
-                        paymentMethod: data.get('paymentMethod'),
-                        voucher: data.get('voucher'),
-                        assembly: data.has('assembly'),
-                    }),
-                });
-                const quote = await response.json();
-                document.querySelectorAll('#preview [data-field]').forEach((node) => {
-                    node.textContent = quote[node.dataset.field] ?? '';
-                });
-                document.getElementById('preview').hidden = false;
-                document.getElementById('preview-errors').replaceChildren(...(quote.errors ?? []).map((message) => {
-                    const item = document.createElement('li');
-                    item.textContent = message;
-                    return item;
-                }));
-            });
-        </script>
     {% endif %}
 {% endblock %}

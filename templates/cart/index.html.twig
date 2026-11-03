@@ -6,36 +6,48 @@
     <h1>Your cart</h1>
 
     {% if items is empty %}
-        <p>Your cart is empty. <a href="{{ path('app_shop') }}">Browse the shop</a>.</p>
+        <div class="rounded-3xl border border-dashed border-stone-300 px-6 py-16 text-center">
+            <twig:Icon name="bag" class="mx-auto size-8 text-stone-400" />
+            <p class="mt-4">Your cart is empty. <a href="{{ path('app_shop') }}">Browse the shop</a>.</p>
+        </div>
     {% else %}
-        <table>
-            <thead>
-                <tr><th>Item</th><th>Unit price</th><th>Quantity</th><th>Total</th><th></th></tr>
-            </thead>
-            <tbody>
+        <div class="grid gap-8 lg:grid-cols-[1fr_22rem]">
+            <ul class="divide-y divide-stone-200 border-y border-stone-200">
                 {% for item in items %}
-                    <tr class="cart-item">
-                        <td><a href="{{ path('app_product', {slug: item.variant.product.slug}) }}">{{ item.variant.product.name }}</a> - {{ item.variant.name }}</td>
-                        <td>{{ item.variant.unitPrice|peso }}</td>
-                        <td>
-                            <form method="post" action="{{ path('app_cart_update', {id: item.id}) }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
-                                <input type="number" name="quantity" value="{{ item.quantity }}" min="0" aria-label="Quantity">
-                                <button type="submit">Update</button>
-                            </form>
-                        </td>
-                        <td>{{ item.lineTotal|peso }}</td>
-                        <td>
-                            <form method="post" action="{{ path('app_cart_remove', {id: item.id}) }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
-                                <button type="submit">Remove</button>
-                            </form>
-                        </td>
-                    </tr>
+                    {% set product = item.variant.product %}
+                    <li class="cart-item flex gap-4 py-5">
+                        <a href="{{ path('app_product', {slug: product.slug}) }}" class="w-24 shrink-0 overflow-hidden rounded-2xl bg-army-100 sm:w-28">
+                            <img class="aspect-[4/5] h-full w-full object-cover" src="{{ asset('uploads/products/' ~ product.image) }}" alt="{{ product.name }}" width="112" height="140" loading="lazy">
+                        </a>
+                        <div class="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                                <a href="{{ path('app_product', {slug: product.slug}) }}">{{ product.name }}</a> - {{ item.variant.name }}
+                                <p class="mt-1 text-sm text-stone-500">{{ item.variant.unitPrice|peso }} each</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <form method="post" action="{{ path('app_cart_update', {id: item.id}) }}" class="flex items-center gap-2">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="0" aria-label="Quantity" class="!mt-0 !w-20">
+                                    <button type="submit" class="btn btn-secondary !min-h-[2.75rem]">Update</button>
+                                </form>
+                                <form method="post" action="{{ path('app_cart_remove', {id: item.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
+                                    <button type="submit" class="unstyled px-2 text-sm font-semibold text-clay hover:underline">Remove</button>
+                                </form>
+                            </div>
+                            <p class="font-bold tabular-nums text-army-950 sm:w-28 sm:text-right">{{ item.lineTotal|peso }}</p>
+                        </div>
+                    </li>
                 {% endfor %}
-            </tbody>
-        </table>
-        <p>Subtotal: <strong id="subtotal">{{ subtotal|peso }}</strong></p>
-        <p><a href="{{ path('app_checkout') }}">Go to checkout</a></p>
+            </ul>
+
+            <aside class="card h-fit">
+                <h2 class="!mt-0">Summary</h2>
+                <p class="flex justify-between">Subtotal <strong id="subtotal" class="tabular-nums text-army-950">{{ subtotal|peso }}</strong></p>
+                <p class="text-sm text-stone-500">Delivery, assembly and vouchers are calculated at checkout. Delivery is free on orders over {{ shop_setting('free_shipping_threshold')|peso }}.</p>
+                <a class="btn btn-primary mt-4 w-full" href="{{ path('app_checkout') }}">Go to checkout</a>
+                <a class="btn btn-secondary mt-2 w-full" href="{{ path('app_shop') }}">Keep shopping</a>
+            </aside>
+        </div>
     {% endif %}
 {% endblock %}

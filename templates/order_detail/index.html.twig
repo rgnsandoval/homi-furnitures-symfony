@@ -4,20 +4,22 @@
 
 {% block body %}
     <h1>Order {{ order.orderNumber }}</h1>
-    <p>Status: <strong id="order-status">{{ order.status|capitalize }}</strong></p>
+    <p>Status: <strong id="order-status" class="status-pill is-{{ order.status }}">{{ order.status|capitalize }}</strong></p>
     {% if order.estimatedDeliveryDate %}<p>Estimated delivery: {{ order.estimatedDeliveryDate|date('F j, Y') }}</p>{% endif %}
     {% if order.trackingNumber %}<p>Tracking number: {{ order.trackingNumber }}</p>{% endif %}
     {% if order.cancelReason %}<p>Cancelled: {{ order.cancelReason }}</p>{% endif %}
 
     <h2>Items</h2>
-    <table>
+    <div class="table-wrap">
+        <table>
         <thead><tr><th>Item</th><th>Quantity</th><th>Unit price</th></tr></thead>
         <tbody>
             {% for item in order.items %}
                 <tr><td>{{ item.productName }} - {{ item.variantName }}</td><td>{{ item.quantity }}</td><td>{{ item.unitPrice|peso }}</td></tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <dl>
         <dt>Subtotal</dt><dd>{{ order.subtotal|peso }}</dd>
