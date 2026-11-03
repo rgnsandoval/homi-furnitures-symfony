@@ -37,6 +37,30 @@ class ReviewRepository extends ServiceEntityRepository
     /**
      * @return Paginator<Review>
      */
+    /**
+     * The waiting queue is oldest first, like findPending(); approved and all are newest first.
+     *
+     * @param ?bool $approved null for every review
+     *
+     * @return Paginator<Review>
+     */
+    public function findForAdmin(?bool $approved, int $page = 1, int $perPage = 20): Paginator
+    {
+        $direction = false === $approved ? 'ASC' : 'DESC';
+        $qb = $this->createQueryBuilder('r')
+            ->join('r.product', 'p')->addSelect('p')
+            ->join('r.author', 'a')->addSelect('a')
+            ->orderBy('r.createdAt', $direction)
+            ->addOrderBy('r.id', $direction)
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage);
+        if (null !== $approved) {
+            $qb->andWhere('r.isApproved = :approved')->setParameter('approved', $approved);
+        }
+
+        return new Paginator($qb, false);
+    }
+
     public function findPending(int $page = 1, int $perPage = 20): Paginator
     {
         return new Paginator($this->createQueryBuilder('r')

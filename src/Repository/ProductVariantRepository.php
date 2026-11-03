@@ -18,6 +18,43 @@ class ProductVariantRepository extends ServiceEntityRepository
     }
 
     /**
+     * Sellable variants (active variant of an active product, in stock) for the admin new-order picker.
+     *
+     * @return list<ProductVariant>
+     */
+    public function findSellable(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->addSelect('p')
+            ->join('v.product', 'p')
+            ->andWhere('v.isActive = true')
+            ->andWhere('p.status = :active')->setParameter('active', \App\Entity\Product::STATUS_ACTIVE)
+            ->andWhere('v.stock > 0')
+            ->orderBy('p.name', 'ASC')
+            ->addOrderBy('v.name', 'ASC')
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * @param list<string> $skus
+     *
+     * @return array<string, ProductVariant> keyed by SKU
+     */
+    public function findBySkus(array $skus): array
+    {
+        if ([] === $skus) {
+            return [];
+        }
+
+        $found = [];
+        foreach ($this->createQueryBuilder('v')->andWhere('v.sku IN (:skus)')->setParameter('skus', $skus)->getQuery()->getResult() as $variant) {
+            $found[(string) $variant->getSku()] = $variant;
+        }
+
+        return $found;
+    }
+
+    /**
      * @return list<ProductVariant>
      */
     public function findLowStock(): array

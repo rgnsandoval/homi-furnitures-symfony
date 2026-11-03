@@ -53,11 +53,21 @@
         </section>
     {% endif %}
 
-    <h2>Tracking and notes</h2>
+    <h2>Edit details</h2>
     <form method="post" action="{{ path('app_admin_order_details', {id: order.id}) }}">
         <input type="hidden" name="_token" value="{{ token }}">
+        <label>Ship to
+            <select name="address">
+                {% for address in customerAddresses %}
+                    <option value="{{ address.id }}" {{ order.shippingAddress and order.shippingAddress.id == address.id ? 'selected' }}>{{ address.label }}: {{ address.recipient }}, {{ address.line1 }}, {{ address.city }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Estimated delivery <input type="date" name="estimatedDeliveryDate" value="{{ order.estimatedDeliveryDate ? order.estimatedDeliveryDate|date('Y-m-d') }}"></label>
         <label>Tracking number <input name="trackingNumber" maxlength="80" value="{{ order.trackingNumber }}"></label>
+        <label>Customer notes <textarea name="notes" maxlength="500">{{ order.notes }}</textarea></label>
         <label>Internal note <textarea name="internalNote">{{ order.internalNote }}</textarea></label>
+        <p class="text-xs text-stone-500">Items and prices are fixed once an order is placed, so totals always match what the customer was charged. To change items, cancel or delete this order and create a new one.</p>
         <button type="submit">Save details</button>
     </form>
 
@@ -70,15 +80,16 @@
 
     <section id="danger-zone" class="mt-10 rounded-2xl border border-red-200 p-5">
         <h2 class="mt-0 text-clay">Danger zone</h2>
-        {% if deleteBlocker %}
-            <p class="mb-0 text-sm text-stone-600"><strong>Delete order:</strong> {{ deleteBlocker }}</p>
-        {% else %}
-            <p class="text-sm text-stone-600">Permanently deletes this order with its items, payment and history. This cannot be undone; a summary is kept in the audit log.</p>
-            <form method="post" action="{{ path('app_admin_order_delete', {id: order.id}) }}">
-                <input type="hidden" name="_token" value="{{ token }}">
-                <label>Type <strong>{{ order.orderNumber }}</strong> to confirm <input name="confirm" autocomplete="off" required pattern="{{ order.orderNumber }}"></label>
-                <button type="submit" class="mt-2" style="background: var(--color-clay)">Delete order permanently</button>
-            </form>
+        <p class="text-sm text-stone-600">Permanently deletes this order with its items, payment and history, whatever its status. Use it for fraud, test or duplicate orders. This cannot be undone; a summary is kept in the audit log.</p>
+        {% if deleteEffects is not empty %}
+            <ul class="mb-4 list-disc pl-5 text-sm text-stone-700">
+                {% for effect in deleteEffects %}<li>{{ effect }}</li>{% endfor %}
+            </ul>
         {% endif %}
+        <form method="post" action="{{ path('app_admin_order_delete', {id: order.id}) }}">
+            <input type="hidden" name="_token" value="{{ token }}">
+            <label>Type <strong>{{ order.orderNumber }}</strong> to confirm <input name="confirm" autocomplete="off" required pattern="{{ order.orderNumber }}"></label>
+            <button type="submit" class="mt-2" style="background: var(--color-clay)">Delete order permanently</button>
+        </form>
     </section>
 {% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ inquiry.subject }} - Admin{% endblock %}
+
+{% block body %}
+    {% set token = csrf_token('inquiry' ~ inquiry.id) %}
+    <p class="mb-2"><a href="{{ path('app_admin_inquiry') }}">← Inquiries</a></p>
+    <h1>{{ inquiry.subject }}</h1>
+    <p class="text-stone-500">From {{ inquiry.name }} (<a href="mailto:{{ inquiry.email }}?subject={{ ('Re: ' ~ inquiry.subject)|url_encode }}">{{ inquiry.email }}</a>) on {{ inquiry.createdAt|date('M j, Y g:i A') }}</p>
+
+    <div class="max-w-3xl whitespace-pre-line rounded-2xl border border-stone-200 bg-white p-5">{{ inquiry.message }}</div>
+
+    <div class="mt-6 flex flex-wrap items-end gap-3">
+        <a class="btn btn-primary" href="mailto:{{ inquiry.email }}?subject={{ ('Re: ' ~ inquiry.subject)|url_encode }}">Reply by email</a>
+        <form method="post" action="{{ path('app_admin_inquiry_status', {id: inquiry.id}) }}" class="flex flex-wrap items-end gap-2">
+            <input type="hidden" name="_token" value="{{ token }}">
+            <input type="hidden" name="_back" value="show">
+            <label>Status
+                <select name="status">
+                    {% for status in statuses %}
+                        <option value="{{ status }}" {{ inquiry.status == status ? 'selected' }}>{{ status|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button type="submit">Save status</button>
+        </form>
+        <form method="post" action="{{ path('app_admin_inquiry_delete', {id: inquiry.id}) }}" onsubmit="return confirm('Delete this inquiry?')">
+            <input type="hidden" name="_token" value="{{ token }}">
+            <button type="submit" style="background: var(--color-clay)">Delete</button>
+        </form>
+    </div>
+{% endblock %}

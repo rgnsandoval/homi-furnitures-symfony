@@ -22,6 +22,21 @@ class ReturnRequestRepository extends ServiceEntityRepository
     /**
      * @return Paginator<ReturnRequest>
      */
+    /**
+     * Every return, newest first, for the admin "All" tab.
+     *
+     * @return Paginator<ReturnRequest>
+     */
+    public function findAllForAdmin(int $page = 1, int $perPage = 20): Paginator
+    {
+        return new Paginator($this->createQueryBuilder('r')
+            ->join('r.parentOrder', 'o')->addSelect('o')
+            ->orderBy('r.createdAt', 'DESC')
+            ->addOrderBy('r.id', 'DESC')
+            ->setFirstResult(max(0, $page - 1) * $perPage)
+            ->setMaxResults($perPage), false);
+    }
+
     public function findOpen(int $page = 1, int $perPage = 20): Paginator
     {
         return new Paginator($this->createQueryBuilder('r')

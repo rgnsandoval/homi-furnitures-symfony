@@ -2,8 +2,16 @@
 
 namespace App\Repository;
 
+use App\Entity\Address;
+use App\Entity\AuditLog;
+use App\Entity\CartItem;
 use App\Entity\Order;
+use App\Entity\OrderStatusHistory;
+use App\Entity\PaymentStatusHistory;
+use App\Entity\Review;
+use App\Entity\StockMovement;
 use App\Entity\User;
+use App\Entity\WishlistItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -110,5 +118,70 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
 
         return new Paginator($qb, false);
+    }
+
+    /**
+     * Records that must outlive the account. Any non-zero count means the user can only be deactivated.
+     *
+     * @return array<string, int> label => count, only the non-zero ones
+     */
+    public function deletionBlockers(User $user): array
+    {
+        $em = $this->getEntityManager();
+        $count = static fn (string $entity, string $field) => (int) $em->createQueryBuilder()
+            ->select('COUNT(x.id)')->from($entity, 'x')
+            ->andWhere(sprintf('x.%s = :user', $field))->setParameter('user', $user)
+            ->getQuery()->getSingleScalarResult();
+
+        return array_filter([
+            'orders' => $count(Order::class, 'customer'),
+            'admin audit entries' => $count(AuditLog::class, 'adminUser'),
+            'order status changes' => $count(OrderStatusHistory::class, 'changedBy'),
+            'payment status changes' => $count(PaymentStatusHistory::class, 'changedBy'),
+            'stock adjustments' => $count(StockMovement::class, 'adminUser'),
+        ]);
+    }
+
+    /**
+     * Deletes the account with what only it owns: cart, wishlist, addresses and reviews.
+     * Call deletionBlockers() first; this does not check.
+     *
+     * @return list<string> review photo file names that the caller should remove from disk
+     */
+    public function deleteWithOwnedData(User $user): array
+    {
+        $em = $this->getEntityManager();
+
+        return $em->wrapInTransaction(function () use ($em, $user): array {
+            $photos = array_values(array_filter(array_column($em->createQueryBuilder()
+                ->select('r.photo')->from(Review::class, 'r')
+                ->andWhere('r.author = :user')->setParameter('user', $user)
+                ->getQuery()->getScalarResult(), 'photo')));
+
+            foreach ([[Review::class, 'author'], [CartItem::class, 'owner'], [WishlistItem::class, 'owner'], [Address::class, 'owner']] as [$entity, $field]) {
+                $em->createQueryBuilder()->delete($entity, 'x')
+                    ->andWhere(sprintf('x.%s = :user', $field))->setParameter('user', $user)
+                    ->getQuery()->execute();
+            }
+
+            $em->remove($user);
+            $em->flush();
+
+            return $photos;
+        });
+    }
+
+    /**
+     * Active accounts for the admin "new order" customer picker.
+     *
+     * @return list<User>
+     */
+    public function findActiveForPicker(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.isActive = true')
+            ->orderBy('u.fullName', 'ASC')
+            ->addOrderBy('u.email', 'ASC')
+            ->getQuery()->getResult();
     }
 }

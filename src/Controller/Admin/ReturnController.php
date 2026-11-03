@@ -22,11 +22,46 @@ final class ReturnController extends AbstractController
     public function index(Request $request, ReturnRequestRepository $returns): Response
     {
         $page = max(1, $request->query->getInt('page', 1));
+        $show = 'all' === $request->query->getString('show') ? 'all' : 'open';
 
         return $this->render('admin/return/index.html.twig', [
-            'returns' => $returns->findOpen($page),
+            'returns' => 'all' === $show ? $returns->findAllForAdmin($page) : $returns->findOpen($page),
+            'show' => $show,
             'page' => $page,
         ]);
+    }
+
+    #[Route('/admin/returns/{id}', name: 'app_admin_return_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(ReturnRequest $return): Response
+    {
+        return $this->render('admin/return/show.html.twig', ['return' => $return, 'deletable' => $this->deletable($return)]);
+    }
+
+    /**
+     * Requested and rejected returns can go. Approved and refunded ones are part of a refund and stay on record.
+     */
+    #[Route('/admin/returns/{id}/delete', name: 'app_admin_return_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function delete(ReturnRequest $return, Request $request, EntityManagerInterface $em, AuditLogRepository $audit): Response
+    {
+        $this->checkToken($request, $return);
+
+        if (!$this->deletable($return)) {
+            $this->addFlash('error', 'Approved and refunded returns are kept with the refund record.');
+
+            return $this->redirectToRoute('app_admin_return_show', ['id' => $return->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        $id = (int) $return->getId();
+        $summary = ['order' => $return->getParentOrder()->getOrderNumber(), 'status' => $return->getStatus(), 'customer' => $return->getCustomer()?->getEmail()];
+        $em->remove($return);
+        $em->flush();
+
+        /** @var User $admin */
+        $admin = $this->getUser();
+        $audit->record($admin, 'return.delete', 'ReturnRequest', $id, $summary);
+        $this->addFlash('success', 'Return request deleted.');
+
+        return $this->redirectToRoute('app_admin_return', ['show' => 'all'], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/admin/returns/{id}/approve', name: 'app_admin_return_approve', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -133,6 +168,11 @@ final class ReturnController extends AbstractController
         $this->addFlash('success', 'Return '.$to.'.');
 
         return $this->redirectToRoute('app_admin_return', [], Response::HTTP_SEE_OTHER);
+    }
+
+    private function deletable(ReturnRequest $return): bool
+    {
+        return in_array($return->getStatus(), [ReturnRequest::STATUS_REQUESTED, ReturnRequest::STATUS_REJECTED], true);
     }
 
     private function checkToken(Request $request, ReturnRequest $return): void

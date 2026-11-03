@@ -1,0 +1,53 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Return for {{ return.parentOrder.orderNumber }} - Admin{% endblock %}
+
+{% block body %}
+    {% set token = csrf_token('return' ~ return.id) %}
+    <p class="mb-2"><a href="{{ path('app_admin_return', {show: 'all'}) }}">← Returns</a></p>
+    <h1>Return for {{ return.parentOrder.orderNumber }}</h1>
+
+    <dl>
+        <dt>Status</dt><dd><span class="status-pill is-{{ return.status }}">{{ return.status }}</span></dd>
+        <dt>Customer</dt><dd>{{ return.customer.fullName }} ({{ return.customer.email }})</dd>
+        <dt>Requested</dt><dd>{{ return.createdAt|date('M j, Y g:i A') }}</dd>
+        <dt>Order</dt><dd><a href="{{ path('app_admin_order_show', {id: return.parentOrder.id}) }}">{{ return.parentOrder.orderNumber }}</a>, {{ return.parentOrder.total|peso }}</dd>
+        <dt>Payment</dt><dd>{{ return.parentOrder.payment.method }} ({{ return.parentOrder.payment.status }})</dd>
+        <dt>Reason</dt><dd class="whitespace-pre-line">{{ return.returnReason }}</dd>
+        {% if return.adminNote %}<dt>Admin note</dt><dd>{{ return.adminNote }}</dd>{% endif %}
+    </dl>
+    {% if return.photo %}<p><a href="{{ path('app_return_photo', {id: return.id}) }}">View photo</a></p>{% endif %}
+
+    {% if return.status == 'requested' %}
+        <div class="flex flex-wrap gap-6">
+            <form method="post" action="{{ path('app_admin_return_approve', {id: return.id}) }}">
+                <input type="hidden" name="_token" value="{{ token }}">
+                <label>Note <input name="adminNote"></label>
+                <button type="submit">Approve return</button>
+            </form>
+            <form method="post" action="{{ path('app_admin_return_reject', {id: return.id}) }}">
+                <input type="hidden" name="_token" value="{{ token }}">
+                <label>Note <input name="adminNote"></label>
+                <button type="submit">Reject return</button>
+            </form>
+        </div>
+    {% elseif return.status == 'approved' %}
+        <form method="post" action="{{ path('app_admin_return_refund', {id: return.id}) }}">
+            <input type="hidden" name="_token" value="{{ token }}">
+            <label>Note <input name="adminNote"></label>
+            <button type="submit">Refund return</button>
+        </form>
+    {% endif %}
+
+    <section id="danger-zone" class="mt-10 rounded-2xl border border-red-200 p-5">
+        <h2 class="mt-0 text-clay">Delete return request</h2>
+        {% if deletable %}
+            <form method="post" action="{{ path('app_admin_return_delete', {id: return.id}) }}" onsubmit="return confirm('Delete this return request?')">
+                <input type="hidden" name="_token" value="{{ token }}">
+                <button type="submit" style="background: var(--color-clay)">Delete return request</button>
+            </form>
+        {% else %}
+            <p class="mb-0 text-sm text-stone-600">Approved and refunded returns are part of a refund, so they are kept on record.</p>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -226,13 +226,16 @@ class OrderRepository extends ServiceEntityRepository
     }
 
     /**
-     * Permanently removes an order with its items, payment and both status histories, in one transaction.
-     * Callers decide whether the order may go; this only does the deleting.
+     * Permanently removes an order with its items, payment, return requests and both status histories, in one transaction.
+     * Callers decide whether the order may go and handle stock; this only does the deleting.
      */
     public function deleteWithHistory(Order $order): void
     {
         $em = $this->getEntityManager();
         $em->wrapInTransaction(function () use ($em, $order): void {
+            $em->createQueryBuilder()->delete(ReturnRequest::class, 'r')
+                ->andWhere('r.parentOrder = :order')->setParameter('order', $order)
+                ->getQuery()->execute();
             if (null !== $payment = $order->getPayment()) {
                 $em->createQueryBuilder()->delete(PaymentStatusHistory::class, 'ph')
                     ->andWhere('ph.payment = :payment')->setParameter('payment', $payment)

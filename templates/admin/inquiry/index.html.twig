@@ -5,26 +5,39 @@
 {% block body %}
     <h1>Inquiries</h1>
 
-    {% for inquiry in inquiries %}
-        <article class="inquiry">
-            <h2>{{ inquiry.subject }}</h2>
-            <p>From {{ inquiry.name }} ({{ inquiry.email }}) on {{ inquiry.createdAt|date('M j, Y g:i A') }}</p>
-            <p>{{ inquiry.message }}</p>
-            <form method="post" action="{{ path('app_admin_inquiry_status', {id: inquiry.id}) }}">
-                <input type="hidden" name="_token" value="{{ csrf_token('inquiry' ~ inquiry.id) }}">
-                <label>Status
-                    <select name="status">
-                        {% for status in statuses %}
-                            <option value="{{ status }}" {{ inquiry.status == status ? 'selected' }}>{{ status|capitalize }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <button type="submit">Save status</button>
-            </form>
-        </article>
-    {% else %}
-        <p>No inquiries yet.</p>
-    {% endfor %}
+    <div class="space-y-4">
+        {% for inquiry in inquiries %}
+            {% set token = csrf_token('inquiry' ~ inquiry.id) %}
+            <article class="inquiry rounded-2xl border border-stone-200 bg-white p-5">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                    <h2 class="m-0 text-lg"><a href="{{ path('app_admin_inquiry_show', {id: inquiry.id}) }}">{{ inquiry.subject }}</a></h2>
+                    <span class="status-pill {{ inquiry.status == 'new' ? 'is-pending' }}">{{ inquiry.status|capitalize }}</span>
+                </div>
+                <p class="mt-2 text-sm text-stone-500">From {{ inquiry.name }} ({{ inquiry.email }}) on {{ inquiry.createdAt|date('M j, Y g:i A') }}</p>
+                <p>{{ inquiry.message|length > 240 ? inquiry.message|slice(0, 240) ~ '…' : inquiry.message }}</p>
+                <div class="flex flex-wrap items-end gap-3">
+                    <form method="post" action="{{ path('app_admin_inquiry_status', {id: inquiry.id}) }}" class="flex flex-wrap items-end gap-2">
+                        <input type="hidden" name="_token" value="{{ token }}">
+                        <label>Status
+                            <select name="status">
+                                {% for status in statuses %}
+                                    <option value="{{ status }}" {{ inquiry.status == status ? 'selected' }}>{{ status|capitalize }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <button type="submit">Save status</button>
+                    </form>
+                    <a href="{{ path('app_admin_inquiry_show', {id: inquiry.id}) }}">Open</a>
+                    <form method="post" action="{{ path('app_admin_inquiry_delete', {id: inquiry.id}) }}" onsubmit="return confirm('Delete this inquiry?')">
+                        <input type="hidden" name="_token" value="{{ token }}">
+                        <button type="submit" style="background: var(--color-clay)">Delete</button>
+                    </form>
+                </div>
+            </article>
+        {% else %}
+            <p>No inquiries yet.</p>
+        {% endfor %}
+    </div>
 
     <twig:Pagination :total="inquiries|length" :page="page" />
 {% endblock %}
