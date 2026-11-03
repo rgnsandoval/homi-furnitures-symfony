@@ -119,12 +119,47 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @return list<Product>
      */
+    /**
+     * Loads the variants of a page of products in one query, so a product grid does not run one query per card.
+     *
+     * @param iterable<Product> $products
+     */
+    public function loadVariants(iterable $products): void
+    {
+        $ids = [];
+        foreach ($products as $product) {
+            $ids[] = $product->getId();
+        }
+
+        if ([] !== $ids) {
+            $this->createQueryBuilder('p')
+                ->leftJoin('p.variants', 'v')->addSelect('v')
+                ->andWhere('p.id IN (:ids)')->setParameter('ids', $ids)
+                ->getQuery()->getResult();
+        }
+    }
+
+    /**
+     * Active products in a category or, for a room, in any of its subcategories.
+     */
+    public function countActiveInCategory(string $slug): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->join('p.category', 'c')
+            ->leftJoin('c.parent', 'room')
+            ->andWhere('c.slug = :slug OR room.slug = :slug')->setParameter('slug', $slug)
+            ->andWhere('p.status = :active')->setParameter('active', Product::STATUS_ACTIVE)
+            ->getQuery()->getSingleScalarResult();
+    }
+
     public function findFeatured(int $limit = 8): array
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.isFeatured = true')
             ->andWhere('p.status = :active')->setParameter('active', Product::STATUS_ACTIVE)
-            ->orderBy('p.createdAt', 'DESC')
+            // Catalog order, so the owner decides what leads the home page.
+            ->orderBy('p.id', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()->getResult();
     }

@@ -1,0 +1,81 @@
+{% props product %}
+{% set variants = product.variants|filter(v => v.active) %}
+{% set inStock = variants|filter(v => v.stock > 0) %}
+{% set buyable = variants|length == 1 and inStock|length == 1 ? inStock|first : null %}
+{% set colors = shop_colors(product) %}
+{% set saved = wishlist_has(product) %}
+{% set image = asset('uploads/products/' ~ product.image) %}
+{% set url = path('app_product', {slug: product.slug}) %}
+<article class="group">
+    <div class="relative aspect-[4/5] overflow-hidden rounded-2xl bg-army-100">
+        <a href="{{ url }}">
+            <img class="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" src="{{ image }}" alt="{{ product.name }}" loading="lazy" width="640" height="800">
+        </a>
+        {% if inStock is empty %}
+            <span class="absolute left-3 top-3 rounded-full bg-stone-800 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-white sm:text-xs">Sold out</span>
+        {% elseif product.onSale %}
+            <span class="absolute left-3 top-3 rounded-full bg-clay px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-white sm:text-xs">Save {{ shop_saving(product)|peso }}</span>
+        {% elseif product.featured %}
+            <span class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-army-900 backdrop-blur sm:text-xs">Featured</span>
+        {% endif %}
+        {% if app.user %}
+            <form method="post" action="{{ path('app_wishlist_toggle', {id: product.id}) }}" class="absolute right-3 top-3">
+                <input type="hidden" name="_token" value="{{ csrf_token('wishlist') }}">
+                <input type="hidden" name="_back" value="{{ app.request.requestUri }}">
+                <button type="submit" class="grid size-10 place-items-center rounded-full bg-white/90 shadow-sm backdrop-blur transition hover:scale-105 {{ saved ? 'text-clay' : 'text-stone-600' }}" aria-label="{{ saved ? 'Remove ' ~ product.name ~ ' from saved items' : 'Save ' ~ product.name }}">
+                    <twig:Icon name="heart" :filled="saved" />
+                </button>
+            </form>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="absolute right-3 top-3 grid size-10 place-items-center rounded-full bg-white/90 text-stone-600 shadow-sm backdrop-blur transition hover:scale-105" aria-label="Log in to save {{ product.name }}">
+                <twig:Icon name="heart" />
+            </a>
+        {% endif %}
+        <button type="button"
+            class="absolute inset-x-4 bottom-4 translate-y-3 rounded-full bg-white px-4 py-3 text-sm font-semibold text-army-950 opacity-0 shadow-lg transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 focus:translate-y-0 focus:opacity-100"
+            data-action="quick-view#open"
+            data-quick-view-payload="{{ {
+                name: product.name,
+                type: product.category.name,
+                price: product.effectivePrice|peso,
+                old: product.onSale ? product.price|peso : '',
+                image: image,
+                description: product.description,
+                url: url,
+                colors: colors,
+                variant: buyable ? buyable.id : null,
+            }|json_encode }}">Quick view</button>
+    </div>
+    <div class="pt-4">
+        <div class="flex items-start justify-between gap-3">
+            <div>
+                <p class="eyebrow text-[10px]">{{ product.category.name }}</p>
+                <h3 class="font-display mt-1.5 font-bold leading-5 text-army-950"><a href="{{ url }}">{{ product.name }}</a></h3>
+            </div>
+            <div class="flex shrink-0 -space-x-1 pt-1">
+                {% for color in colors|slice(0, 3) %}
+                    <span class="size-4 rounded-full border border-white ring-1 ring-stone-300" style="background: {{ color.hex }}" title="{{ color.name }}"></span>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="mt-3 flex items-center justify-between gap-2">
+            <div class="flex flex-wrap items-baseline gap-2">
+                <span class="font-bold tabular-nums text-army-950">{{ product.effectivePrice|peso }}</span>
+                {% if product.onSale %}<span class="text-xs tabular-nums text-stone-400 line-through">{{ product.price|peso }}</span>{% endif %}
+            </div>
+            {% if buyable and app.user %}
+                <form method="post" action="{{ path('app_cart_add') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
+                    <input type="hidden" name="variant" value="{{ buyable.id }}">
+                    <button type="submit" class="grid size-10 shrink-0 place-items-center rounded-full bg-army-700 text-white transition hover:bg-army-600 active:scale-95" aria-label="Add {{ product.name }} to bag">
+                        <twig:Icon name="bag" class="size-4" />
+                    </button>
+                </form>
+            {% else %}
+                <a href="{{ url }}" class="grid size-10 shrink-0 place-items-center rounded-full bg-army-700 text-white transition hover:bg-army-600 active:scale-95" aria-label="Choose options for {{ product.name }}">
+                    <twig:Icon name="bag" class="size-4" />
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</article>

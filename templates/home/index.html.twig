@@ -2,31 +2,128 @@
 
 {% block title %}Homi Furniture{% endblock %}
 
-{% block body %}
-    <h1>Homi Furniture</h1>
+{% macro heading(eyebrow, title, copy) %}
+    <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="eyebrow">{{ eyebrow }}</p>
+            <h2 class="font-display mt-3 text-3xl font-extrabold tracking-tight text-army-950 sm:text-4xl">{{ title }}</h2>
+        </div>
+        <p class="max-w-md leading-7 text-stone-500">{{ copy }}</p>
+    </div>
+{% endmacro %}
 
-    <h2>Shop by room</h2>
-    <ul>
-        {% for room in rooms %}
-            <li><a href="{{ path('app_shop', {room: room.slug}) }}">{{ room.name }}</a></li>
-        {% endfor %}
-    </ul>
+{% block main %}
+    {% import _self as ui %}
+    <section class="p-3 sm:p-5">
+        <div class="relative mx-auto min-h-[620px] max-w-[1500px] overflow-hidden rounded-[2rem] bg-army-950 md:min-h-[720px]">
+            <img class="absolute inset-0 h-full w-full object-cover" src="{{ asset('images/homi/hero.jpg') }}" width="1800" height="1125" alt="Warm modern living room with sculptural furniture">
+            <div class="absolute inset-0 bg-gradient-to-r from-army-950/85 via-army-950/35 to-transparent"></div>
+            <div class="relative flex min-h-[620px] max-w-3xl flex-col justify-end px-6 py-12 sm:px-12 md:min-h-[720px] md:justify-center md:px-16 lg:px-24">
+                <p class="eyebrow text-army-200">The new essentials collection</p>
+                <h1 class="font-display mt-5 text-5xl font-extrabold leading-[.98] tracking-[-.055em] text-white sm:text-6xl md:text-7xl">
+                    A home that feels<br class="hidden sm:block"> like your own.
+                </h1>
+                <p class="mt-7 max-w-xl text-base leading-7 text-stone-200 sm:text-lg">
+                    Thoughtful furniture with natural materials, easy silhouettes, and room to live beautifully.
+                </p>
+                <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+                    <a class="button-light" href="#shop">Shop the collection <twig:Icon name="arrow" /></a>
+                    <a class="button-glass" href="#rooms">Explore by room</a>
+                </div>
+                <div class="mt-12 flex flex-wrap gap-x-7 gap-y-3 border-t border-white/20 pt-6 text-sm text-stone-200">
+                    <span class="flex items-center gap-2"><twig:Icon name="check" class="size-4 text-army-300" /> Warranty on furniture</span>
+                    <span class="flex items-center gap-2"><twig:Icon name="check" class="size-4 text-army-300" /> {{ returnDays }}-day returns</span>
+                    <span class="flex items-center gap-2"><twig:Icon name="check" class="size-4 text-army-300" /> Assembly available</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <h2>Featured</h2>
-    <ul>
-        {% for product in featured %}
-            <li><a href="{{ path('app_product', {slug: product.slug}) }}">{{ product.name }}</a> {{ product.effectivePrice|peso }}</li>
-        {% else %}
-            <li>Nothing featured yet.</li>
-        {% endfor %}
-    </ul>
+    <section class="page-container py-20 md:py-28" id="rooms">
+        {{ ui.heading('Made for real living', 'Shop by room', 'Begin with a room, then make it entirely yours.') }}
+        <div class="mt-10 grid gap-4 md:h-[720px] md:grid-cols-4 md:grid-rows-2">
+            {% for room in roomCards %}
+                <a class="room-card group {{ room.class }}" href="{{ path('app_shop', {(room.param): room.slug}) }}">
+                    <img class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105" src="{{ asset('images/homi/' ~ room.image ~ '.jpg') }}" alt="{{ room.name }} furniture" loading="lazy" width="1200" height="1000">
+                    <div class="absolute inset-0 bg-gradient-to-t from-army-950/75 via-transparent to-transparent"></div>
+                    <div class="absolute inset-x-0 bottom-0 flex items-end justify-between p-6 text-white sm:p-8">
+                        <div>
+                            <h3 class="font-display text-2xl font-bold">{{ room.name }}</h3>
+                            <p class="mt-1 text-sm text-stone-200">{{ room.count }} {{ room.count == 1 ? 'piece' : 'pieces' }}</p>
+                        </div>
+                        <span class="grid size-11 place-items-center rounded-full border border-white/30 bg-white/10 backdrop-blur transition group-hover:bg-white group-hover:text-army-950"><twig:Icon name="arrow" /></span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        <div class="no-scrollbar mt-6 flex gap-2 overflow-x-auto pb-2">
+            {% for room in rooms %}
+                <a class="pill-filter" href="{{ path('app_shop', {room: room.slug}) }}">{{ room.name }}</a>
+            {% endfor %}
+        </div>
+    </section>
 
-    <h2>On sale</h2>
-    <ul>
-        {% for product in onSale %}
-            <li><a href="{{ path('app_product', {slug: product.slug}) }}">{{ product.name }}</a> <s>{{ product.price|peso }}</s> {{ product.salePrice|peso }}</li>
-        {% else %}
-            <li>No sales right now.</li>
-        {% endfor %}
-    </ul>
+    <section class="bg-army-50 py-20 md:py-28" id="shop">
+        <div class="page-container">
+            {{ ui.heading('Designed to stay', 'Pieces worth living with', 'Considered forms, honest materials, and comfort you notice.') }}
+            <div class="no-scrollbar mt-9 flex gap-2 overflow-x-auto pb-2">
+                <a class="pill-filter is-active" href="{{ path('app_shop') }}">All pieces</a>
+                <a class="pill-filter" href="{{ path('app_shop', {category: 'sofas-and-sectionals'}) }}">Sofas</a>
+                <a class="pill-filter" href="{{ path('app_shop', {category: 'armchairs-and-accent-chairs'}) }}">Chairs</a>
+                <a class="pill-filter" href="{{ path('app_shop', {category: 'dining-tables'}) }}">Tables</a>
+                <a class="pill-filter" href="{{ path('app_shop', {category: 'bed-frames'}) }}">Beds</a>
+            </div>
+            <div class="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4">
+                {% for product in featured %}
+                    <twig:ProductCard :product="product" />
+                {% else %}
+                    <p>Nothing featured yet.</p>
+                {% endfor %}
+            </div>
+            <div class="mt-12 text-center"><a class="btn btn-primary" href="{{ path('app_shop') }}">View all furniture <twig:Icon name="arrow" class="size-4" /></a></div>
+        </div>
+    </section>
+
+    {% if onSale is not empty %}
+        <section class="page-container pt-20 md:pt-28">
+            {{ ui.heading('Good timing', 'On sale now', 'The same considered pieces, for a little less.') }}
+            <div class="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4">
+                {% for product in onSale %}
+                    <twig:ProductCard :product="product" />
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    <section class="page-container py-20 md:py-28">
+        <div class="grid overflow-hidden rounded-[2rem] bg-army-900 lg:grid-cols-2">
+            <div class="relative min-h-[420px] lg:min-h-[620px]">
+                <img class="absolute inset-0 h-full w-full object-cover" src="{{ asset('images/homi/story.jpg') }}" alt="Relaxed neutral living space" loading="lazy" width="1400" height="788">
+            </div>
+            <div class="flex flex-col justify-center px-7 py-14 sm:p-14 lg:p-20">
+                <p class="eyebrow text-army-300">The Homi standard</p>
+                <h2 class="font-display mt-5 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-5xl">Furniture for how life actually happens.</h2>
+                <p class="mt-6 max-w-xl leading-7 text-stone-300">We choose enduring materials, practical proportions, and timeless shapes, so every piece settles naturally into your home and gets better with use.</p>
+                <a class="mt-8 flex w-fit items-center gap-2 font-semibold text-white" href="{{ path('app_guide') }}">Our material and fit guide <twig:Icon name="arrow" /></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="border-y border-stone-200">
+        <div class="page-container grid divide-y divide-stone-200 py-4 md:grid-cols-3 md:divide-x md:divide-y-0">
+            {% for item in [
+                {icon: 'delivery', title: 'Carefully delivered', copy: 'Standard, express, or store pickup, chosen at checkout'},
+                {icon: 'shield', title: 'Made for everyday', copy: 'Materials, dimensions, and warranty listed on every piece'},
+                {icon: 'spark', title: 'Planning, made simple', copy: 'Use our fit guide to find pieces that suit your room'},
+            ] %}
+                <div class="flex items-center gap-4 px-2 py-7 md:px-7">
+                    <span class="grid size-12 shrink-0 place-items-center rounded-full bg-army-50 text-army-700"><twig:Icon :name="item.icon" /></span>
+                    <div>
+                        <p class="font-display font-bold text-army-950">{{ item.title }}</p>
+                        <p class="mt-1 text-sm leading-5 text-stone-500">{{ item.copy }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
 {% endblock %}

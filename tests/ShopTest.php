@@ -176,6 +176,39 @@ class ShopTest extends BaseWebTest
         $this->assertCount(0, $this->em->getRepository(WishlistItem::class)->findBy(['owner' => $user]));
     }
 
+    public function testWishlistFromACardReturnsOnlyToLocalPages(): void
+    {
+        $product = $this->makeProduct();
+        $this->makeVariant($product);
+        $this->client->loginUser($this->makeUser());
+
+        $crawler = $this->client->request('GET', '/shop');
+        $form = $crawler->filter('#products form[action$="/toggle"]')->form();
+        $this->assertSame('/shop', $form->get('_back')->getValue());
+        $this->client->submit($form);
+        $this->assertResponseRedirects('/shop', 303);
+
+        foreach (['//evil.test/x', '/\\evil.test', 'https://evil.test/'] as $target) {
+            $form['_back'] = $target;
+            $this->client->submit($form);
+            $this->assertResponseRedirects('/wishlist', 303);
+        }
+    }
+
+    public function testHomeAndShopRenderProductCards(): void
+    {
+        $product = $this->makeProduct();
+        $this->makeVariant($product);
+
+        $crawler = $this->client->request('GET', '/');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('#rooms');
+
+        $crawler = $this->client->request('GET', '/shop');
+        $this->assertStringContainsString($product->getName(), $crawler->filter('#products')->text());
+        $this->assertCount(1, $crawler->filter('#products [data-action="quick-view#open"]'));
+    }
+
     public function testAddressesAreScopedAndKeepOneDefault(): void
     {
         $user = $this->makeUser();

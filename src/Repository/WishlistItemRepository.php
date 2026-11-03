@@ -33,6 +33,17 @@ class WishlistItemRepository extends ServiceEntityRepository
             ->setMaxResults($perPage), false);
     }
 
+    /**
+     * @return list<int>
+     */
+    public function findProductIdsForUser(User $user): array
+    {
+        return array_map('intval', $this->createQueryBuilder('w')
+            ->select('IDENTITY(w.product)')
+            ->andWhere('w.owner = :user')->setParameter('user', $user)
+            ->getQuery()->getSingleColumnResult());
+    }
+
     public function findOneForUserAndProduct(User $user, Product $product): ?WishlistItem
     {
         return $this->findOneBy(['owner' => $user, 'product' => $product]);

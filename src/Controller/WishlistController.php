@@ -47,6 +47,12 @@ final class WishlistController extends AbstractController
         }
         $em->flush();
 
+        // Saving from a product card stays on that page. Only local paths are followed.
+        $back = $request->request->getString('_back');
+        if (1 === preg_match('~^/[^/\\\\]~', $back)) {
+            return $this->redirect($back, Response::HTTP_SEE_OTHER);
+        }
+
         return $this->redirectToRoute('app_wishlist', [], Response::HTTP_SEE_OTHER);
     }
 }

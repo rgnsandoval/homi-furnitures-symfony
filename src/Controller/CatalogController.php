@@ -34,8 +34,11 @@ final class CatalogController extends AbstractController
 
         $page = max(1, $request->query->getInt('page', 1));
 
+        $results = $products->search($filters, $sort, $page);
+        $products->loadVariants($results);
+
         return $this->render('catalog/index.html.twig', [
-            'products' => $products->search($filters, $sort, $page),
+            'products' => $results,
             'page' => $page,
             'filters' => $filters,
             'sort' => $sort,
