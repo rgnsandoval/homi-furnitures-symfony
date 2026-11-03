@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}Payments - Admin{% endblock %}
 
@@ -6,7 +6,9 @@
     <h1>Payments</h1>
     <p><a href="{{ path('app_admin_payment_queue') }}">Open the payment queues</a></p>
 
-    <table>
+    <div class="table-wrap">
+
+        <table>
         <thead><tr><th>Order</th><th>Method</th><th>Status</th><th>Amount</th><th>Reference</th><th>Paid at</th></tr></thead>
         <tbody>
             {% for payment in payments %}
@@ -22,7 +24,8 @@
                 <tr><td colspan="6">No payments yet.</td></tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <twig:Pagination :total="payments|length" :page="page" />
 {% endblock %}

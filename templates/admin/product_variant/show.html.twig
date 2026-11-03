@@ -1,11 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}ProductVariant{% endblock %}
 
 {% block body %}
     <h1>ProductVariant</h1>
 
-    <table class="table">
+    <div class="table-wrap">
+
+        <table class="table">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -52,7 +54,8 @@
                 <td>{{ product_variant.image }}</td>
             </tr>
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <a href="{{ path('app_admin_product_variant_index') }}">back to list</a>
 
