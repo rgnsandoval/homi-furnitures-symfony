@@ -1,0 +1,655 @@
+sku,product_sku,name,color,size,finish,priceAdjustment,stock,lowStockThreshold,isActive
+HM-LR-001-V1,HM-LR-001,Grey,Grey,,,0.00,22,3,1
+HM-LR-001-V2,HM-LR-001,Beige,Beige,,,0.00,30,3,1
+HM-LR-001-V3,HM-LR-001,Navy,Navy,,,0.00,11,3,1
+HM-LR-002-V1,HM-LR-002,Sage Green,Sage Green,,,0.00,13,3,1
+HM-LR-002-V2,HM-LR-002,Cream,Cream,,,0.00,6,3,1
+HM-LR-002-V3,HM-LR-002,Charcoal,Charcoal,,,0.00,12,3,1
+HM-LR-003-V1,HM-LR-003,Grey,Grey,,,0.00,3,3,1
+HM-LR-003-V2,HM-LR-003,Beige,Beige,,,0.00,6,3,1
+HM-LR-004-V1,HM-LR-004,Charcoal,Charcoal,,,0.00,13,3,1
+HM-LR-004-V2,HM-LR-004,Oat,Oat,,,0.00,24,3,1
+HM-LR-005-V1,HM-LR-005,Tan,Tan,,,0.00,31,3,1
+HM-LR-005-V2,HM-LR-005,Black,Black,,,0.00,12,3,1
+HM-LR-006-V1,HM-LR-006,Emerald,Emerald,,,0.00,33,3,1
+HM-LR-006-V2,HM-LR-006,Navy,Navy,,,0.00,22,3,1
+HM-LR-006-V3,HM-LR-006,Blush,Blush,,,0.00,13,3,1
+HM-LR-007-V1,HM-LR-007,Grey,Grey,,,0.00,20,3,1
+HM-LR-007-V2,HM-LR-007,Beige,Beige,,,0.00,38,3,1
+HM-LR-008-V1,HM-LR-008,Mustard,Mustard,,,0.00,14,3,1
+HM-LR-008-V2,HM-LR-008,Teal,Teal,,,0.00,36,3,1
+HM-LR-008-V3,HM-LR-008,Grey,Grey,,,0.00,10,3,1
+HM-LR-009-V1,HM-LR-009,Ivory,Ivory,,,0.00,26,3,1
+HM-LR-009-V2,HM-LR-009,Camel,Camel,,,0.00,38,3,1
+HM-LR-010-V1,HM-LR-010,Natural,Natural,,,0.00,19,3,1
+HM-LR-010-V2,HM-LR-010,Black,Black,,,0.00,32,3,1
+HM-LR-011-V1,HM-LR-011,Light Oak,Light Oak,,,0.00,30,3,1
+HM-LR-011-V2,HM-LR-011,Walnut,Walnut,,,0.00,29,3,1
+HM-LR-012-V1,HM-LR-012,Brown,Brown,,,0.00,30,3,1
+HM-LR-012-V2,HM-LR-012,Black,Black,,,0.00,6,3,1
+HM-LR-013-V1,HM-LR-013,Natural,,,Natural,0.00,17,3,1
+HM-LR-013-V2,HM-LR-013,Dark Walnut,,,Dark Walnut,0.00,18,3,1
+HM-LR-014-V1,HM-LR-014,Grey,Grey,,,0.00,1,3,1
+HM-LR-014-V2,HM-LR-014,Blush,Blush,,,0.00,18,3,1
+HM-LR-015-V1,HM-LR-015,Natural Oak,,,Natural Oak,0.00,30,3,1
+HM-LR-015-V2,HM-LR-015,Walnut,,,Walnut,0.00,2,3,1
+HM-LR-016-V1,HM-LR-016,White,,,White,0.00,12,3,1
+HM-LR-016-V2,HM-LR-016,Walnut,,,Walnut,0.00,11,3,1
+HM-LR-017-V1,HM-LR-017,Black,,,Black,0.00,40,3,1
+HM-LR-017-V2,HM-LR-017,Gold,,,Gold,0.00,14,3,1
+HM-LR-018-V1,HM-LR-018,White Marble,,,White Marble,0.00,38,3,1
+HM-LR-018-V2,HM-LR-018,Black,,,Black,0.00,27,3,1
+HM-LR-019-V1,HM-LR-019,Natural,,,Natural,0.00,37,3,1
+HM-LR-019-V2,HM-LR-019,Espresso,,,Espresso,0.00,38,3,1
+HM-LR-020-V1,HM-LR-020,White,,,White,0.00,14,3,1
+HM-LR-020-V2,HM-LR-020,Black,,,Black,0.00,15,3,1
+HM-LR-021-V1,HM-LR-021,White Marble,,,White Marble,0.00,24,3,1
+HM-LR-021-V2,HM-LR-021,Black Marble,,,Black Marble,0.00,33,3,1
+HM-LR-022-V1,HM-LR-022,Walnut,,,Walnut,0.00,13,3,1
+HM-LR-022-V2,HM-LR-022,Natural,,,Natural,0.00,9,3,1
+HM-LR-023-V1,HM-LR-023,Walnut,,,Walnut,0.00,39,3,1
+HM-LR-023-V2,HM-LR-023,White,,,White,0.00,9,3,1
+HM-LR-024-V1,HM-LR-024,Rustic Brown,,,Rustic Brown,0.00,9,3,1
+HM-LR-024-V2,HM-LR-024,Black,,,Black,0.00,5,3,1
+HM-LR-025-V1,HM-LR-025,White Oak,,,White Oak,0.00,31,3,1
+HM-LR-025-V2,HM-LR-025,Walnut,,,Walnut,0.00,22,3,1
+HM-LR-026-V1,HM-LR-026,White,,,White,0.00,30,3,1
+HM-LR-026-V2,HM-LR-026,Charcoal,,,Charcoal,0.00,23,3,1
+HM-LR-027-V1,HM-LR-027,Natural,,,Natural,0.00,14,3,1
+HM-LR-027-V2,HM-LR-027,Dark,,,Dark,0.00,38,3,1
+HM-LR-028-V1,HM-LR-028,Black,,,Black,0.00,19,3,1
+HM-LR-028-V2,HM-LR-028,Oak,,,Oak,0.00,34,3,1
+HM-LR-029-V1,HM-LR-029,White,,,White,0.00,6,3,1
+HM-LR-029-V2,HM-LR-029,Walnut,,,Walnut,0.00,31,3,1
+HM-LR-030-V1,HM-LR-030,Oak,,,Oak,0.00,34,3,1
+HM-LR-030-V2,HM-LR-030,Black,,,Black,0.00,31,3,1
+HM-LR-031-V1,HM-LR-031,Walnut,,,Walnut,0.00,30,3,1
+HM-LR-031-V2,HM-LR-031,White,,,White,0.00,21,3,1
+HM-LR-031-V3,HM-LR-031,Oak,,,Oak,0.00,28,3,1
+HM-LR-032-V1,HM-LR-032,Natural,,,Natural,0.00,7,3,1
+HM-LR-032-V2,HM-LR-032,Black,,,Black,0.00,12,3,1
+HM-LR-033-V1,HM-LR-033,Walnut,,,Walnut,0.00,19,3,1
+HM-LR-033-V2,HM-LR-033,White,,,White,0.00,24,3,1
+HM-LR-034-V1,HM-LR-034,Walnut,,,Walnut,0.00,8,3,1
+HM-LR-034-V2,HM-LR-034,White,,,White,0.00,38,3,1
+HM-LR-035-V1,HM-LR-035,Grey,Grey,,,0.00,11,3,1
+HM-LR-035-V2,HM-LR-035,Beige,Beige,,,0.00,24,3,1
+HM-LR-035-V3,HM-LR-035,Navy,Navy,,,0.00,23,3,1
+HM-LR-036-V1,HM-LR-036,Cream,Cream,,,0.00,11,3,1
+HM-LR-036-V2,HM-LR-036,Grey,Grey,,,0.00,33,3,1
+HM-LR-036-V3,HM-LR-036,Terracotta,Terracotta,,,0.00,32,3,1
+HM-LR-037-V1,HM-LR-037,Navy,Navy,,,0.00,18,3,1
+HM-LR-037-V2,HM-LR-037,Blush,Blush,,,0.00,32,3,1
+HM-LR-038-V1,HM-LR-038,Grey,Grey,,,0.00,25,3,1
+HM-LR-038-V2,HM-LR-038,Beige,Beige,,,0.00,9,3,1
+HM-LR-039-V1,HM-LR-039,Black,,,Black,0.00,6,3,1
+HM-LR-039-V2,HM-LR-039,White,,,White,0.00,23,3,1
+HM-LR-040-V1,HM-LR-040,Natural,,,Natural,0.00,32,3,1
+HM-LR-040-V2,HM-LR-040,Black,,,Black,0.00,25,3,1
+HM-LR-041-V1,HM-LR-041,Natural,,,Natural,0.00,23,3,1
+HM-LR-041-V2,HM-LR-041,Walnut,,,Walnut,0.00,24,3,1
+HM-LR-042-V1,HM-LR-042,Grey,Grey,,,0.00,6,3,1
+HM-LR-042-V2,HM-LR-042,Navy,Navy,,,0.00,24,3,1
+HM-LR-042-V3,HM-LR-042,Mustard,Mustard,,,0.00,22,3,1
+HM-LR-043-V1,HM-LR-043,Terracotta,Terracotta,,,0.00,27,3,1
+HM-LR-043-V2,HM-LR-043,Sage,Sage,,,0.00,10,3,1
+HM-BR-001-V1,HM-BR-001,Single,,Single,,0.00,17,3,1
+HM-BR-001-V2,HM-BR-001,Double,,Double,,2500.00,6,3,1
+HM-BR-001-V3,HM-BR-001,Queen,,Queen,,4500.00,36,3,1
+HM-BR-001-V4,HM-BR-001,King,,King,,7500.00,37,3,1
+HM-BR-002-V1,HM-BR-002,Double / Grey,Grey,Double,,0.00,35,3,1
+HM-BR-002-V2,HM-BR-002,Double / Beige,Beige,Double,,0.00,12,3,1
+HM-BR-002-V3,HM-BR-002,Queen / Grey,Grey,Queen,,2600.00,26,3,1
+HM-BR-002-V4,HM-BR-002,Queen / Beige,Beige,Queen,,2600.00,29,3,1
+HM-BR-002-V5,HM-BR-002,King / Grey,Grey,King,,5200.00,8,3,1
+HM-BR-002-V6,HM-BR-002,King / Beige,Beige,King,,5200.00,29,3,1
+HM-BR-003-V1,HM-BR-003,Queen / Oak,,Queen,Oak,0.00,24,3,1
+HM-BR-003-V2,HM-BR-003,Queen / White,,Queen,White,0.00,20,3,1
+HM-BR-003-V3,HM-BR-003,King / Oak,,King,Oak,4000.00,40,3,1
+HM-BR-003-V4,HM-BR-003,King / White,,King,White,4000.00,15,3,1
+HM-BR-004-V1,HM-BR-004,Queen,,Queen,,0.00,19,3,1
+HM-BR-004-V2,HM-BR-004,King,,King,,6000.00,5,3,1
+HM-BR-005-V1,HM-BR-005,Single / Black,,Single,Black,0.00,30,3,1
+HM-BR-005-V2,HM-BR-005,Single / White,,Single,White,0.00,36,3,1
+HM-BR-005-V3,HM-BR-005,Double / Black,,Double,Black,1500.00,0,3,1
+HM-BR-005-V4,HM-BR-005,Double / White,,Double,White,1500.00,7,3,1
+HM-BR-005-V5,HM-BR-005,Queen / Black,,Queen,Black,2600.00,32,3,1
+HM-BR-005-V6,HM-BR-005,Queen / White,,Queen,White,2600.00,30,3,1
+HM-BR-006-V1,HM-BR-006,Queen,,Queen,,0.00,28,3,1
+HM-BR-006-V2,HM-BR-006,King,,King,,4500.00,24,3,1
+HM-BR-007-V1,HM-BR-007,Double / Grey,Grey,Double,,0.00,10,3,1
+HM-BR-007-V2,HM-BR-007,Double / Charcoal,Charcoal,Double,,0.00,7,3,1
+HM-BR-007-V3,HM-BR-007,Queen / Grey,Grey,Queen,,2800.00,6,3,1
+HM-BR-007-V4,HM-BR-007,Queen / Charcoal,Charcoal,Queen,,2800.00,39,3,1
+HM-BR-007-V5,HM-BR-007,King / Grey,Grey,King,,5600.00,19,3,1
+HM-BR-007-V6,HM-BR-007,King / Charcoal,Charcoal,King,,5600.00,29,3,1
+HM-BR-008-V1,HM-BR-008,Queen / Navy,Navy,Queen,,0.00,37,3,1
+HM-BR-008-V2,HM-BR-008,Queen / Blush,Blush,Queen,,0.00,23,3,1
+HM-BR-008-V3,HM-BR-008,Queen / Grey,Grey,Queen,,0.00,1,3,1
+HM-BR-008-V4,HM-BR-008,King / Navy,Navy,King,,1800.00,20,3,1
+HM-BR-008-V5,HM-BR-008,King / Blush,Blush,King,,1800.00,30,3,1
+HM-BR-008-V6,HM-BR-008,King / Grey,Grey,King,,1800.00,28,3,1
+HM-BR-009-V1,HM-BR-009,Queen / Natural,,Queen,Natural,0.00,34,3,1
+HM-BR-009-V2,HM-BR-009,Queen / Walnut,,Queen,Walnut,0.00,37,3,1
+HM-BR-009-V3,HM-BR-009,King / Natural,,King,Natural,1500.00,2,3,1
+HM-BR-009-V4,HM-BR-009,King / Walnut,,King,Walnut,1500.00,30,3,1
+HM-BR-010-V1,HM-BR-010,Single,,Single,,0.00,38,3,1
+HM-BR-010-V2,HM-BR-010,Double,,Double,,4500.00,6,3,1
+HM-BR-010-V3,HM-BR-010,Queen,,Queen,,7500.00,31,3,1
+HM-BR-010-V4,HM-BR-010,King,,King,,11000.00,32,3,1
+HM-BR-011-V1,HM-BR-011,Double,,Double,,0.00,32,3,1
+HM-BR-011-V2,HM-BR-011,Queen,,Queen,,5000.00,17,3,1
+HM-BR-011-V3,HM-BR-011,King,,King,,9000.00,5,3,1
+HM-BR-012-V1,HM-BR-012,Queen,,Queen,,0.00,8,3,1
+HM-BR-012-V2,HM-BR-012,King,,King,,8000.00,11,3,1
+HM-BR-013-V1,HM-BR-013,Single,,Single,,0.00,10,3,1
+HM-BR-013-V2,HM-BR-013,Double,,Double,,2800.00,35,3,1
+HM-BR-013-V3,HM-BR-013,Queen,,Queen,,4800.00,23,3,1
+HM-BR-014-V1,HM-BR-014,Single,,Single,,0.00,17,3,1
+HM-BR-014-V2,HM-BR-014,Double,,Double,,900.00,26,3,1
+HM-BR-014-V3,HM-BR-014,Queen,,Queen,,1600.00,26,3,1
+HM-BR-014-V4,HM-BR-014,King,,King,,2400.00,22,3,1
+HM-BR-015-V1,HM-BR-015,Natural,,,Natural,0.00,19,3,1
+HM-BR-015-V2,HM-BR-015,White,,,White,0.00,34,3,1
+HM-BR-016-V1,HM-BR-016,White,,,White,0.00,40,3,1
+HM-BR-016-V2,HM-BR-016,Grey,,,Grey,0.00,16,3,1
+HM-BR-017-V1,HM-BR-017,Walnut,,,Walnut,0.00,26,3,1
+HM-BR-017-V2,HM-BR-017,White,,,White,0.00,13,3,1
+HM-BR-017-V3,HM-BR-017,Oak,,,Oak,0.00,40,3,1
+HM-BR-018-V1,HM-BR-018,White,,,White,0.00,28,3,1
+HM-BR-018-V2,HM-BR-018,Oak,,,Oak,0.00,27,3,1
+HM-BR-019-V1,HM-BR-019,Natural,,,Natural,0.00,8,3,1
+HM-BR-019-V2,HM-BR-019,Black,,,Black,0.00,15,3,1
+HM-BR-020-V1,HM-BR-020,Natural,,,Natural,0.00,31,3,1
+HM-BR-020-V2,HM-BR-020,Dark Walnut,,,Dark Walnut,0.00,13,3,1
+HM-BR-021-V1,HM-BR-021,Walnut,,,Walnut,0.00,32,3,1
+HM-BR-021-V2,HM-BR-021,White,,,White,0.00,29,3,1
+HM-BR-022-V1,HM-BR-022,Natural,,,Natural,0.00,30,3,1
+HM-BR-022-V2,HM-BR-022,White,,,White,0.00,16,3,1
+HM-BR-023-V1,HM-BR-023,Walnut,,,Walnut,0.00,7,3,1
+HM-BR-023-V2,HM-BR-023,White,,,White,0.00,40,3,1
+HM-BR-024-V1,HM-BR-024,White,,,White,0.00,11,3,1
+HM-BR-024-V2,HM-BR-024,Oak,,,Oak,0.00,37,3,1
+HM-BR-025-V1,HM-BR-025,White,,,White,0.00,32,3,1
+HM-BR-025-V2,HM-BR-025,Walnut,,,Walnut,0.00,13,3,1
+HM-BR-026-V1,HM-BR-026,Natural,,,Natural,0.00,18,3,1
+HM-BR-026-V2,HM-BR-026,Dark,,,Dark,0.00,40,3,1
+HM-BR-027-V1,HM-BR-027,Black,,,Black,0.00,15,3,1
+HM-BR-027-V2,HM-BR-027,White,,,White,0.00,13,3,1
+HM-BR-028-V1,HM-BR-028,White,,,White,0.00,2,3,1
+HM-BR-028-V2,HM-BR-028,Pink,,,Pink,0.00,12,3,1
+HM-BR-028-V3,HM-BR-028,Oak,,,Oak,0.00,14,3,1
+HM-BR-029-V1,HM-BR-029,Blush,Blush,,,0.00,37,3,1
+HM-BR-029-V2,HM-BR-029,Grey,Grey,,,0.00,6,3,1
+HM-BR-030-V1,HM-BR-030,White,,,White,0.00,27,3,1
+HM-BR-030-V2,HM-BR-030,Black,,,Black,0.00,17,3,1
+HM-BR-031-V1,HM-BR-031,Black,,,Black,0.00,20,3,1
+HM-BR-031-V2,HM-BR-031,Natural,,,Natural,0.00,29,3,1
+HM-BR-031-V3,HM-BR-031,Gold,,,Gold,0.00,6,3,1
+HM-BR-032-V1,HM-BR-032,Gold,,,Gold,0.00,8,3,1
+HM-BR-032-V2,HM-BR-032,Black,,,Black,0.00,36,3,1
+HM-BR-033-V1,HM-BR-033,Black,,,Black,0.00,35,3,1
+HM-BR-033-V2,HM-BR-033,Gold,,,Gold,0.00,3,3,1
+HM-BR-034-V1,HM-BR-034,Grey,Grey,,,0.00,36,3,1
+HM-BR-034-V2,HM-BR-034,Beige,Beige,,,0.00,35,3,1
+HM-BR-035-V1,HM-BR-035,Grey,Grey,,,0.00,12,3,1
+HM-BR-035-V2,HM-BR-035,Beige,Beige,,,0.00,7,3,1
+HM-BR-036-V1,HM-BR-036,Natural,,,Natural,0.00,24,3,1
+HM-BR-036-V2,HM-BR-036,Black,,,Black,0.00,15,3,1
+HM-DR-001-V1,HM-DR-001,Natural Oak,,,Natural Oak,0.00,35,3,1
+HM-DR-001-V2,HM-DR-001,Walnut,,,Walnut,0.00,22,3,1
+HM-DR-002-V1,HM-DR-002,Natural,,,Natural,0.00,6,3,1
+HM-DR-002-V2,HM-DR-002,Walnut,,,Walnut,0.00,8,3,1
+HM-DR-003-V1,HM-DR-003,White Marble,,,White Marble,0.00,11,3,1
+HM-DR-003-V2,HM-DR-003,Black Marble,,,Black Marble,0.00,16,3,1
+HM-DR-004-V1,HM-DR-004,Natural,,,Natural,0.00,35,3,1
+HM-DR-004-V2,HM-DR-004,Espresso,,,Espresso,0.00,12,3,1
+HM-DR-005-V1,HM-DR-005,Walnut,,,Walnut,0.00,28,3,1
+HM-DR-005-V2,HM-DR-005,White,,,White,0.00,24,3,1
+HM-DR-006-V1,HM-DR-006,Oak,,,Oak,0.00,10,3,1
+HM-DR-006-V2,HM-DR-006,Black,,,Black,0.00,29,3,1
+HM-DR-007-V1,HM-DR-007,Grey,Grey,,,0.00,5,3,1
+HM-DR-007-V2,HM-DR-007,Beige,Beige,,,0.00,38,3,1
+HM-DR-007-V3,HM-DR-007,Green,Green,,,0.00,19,3,1
+HM-DR-008-V1,HM-DR-008,Natural,,,Natural,0.00,13,3,1
+HM-DR-008-V2,HM-DR-008,Walnut,,,Walnut,0.00,9,3,1
+HM-DR-009-V1,HM-DR-009,Emerald,Emerald,,,0.00,12,3,1
+HM-DR-009-V2,HM-DR-009,Blush,Blush,,,0.00,35,3,1
+HM-DR-009-V3,HM-DR-009,Navy,Navy,,,0.00,2,3,1
+HM-DR-010-V1,HM-DR-010,Natural,,,Natural,0.00,12,3,1
+HM-DR-010-V2,HM-DR-010,Black,,,Black,0.00,21,3,1
+HM-DR-011-V1,HM-DR-011,Black,,,Black,0.00,21,3,1
+HM-DR-011-V2,HM-DR-011,White,,,White,0.00,31,3,1
+HM-DR-012-V1,HM-DR-012,Walnut,,,Walnut,0.00,36,3,1
+HM-DR-012-V2,HM-DR-012,White,,,White,0.00,25,3,1
+HM-DR-013-V1,HM-DR-013,Natural Oak,,,Natural Oak,0.00,24,3,1
+HM-DR-013-V2,HM-DR-013,Walnut,,,Walnut,0.00,12,3,1
+HM-DR-014-V1,HM-DR-014,Natural,,,Natural,0.00,34,3,1
+HM-DR-014-V2,HM-DR-014,Espresso,,,Espresso,0.00,33,3,1
+HM-DR-015-V1,HM-DR-015,Black,,,Black,0.00,12,3,1
+HM-DR-015-V2,HM-DR-015,White,,,White,0.00,1,3,1
+HM-DR-016-V1,HM-DR-016,Natural,,,Natural,0.00,7,3,1
+HM-DR-016-V2,HM-DR-016,Walnut,,,Walnut,0.00,24,3,1
+HM-DR-017-V1,HM-DR-017,Grey,Grey,,,0.00,11,3,1
+HM-DR-017-V2,HM-DR-017,Beige,Beige,,,0.00,0,3,1
+HM-DR-018-V1,HM-DR-018,Black,Black,,,0.00,5,3,1
+HM-DR-018-V2,HM-DR-018,Tan,Tan,,,0.00,6,3,1
+HM-DR-019-V1,HM-DR-019,Black,Black,,,0.00,25,3,1
+HM-DR-019-V2,HM-DR-019,White,White,,,0.00,34,3,1
+HM-DR-019-V3,HM-DR-019,Grey,Grey,,,0.00,31,3,1
+HM-DR-020-V1,HM-DR-020,Walnut,,,Walnut,0.00,10,3,1
+HM-DR-020-V2,HM-DR-020,Black,,,Black,0.00,39,3,1
+HM-DR-021-V1,HM-DR-021,Natural Oak,,,Natural Oak,0.00,33,3,1
+HM-DR-021-V2,HM-DR-021,Walnut,,,Walnut,0.00,20,3,1
+HM-DR-022-V1,HM-DR-022,White,,,White,0.00,20,3,1
+HM-DR-022-V2,HM-DR-022,Grey,,,Grey,0.00,24,3,1
+HM-DR-023-V1,HM-DR-023,Natural,,,Natural,0.00,33,3,1
+HM-DR-023-V2,HM-DR-023,Dark,,,Dark,0.00,37,3,1
+HM-DR-024-V1,HM-DR-024,White,,,White,0.00,32,3,1
+HM-DR-024-V2,HM-DR-024,Walnut,,,Walnut,0.00,25,3,1
+HM-DR-025-V1,HM-DR-025,Natural,,,Natural,0.00,11,3,1
+HM-DR-025-V2,HM-DR-025,White,,,White,0.00,38,3,1
+HM-DR-026-V1,HM-DR-026,Gold,,,Gold,0.00,7,3,1
+HM-DR-026-V2,HM-DR-026,Black,,,Black,0.00,40,3,1
+HM-DR-027-V1,HM-DR-027,Walnut,,,Walnut,0.00,14,3,1
+HM-DR-027-V2,HM-DR-027,Black,,,Black,0.00,15,3,1
+HM-DR-028-V1,HM-DR-028,Walnut,,,Walnut,0.00,16,3,1
+HM-DR-028-V2,HM-DR-028,Black,,,Black,0.00,13,3,1
+HM-DR-029-V1,HM-DR-029,Black,,,Black,0.00,40,3,1
+HM-DR-029-V2,HM-DR-029,Natural,,,Natural,0.00,36,3,1
+HM-DR-030-V1,HM-DR-030,White,,,White,0.00,38,3,1
+HM-DR-030-V2,HM-DR-030,Black,,,Black,0.00,3,3,1
+HM-KT-001-V1,HM-KT-001,White,,,White,0.00,18,3,1
+HM-KT-001-V2,HM-KT-001,Oak,,,Oak,0.00,10,3,1
+HM-KT-002-V1,HM-KT-002,Natural,,,Natural,0.00,0,3,1
+HM-KT-002-V2,HM-KT-002,Espresso,,,Espresso,0.00,15,3,1
+HM-KT-003-V1,HM-KT-003,White,,,White,0.00,27,3,1
+HM-KT-003-V2,HM-KT-003,Oak,,,Oak,0.00,17,3,1
+HM-KT-004-V1,HM-KT-004,White,,,White,0.00,16,3,1
+HM-KT-004-V2,HM-KT-004,Grey,,,Grey,0.00,25,3,1
+HM-KT-005-V1,HM-KT-005,Black,,,Black,0.00,24,3,1
+HM-KT-005-V2,HM-KT-005,Oak,,,Oak,0.00,8,3,1
+HM-KT-006-V1,HM-KT-006,Black,,,Black,0.00,32,3,1
+HM-KT-006-V2,HM-KT-006,White,,,White,0.00,7,3,1
+HM-KT-007-V1,HM-KT-007,Black,,,Black,0.00,29,3,1
+HM-KT-007-V2,HM-KT-007,White,,,White,0.00,28,3,1
+HM-KT-008-V1,HM-KT-008,Silver,,,Silver,0.00,28,3,1
+HM-KT-009-V1,HM-KT-009,Natural,,,Natural,0.00,16,3,1
+HM-KT-009-V2,HM-KT-009,White,,,White,0.00,11,3,1
+HM-KT-010-V1,HM-KT-010,Natural,,,Natural,0.00,40,3,1
+HM-KT-010-V2,HM-KT-010,Walnut,,,Walnut,0.00,19,3,1
+HM-HO-001-V1,HM-HO-001,Walnut,,,Walnut,0.00,7,3,1
+HM-HO-001-V2,HM-HO-001,White,,,White,0.00,28,3,1
+HM-HO-001-V3,HM-HO-001,Oak,,,Oak,0.00,32,3,1
+HM-HO-002-V1,HM-HO-002,Walnut,,,Walnut,0.00,17,3,1
+HM-HO-002-V2,HM-HO-002,White,,,White,0.00,26,3,1
+HM-HO-003-V1,HM-HO-003,Natural,,,Natural,0.00,9,3,1
+HM-HO-003-V2,HM-HO-003,Black,,,Black,0.00,28,3,1
+HM-HO-004-V1,HM-HO-004,Natural,,,Natural,0.00,25,3,1
+HM-HO-004-V2,HM-HO-004,White,,,White,0.00,8,3,1
+HM-HO-005-V1,HM-HO-005,White,,,White,0.00,7,3,1
+HM-HO-005-V2,HM-HO-005,Oak,,,Oak,0.00,5,3,1
+HM-HO-006-V1,HM-HO-006,Walnut,,,Walnut,0.00,7,3,1
+HM-HO-006-V2,HM-HO-006,Black,,,Black,0.00,16,3,1
+HM-HO-007-V1,HM-HO-007,Black,Black,,,0.00,40,3,1
+HM-HO-007-V2,HM-HO-007,Grey,Grey,,,0.00,27,3,1
+HM-HO-008-V1,HM-HO-008,Black,Black,,,0.00,7,3,1
+HM-HO-008-V2,HM-HO-008,Brown,Brown,,,0.00,8,3,1
+HM-HO-009-V1,HM-HO-009,Black,Black,,,0.00,36,3,1
+HM-HO-009-V2,HM-HO-009,Blue,Blue,,,0.00,15,3,1
+HM-HO-009-V3,HM-HO-009,Grey,Grey,,,0.00,29,3,1
+HM-HO-010-V1,HM-HO-010,Black/Red,Black/Red,,,0.00,24,3,1
+HM-HO-010-V2,HM-HO-010,Black/Blue,Black/Blue,,,0.00,15,3,1
+HM-HO-010-V3,HM-HO-010,White,White,,,0.00,11,3,1
+HM-HO-011-V1,HM-HO-011,Black,Black,,,0.00,21,3,1
+HM-HO-011-V2,HM-HO-011,White,White,,,0.00,36,3,1
+HM-HO-012-V1,HM-HO-012,Black,,,Black,0.00,9,3,1
+HM-HO-012-V2,HM-HO-012,Grey,,,Grey,0.00,21,3,1
+HM-HO-012-V3,HM-HO-012,White,,,White,0.00,35,3,1
+HM-HO-013-V1,HM-HO-013,Black,,,Black,0.00,40,3,1
+HM-HO-013-V2,HM-HO-013,Grey,,,Grey,0.00,14,3,1
+HM-HO-014-V1,HM-HO-014,White,,,White,0.00,7,3,1
+HM-HO-014-V2,HM-HO-014,Black,,,Black,0.00,34,3,1
+HM-HO-015-V1,HM-HO-015,Walnut,,,Walnut,0.00,29,3,1
+HM-HO-015-V2,HM-HO-015,White,,,White,0.00,37,3,1
+HM-HO-016-V1,HM-HO-016,Natural,,,Natural,0.00,11,3,1
+HM-HO-017-V1,HM-HO-017,Clear,,,Clear,0.00,18,3,1
+HM-HO-018-V1,HM-HO-018,Black,Black,,,0.00,35,3,1
+HM-HO-018-V2,HM-HO-018,Grey,Grey,,,0.00,1,3,1
+HM-HO-019-V1,HM-HO-019,White,,,White,0.00,34,3,1
+HM-HO-020-V1,HM-HO-020,Walnut,,,Walnut,0.00,16,3,1
+HM-HO-020-V2,HM-HO-020,White,,,White,0.00,35,3,1
+HM-HO-021-V1,HM-HO-021,Oak,,,Oak,0.00,26,3,1
+HM-HO-021-V2,HM-HO-021,White,,,White,0.00,39,3,1
+HM-HO-022-V1,HM-HO-022,Walnut,,,Walnut,0.00,22,3,1
+HM-HO-022-V2,HM-HO-022,White,,,White,0.00,28,3,1
+HM-KN-001-V1,HM-KN-001,Natural,,,Natural,0.00,13,3,1
+HM-KN-001-V2,HM-KN-001,White,,,White,0.00,33,3,1
+HM-KN-002-V1,HM-KN-002,Red,Red,,,0.00,30,3,1
+HM-KN-002-V2,HM-KN-002,Blue,Blue,,,0.00,0,3,1
+HM-KN-003-V1,HM-KN-003,Pink,Pink,,,0.00,36,3,1
+HM-KN-003-V2,HM-KN-003,White,White,,,0.00,38,3,1
+HM-KN-004-V1,HM-KN-004,Natural,,,Natural,0.00,33,3,1
+HM-KN-004-V2,HM-KN-004,White,,,White,0.00,39,3,1
+HM-KN-004-V3,HM-KN-004,Grey,,,Grey,0.00,38,3,1
+HM-KN-005-V1,HM-KN-005,Grey,Grey,,,0.00,40,3,1
+HM-KN-005-V2,HM-KN-005,White,White,,,0.00,16,3,1
+HM-KN-006-V1,HM-KN-006,White,,,White,0.00,32,3,1
+HM-KN-006-V2,HM-KN-006,Natural,,,Natural,0.00,29,3,1
+HM-KN-007-V1,HM-KN-007,Blue,Blue,,,0.00,24,3,1
+HM-KN-007-V2,HM-KN-007,Pink,Pink,,,0.00,13,3,1
+HM-KN-007-V3,HM-KN-007,Green,Green,,,0.00,35,3,1
+HM-KN-008-V1,HM-KN-008,Natural,,,Natural,0.00,25,3,1
+HM-KN-008-V2,HM-KN-008,White,,,White,0.00,19,3,1
+HM-KN-009-V1,HM-KN-009,White,White,,,0.00,22,3,1
+HM-KN-009-V2,HM-KN-009,Grey,Grey,,,0.00,33,3,1
+HM-KN-010-V1,HM-KN-010,Blue,Blue,,,0.00,16,3,1
+HM-KN-010-V2,HM-KN-010,Pink,Pink,,,0.00,36,3,1
+HM-KN-010-V3,HM-KN-010,Natural,Natural,,,0.00,38,3,1
+HM-KN-011-V1,HM-KN-011,Natural,,,Natural,0.00,25,3,1
+HM-KN-011-V2,HM-KN-011,White,,,White,0.00,3,3,1
+HM-KN-012-V1,HM-KN-012,White,,,White,0.00,6,3,1
+HM-KN-012-V2,HM-KN-012,Natural,,,Natural,0.00,11,3,1
+HM-KN-013-V1,HM-KN-013,White,White,,,0.00,23,3,1
+HM-KN-013-V2,HM-KN-013,Blue,Blue,,,0.00,38,3,1
+HM-KN-013-V3,HM-KN-013,Pink,Pink,,,0.00,30,3,1
+HM-KN-014-V1,HM-KN-014,Grey,Grey,,,0.00,19,3,1
+HM-KN-014-V2,HM-KN-014,Pink,Pink,,,0.00,20,3,1
+HM-KN-015-V1,HM-KN-015,Natural,,,Natural,0.00,32,3,1
+HM-KN-015-V2,HM-KN-015,White,,,White,0.00,38,3,1
+HM-KN-016-V1,HM-KN-016,Natural,,,Natural,0.00,10,3,1
+HM-KN-016-V2,HM-KN-016,White,,,White,0.00,0,3,1
+HM-OP-001-V1,HM-OP-001,Charcoal,Charcoal,,,0.00,35,3,1
+HM-OP-001-V2,HM-OP-001,White,White,,,0.00,15,3,1
+HM-OP-002-V1,HM-OP-002,Natural,,,Natural,0.00,5,3,1
+HM-OP-003-V1,HM-OP-003,Black,Black,,,0.00,16,3,1
+HM-OP-003-V2,HM-OP-003,Green,Green,,,0.00,13,3,1
+HM-OP-004-V1,HM-OP-004,Grey,Grey,,,0.00,6,3,1
+HM-OP-004-V2,HM-OP-004,Brown,Brown,,,0.00,26,3,1
+HM-OP-005-V1,HM-OP-005,Grey,Grey,,,0.00,19,3,1
+HM-OP-005-V2,HM-OP-005,Beige,Beige,,,0.00,34,3,1
+HM-OP-006-V1,HM-OP-006,Black,Black,,,0.00,32,3,1
+HM-OP-006-V2,HM-OP-006,Brown,Brown,,,0.00,29,3,1
+HM-OP-007-V1,HM-OP-007,Natural,,,Natural,0.00,26,3,1
+HM-OP-008-V1,HM-OP-008,Grey,Grey,,,0.00,15,3,1
+HM-OP-008-V2,HM-OP-008,Green,Green,,,0.00,28,3,1
+HM-OP-009-V1,HM-OP-009,Natural,,,Natural,0.00,14,3,1
+HM-OP-009-V2,HM-OP-009,White,,,White,0.00,33,3,1
+HM-OP-010-V1,HM-OP-010,Grey,Grey,,,0.00,33,3,1
+HM-OP-010-V2,HM-OP-010,Brown,Brown,,,0.00,30,3,1
+HM-OP-011-V1,HM-OP-011,Natural,,,Natural,0.00,5,3,1
+HM-OP-012-V1,HM-OP-012,Black,,,Black,0.00,26,3,1
+HM-OP-012-V2,HM-OP-012,White,,,White,0.00,5,3,1
+HM-OP-013-V1,HM-OP-013,Beige,Beige,,,0.00,35,3,1
+HM-OP-013-V2,HM-OP-013,Grey,Grey,,,0.00,40,3,1
+HM-OP-013-V3,HM-OP-013,Stripe,Stripe,,,0.00,23,3,1
+HM-OP-014-V1,HM-OP-014,Natural,Natural,,,0.00,21,3,1
+HM-OP-014-V2,HM-OP-014,Black,Black,,,0.00,37,3,1
+HM-OP-015-V1,HM-OP-015,Natural,,,Natural,0.00,27,3,1
+HM-OP-016-V1,HM-OP-016,Grey,Grey,,,0.00,20,3,1
+HM-OP-016-V2,HM-OP-016,Blue,Blue,,,0.00,36,3,1
+HM-OP-017-V1,HM-OP-017,Grey,Grey,,,0.00,32,3,1
+HM-OP-017-V2,HM-OP-017,Beige,Beige,,,0.00,9,3,1
+HM-OP-018-V1,HM-OP-018,Beige,Beige,,,0.00,8,3,1
+HM-OP-018-V2,HM-OP-018,Grey,Grey,,,0.00,17,3,1
+HM-OP-018-V3,HM-OP-018,Navy,Navy,,,0.00,31,3,1
+HM-OP-019-V1,HM-OP-019,Beige,Beige,,,0.00,18,3,1
+HM-OP-019-V2,HM-OP-019,Grey,Grey,,,0.00,3,3,1
+HM-OP-020-V1,HM-OP-020,Charcoal,Charcoal,,,0.00,11,3,1
+HM-OP-020-V2,HM-OP-020,White,White,,,0.00,37,3,1
+HM-OP-021-V1,HM-OP-021,Natural,,,Natural,0.00,32,3,1
+HM-OP-021-V2,HM-OP-021,Grey,,,Grey,0.00,7,3,1
+HM-OP-022-V1,HM-OP-022,White,White,,,0.00,20,3,1
+HM-OP-022-V2,HM-OP-022,Black,Black,,,0.00,14,3,1
+HM-OP-022-V3,HM-OP-022,Terracotta,Terracotta,,,0.00,8,3,1
+HM-OP-023-V1,HM-OP-023,Grey,Grey,,,0.00,22,3,1
+HM-OP-023-V2,HM-OP-023,Brown,Brown,,,0.00,34,3,1
+HM-OP-024-V1,HM-OP-024,Black,,,Black,0.00,1,3,1
+HM-OP-024-V2,HM-OP-024,Grey,,,Grey,0.00,10,3,1
+HM-SO-001-V1,HM-SO-001,Black,,,Black,0.00,31,3,1
+HM-SO-001-V2,HM-SO-001,White,,,White,0.00,39,3,1
+HM-SO-002-V1,HM-SO-002,White,,,White,0.00,10,3,1
+HM-SO-002-V2,HM-SO-002,Oak,,,Oak,0.00,31,3,1
+HM-SO-003-V1,HM-SO-003,Natural,,,Natural,0.00,5,3,1
+HM-SO-003-V2,HM-SO-003,White,,,White,0.00,16,3,1
+HM-SO-004-V1,HM-SO-004,Black/Walnut,,,Black/Walnut,0.00,22,3,1
+HM-SO-004-V2,HM-SO-004,White/Oak,,,White/Oak,0.00,27,3,1
+HM-SO-005-V1,HM-SO-005,Black,,,Black,0.00,12,3,1
+HM-SO-005-V2,HM-SO-005,Grey,,,Grey,0.00,25,3,1
+HM-SO-006-V1,HM-SO-006,White,,,White,0.00,27,3,1
+HM-SO-006-V2,HM-SO-006,Walnut,,,Walnut,0.00,29,3,1
+HM-SO-007-V1,HM-SO-007,White,,,White,0.00,38,3,1
+HM-SO-007-V2,HM-SO-007,Oak,,,Oak,0.00,14,3,1
+HM-SO-008-V1,HM-SO-008,Walnut,,,Walnut,0.00,25,3,1
+HM-SO-008-V2,HM-SO-008,White,,,White,0.00,3,3,1
+HM-SO-009-V1,HM-SO-009,Natural,,,Natural,0.00,25,3,1
+HM-SO-009-V2,HM-SO-009,Walnut,,,Walnut,0.00,6,3,1
+HM-SO-010-V1,HM-SO-010,Grey,Grey,,,0.00,32,3,1
+HM-SO-010-V2,HM-SO-010,Beige,Beige,,,0.00,36,3,1
+HM-SO-011-V1,HM-SO-011,Natural,,,Natural,0.00,9,3,1
+HM-SO-011-V2,HM-SO-011,White,,,White,0.00,21,3,1
+HM-SO-012-V1,HM-SO-012,Natural,,,Natural,0.00,31,3,1
+HM-SO-012-V2,HM-SO-012,Black,,,Black,0.00,10,3,1
+HM-SO-013-V1,HM-SO-013,Walnut,,,Walnut,0.00,23,3,1
+HM-SO-013-V2,HM-SO-013,White,,,White,0.00,37,3,1
+HM-SO-013-V3,HM-SO-013,Black,,,Black,0.00,23,3,1
+HM-SO-014-V1,HM-SO-014,Black,,,Black,0.00,40,3,1
+HM-SO-014-V2,HM-SO-014,Silver,,,Silver,0.00,37,3,1
+HM-SO-015-V1,HM-SO-015,White,,,White,0.00,11,3,1
+HM-SO-015-V2,HM-SO-015,Black,,,Black,0.00,25,3,1
+HM-SO-016-V1,HM-SO-016,Natural,,,Natural,0.00,11,3,1
+HM-SO-016-V2,HM-SO-016,Grey,,,Grey,0.00,20,3,1
+HM-SO-017-V1,HM-SO-017,White,,,White,0.00,5,3,1
+HM-SO-017-V2,HM-SO-017,Grey,,,Grey,0.00,37,3,1
+HM-EH-001-V1,HM-EH-001,Walnut,,,Walnut,0.00,12,3,1
+HM-EH-001-V2,HM-EH-001,White,,,White,0.00,18,3,1
+HM-EH-002-V1,HM-EH-002,White,,,White,0.00,8,3,1
+HM-EH-002-V2,HM-EH-002,Oak,,,Oak,0.00,36,3,1
+HM-EH-003-V1,HM-EH-003,Natural,,,Natural,0.00,2,3,1
+HM-EH-003-V2,HM-EH-003,White,,,White,0.00,40,3,1
+HM-EH-004-V1,HM-EH-004,Black,,,Black,0.00,39,3,1
+HM-EH-004-V2,HM-EH-004,Silver,,,Silver,0.00,23,3,1
+HM-EH-005-V1,HM-EH-005,Walnut,,,Walnut,0.00,33,3,1
+HM-EH-005-V2,HM-EH-005,White,,,White,0.00,34,3,1
+HM-EH-006-V1,HM-EH-006,Natural,,,Natural,0.00,29,3,1
+HM-EH-006-V2,HM-EH-006,Black,,,Black,0.00,11,3,1
+HM-BF-001-V1,HM-BF-001,White,,,White,0.00,23,3,1
+HM-BF-001-V2,HM-BF-001,Oak,,,Oak,0.00,34,3,1
+HM-BF-002-V1,HM-BF-002,White,,,White,0.00,26,3,1
+HM-BF-002-V2,HM-BF-002,Grey,,,Grey,0.00,19,3,1
+HM-BF-003-V1,HM-BF-003,Silver,,,Silver,0.00,23,3,1
+HM-BF-004-V1,HM-BF-004,White,,,White,0.00,14,3,1
+HM-BF-004-V2,HM-BF-004,Walnut,,,Walnut,0.00,23,3,1
+HM-BF-005-V1,HM-BF-005,White,,,White,0.00,19,3,1
+HM-BF-005-V2,HM-BF-005,Black,,,Black,0.00,12,3,1
+HM-BF-006-V1,HM-BF-006,Natural,,,Natural,0.00,13,3,1
+HM-BF-007-V1,HM-BF-007,Natural,,,Natural,0.00,14,3,1
+HM-BF-007-V2,HM-BF-007,Black,,,Black,0.00,32,3,1
+HM-LT-001-V1,HM-LT-001,Black,,,Black,0.00,12,3,1
+HM-LT-001-V2,HM-LT-001,Brass,,,Brass,0.00,27,3,1
+HM-LT-002-V1,HM-LT-002,Natural,,,Natural,0.00,30,3,1
+HM-LT-002-V2,HM-LT-002,Walnut,,,Walnut,0.00,36,3,1
+HM-LT-003-V1,HM-LT-003,White,White,,,0.00,19,3,1
+HM-LT-003-V2,HM-LT-003,Sage,Sage,,,0.00,39,3,1
+HM-LT-003-V3,HM-LT-003,Blue,Blue,,,0.00,31,3,1
+HM-LT-004-V1,HM-LT-004,Black,,,Black,0.00,14,3,1
+HM-LT-004-V2,HM-LT-004,Gold,,,Gold,0.00,39,3,1
+HM-LT-005-V1,HM-LT-005,Black,,,Black,0.00,23,3,1
+HM-LT-005-V2,HM-LT-005,White,,,White,0.00,25,3,1
+HM-LT-006-V1,HM-LT-006,Natural,,,Natural,0.00,10,3,1
+HM-LT-006-V2,HM-LT-006,Black,,,Black,0.00,26,3,1
+HM-LT-007-V1,HM-LT-007,Black,,,Black,0.00,6,3,1
+HM-LT-007-V2,HM-LT-007,Copper,,,Copper,0.00,24,3,1
+HM-LT-008-V1,HM-LT-008,Chrome,,,Chrome,0.00,8,3,1
+HM-LT-008-V2,HM-LT-008,Gold,,,Gold,0.00,7,3,1
+HM-LT-009-V1,HM-LT-009,Brass,,,Brass,0.00,16,3,1
+HM-LT-009-V2,HM-LT-009,Black,,,Black,0.00,34,3,1
+HM-LT-010-V1,HM-LT-010,Black,,,Black,0.00,17,3,1
+HM-LT-010-V2,HM-LT-010,Gold,,,Gold,0.00,20,3,1
+HM-LT-011-V1,HM-LT-011,White,,,White,0.00,13,3,1
+HM-LT-012-V1,HM-LT-012,White,White,,,0.00,9,3,1
+HM-LT-012-V2,HM-LT-012,Black,Black,,,0.00,15,3,1
+HM-LT-013-V1,HM-LT-013,Brass,,,Brass,0.00,10,3,1
+HM-LT-013-V2,HM-LT-013,Black,,,Black,0.00,5,3,1
+HM-LT-014-V1,HM-LT-014,Warm White,Warm White,,,0.00,0,3,1
+HM-LT-014-V2,HM-LT-014,Pink,Pink,,,0.00,23,3,1
+HM-LT-014-V3,HM-LT-014,Blue,Blue,,,0.00,25,3,1
+HM-LT-015-V1,HM-LT-015,Black,,,Black,0.00,2,3,1
+HM-DA-001-V1,HM-DA-001,Black Frame,,,Black Frame,0.00,26,3,1
+HM-DA-001-V2,HM-DA-001,Natural Frame,,,Natural Frame,0.00,21,3,1
+HM-DA-002-V1,HM-DA-002,Black,,,Black,0.00,19,3,1
+HM-DA-002-V2,HM-DA-002,Natural,,,Natural,0.00,6,3,1
+HM-DA-002-V3,HM-DA-002,White,,,White,0.00,16,3,1
+HM-DA-003-V1,HM-DA-003,Black,,,Black,0.00,20,3,1
+HM-DA-003-V2,HM-DA-003,Gold,,,Gold,0.00,11,3,1
+HM-DA-004-V1,HM-DA-004,Cream,Cream,,,0.00,30,3,1
+HM-DA-005-V1,HM-DA-005,White,White,,,0.00,25,3,1
+HM-DA-005-V2,HM-DA-005,Terracotta,Terracotta,,,0.00,19,3,1
+HM-DA-005-V3,HM-DA-005,Sage,Sage,,,0.00,38,3,1
+HM-DA-006-V1,HM-DA-006,Green,,,Green,0.00,15,3,1
+HM-DA-007-V1,HM-DA-007,Walnut,,,Walnut,0.00,20,3,1
+HM-DA-007-V2,HM-DA-007,Natural,,,Natural,0.00,6,3,1
+HM-DA-008-V1,HM-DA-008,Black,,,Black,0.00,16,3,1
+HM-DA-008-V2,HM-DA-008,Gold,,,Gold,0.00,20,3,1
+HM-DA-009-V1,HM-DA-009,Sage,Sage,,,0.00,13,3,1
+HM-DA-009-V2,HM-DA-009,Terracotta,Terracotta,,,0.00,40,3,1
+HM-DA-009-V3,HM-DA-009,Navy,Navy,,,0.00,8,3,1
+HM-DA-009-V4,HM-DA-009,Cream,Cream,,,0.00,21,3,1
+HM-DA-010-V1,HM-DA-010,Grey,Grey,,,0.00,15,3,1
+HM-DA-010-V2,HM-DA-010,Mustard,Mustard,,,0.00,30,3,1
+HM-DA-010-V3,HM-DA-010,Blush,Blush,,,0.00,17,3,1
+HM-DA-011-V1,HM-DA-011,Cream,Cream,,,0.00,40,3,1
+HM-DA-011-V2,HM-DA-011,Grey,Grey,,,0.00,21,3,1
+HM-DA-011-V3,HM-DA-011,Rust,Rust,,,0.00,27,3,1
+HM-DA-012-V1,HM-DA-012,Ivory,Ivory,,,0.00,12,3,1
+HM-DA-012-V2,HM-DA-012,Charcoal,Charcoal,,,0.00,34,3,1
+HM-DA-013-V1,HM-DA-013,Grey,Grey,,,0.00,23,3,1
+HM-DA-013-V2,HM-DA-013,Navy,Navy,,,0.00,9,3,1
+HM-DA-013-V3,HM-DA-013,Beige,Beige,,,0.00,11,3,1
+HM-DA-014-V1,HM-DA-014,White,White,,,0.00,23,3,1
+HM-DA-014-V2,HM-DA-014,Ivory,Ivory,,,0.00,33,3,1
+HM-DA-015-V1,HM-DA-015,Black,,,Black,0.00,5,3,1
+HM-DA-015-V2,HM-DA-015,Gold,,,Gold,0.00,21,3,1
+HM-RG-001-V1,HM-RG-001,Grey Geometric,Grey Geometric,,,0.00,17,3,1
+HM-RG-001-V2,HM-RG-001,Beige Abstract,Beige Abstract,,,0.00,28,3,1
+HM-RG-001-V3,HM-RG-001,Blue Vintage,Blue Vintage,,,0.00,30,3,1
+HM-RG-002-V1,HM-RG-002,Cream,Cream,,,0.00,22,3,1
+HM-RG-002-V2,HM-RG-002,Grey,Grey,,,0.00,32,3,1
+HM-RG-003-V1,HM-RG-003,Grey,Grey,,,0.00,31,3,1
+HM-RG-003-V2,HM-RG-003,Navy,Navy,,,0.00,7,3,1
+HM-RG-004-V1,HM-RG-004,Natural,Natural,,,0.00,37,3,1
+HM-RG-004-V2,HM-RG-004,Terracotta,Terracotta,,,0.00,6,3,1
+HM-RG-005-V1,HM-RG-005,Natural,,,Natural,0.00,39,3,1
+HM-RG-006-V1,HM-RG-006,Grey,Grey,,,0.00,5,3,1
+HM-RG-006-V2,HM-RG-006,Blue Stripe,Blue Stripe,,,0.00,36,3,1
+HM-RG-007-V1,HM-RG-007,Alphabet,Alphabet,,,0.00,6,3,1
+HM-RG-007-V2,HM-RG-007,Animals,Animals,,,0.00,34,3,1
+HM-RG-008-V1,HM-RG-008,Clear,,,Clear,0.00,6,3,1
+HM-BL-001-V1,HM-BL-001,Single / White,White,Single,,0.00,7,3,1
+HM-BL-001-V2,HM-BL-001,Single / Grey,Grey,Single,,0.00,12,3,1
+HM-BL-001-V3,HM-BL-001,Single / Navy,Navy,Single,,0.00,13,3,1
+HM-BL-001-V4,HM-BL-001,Double / White,White,Double,,400.00,35,3,1
+HM-BL-001-V5,HM-BL-001,Double / Grey,Grey,Double,,400.00,38,3,1
+HM-BL-001-V6,HM-BL-001,Double / Navy,Navy,Double,,400.00,7,3,1
+HM-BL-001-V7,HM-BL-001,Queen / White,White,Queen,,700.00,15,3,1
+HM-BL-001-V8,HM-BL-001,Queen / Grey,Grey,Queen,,700.00,18,3,1
+HM-BL-001-V9,HM-BL-001,Queen / Navy,Navy,Queen,,700.00,35,3,1
+HM-BL-001-V10,HM-BL-001,King / White,White,King,,1100.00,6,3,1
+HM-BL-001-V11,HM-BL-001,King / Grey,Grey,King,,1100.00,15,3,1
+HM-BL-001-V12,HM-BL-001,King / Navy,Navy,King,,1100.00,8,3,1
+HM-BL-002-V1,HM-BL-002,Double,,Double,,0.00,24,3,1
+HM-BL-002-V2,HM-BL-002,Queen,,Queen,,600.00,17,3,1
+HM-BL-002-V3,HM-BL-002,King,,King,,1000.00,21,3,1
+HM-BL-003-V1,HM-BL-003,medium,,,medium,0.00,29,3,1
+HM-BL-004-V1,HM-BL-004,soft,,,soft,0.00,34,3,1
+HM-BL-005-V1,HM-BL-005,Grey,Grey,,,0.00,33,3,1
+HM-BL-005-V2,HM-BL-005,Navy,Navy,,,0.00,7,3,1
+HM-BL-006-V1,HM-BL-006,White,White,,,0.00,12,3,1
+HM-BL-006-V2,HM-BL-006,Grey,Grey,,,0.00,10,3,1
+HM-BL-007-V1,HM-BL-007,Single,,Single,,0.00,14,3,1
+HM-BL-007-V2,HM-BL-007,Double,,Double,,300.00,9,3,1
+HM-BL-007-V3,HM-BL-007,Queen,,Queen,,600.00,2,3,1
+HM-BL-007-V4,HM-BL-007,King,,King,,900.00,26,3,1
+HM-BL-008-V1,HM-BL-008,White,White,,,0.00,10,3,1
+HM-BL-008-V2,HM-BL-008,Grey,Grey,,,0.00,37,3,1
+HM-BL-008-V3,HM-BL-008,Sage,Sage,,,0.00,13,3,1
+HM-CH-001-V1,HM-CH-001,Black/Walnut,,,Black/Walnut,0.00,0,3,1
+HM-CH-001-V2,HM-CH-001,White/Oak,,,White/Oak,0.00,6,3,1
+HM-CH-002-V1,HM-CH-002,Natural,,,Natural,0.00,10,3,1
+HM-CH-002-V2,HM-CH-002,Black,,,Black,0.00,18,3,1
+HM-CH-003-V1,HM-CH-003,Black,Black,,,0.00,6,3,1
+HM-CH-003-V2,HM-CH-003,Burgundy,Burgundy,,,0.00,16,3,1
+HM-CH-004-V1,HM-CH-004,Black,Black,,,0.00,34,3,1
+HM-CH-004-V2,HM-CH-004,White,White,,,0.00,38,3,1
+HM-CH-004-V3,HM-CH-004,Grey,Grey,,,0.00,21,3,1
+HM-CH-005-V1,HM-CH-005,White,,,White,0.00,22,3,1
+HM-CH-006-V1,HM-CH-006,Black,Black,,,0.00,33,3,1
+HM-CH-006-V2,HM-CH-006,Grey,Grey,,,0.00,28,3,1
+HM-CH-007-V1,HM-CH-007,Black,Black,,,0.00,8,3,1
+HM-CH-007-V2,HM-CH-007,White,White,,,0.00,11,3,1
+HM-CH-008-V1,HM-CH-008,Black,Black,,,0.00,7,3,1
+HM-CH-008-V2,HM-CH-008,Brown,Brown,,,0.00,10,3,1
+HM-CH-009-V1,HM-CH-009,Black,,,Black,0.00,13,3,1
+HM-CH-009-V2,HM-CH-009,Silver,,,Silver,0.00,9,3,1
+HM-CH-010-V1,HM-CH-010,Walnut,,,Walnut,0.00,37,3,1
+HM-CH-010-V2,HM-CH-010,White,,,White,0.00,20,3,1
+HM-CH-011-V1,HM-CH-011,Blue,Blue,,,0.00,30,3,1
+HM-CH-011-V2,HM-CH-011,Green,Green,,,0.00,22,3,1
+HM-CH-012-V1,HM-CH-012,Grey,Grey,,,0.00,23,3,1
+HM-CH-012-V2,HM-CH-012,Blue,Blue,,,0.00,26,3,1
+HM-SS-001-V1,HM-SS-001,Black,Black,,,0.00,39,3,1
+HM-SS-001-V2,HM-SS-001,Black/Red,Black/Red,,,0.00,34,3,1
+HM-SS-002-V1,HM-SS-002,White,,,White,0.00,31,3,1
+HM-SS-002-V2,HM-SS-002,Oak,,,Oak,0.00,30,3,1
+HM-SS-003-V1,HM-SS-003,Black,,,Black,0.00,21,3,1
+HM-SS-003-V2,HM-SS-003,Walnut,,,Walnut,0.00,30,3,1
+HM-SS-004-V1,HM-SS-004,Black,,,Black,0.00,5,3,1
+HM-SS-005-V1,HM-SS-005,Black,Black,,,0.00,22,3,1
+HM-SS-006-V1,HM-SS-006,Beige,Beige,,,0.00,34,3,1
+HM-SS-006-V2,HM-SS-006,Grey,Grey,,,0.00,5,3,1
+HM-SS-007-V1,HM-SS-007,Grey,Grey,,,0.00,9,3,1
+HM-SS-007-V2,HM-SS-007,Blue,Blue,,,0.00,17,3,1
+HM-SS-008-V1,HM-SS-008,Natural,,,Natural,0.00,32,3,1
+HM-SS-009-V1,HM-SS-009,White,,,White,0.00,21,3,1
+HM-SS-009-V2,HM-SS-009,Oak,,,Oak,0.00,28,3,1
+HM-SS-010-V1,HM-SS-010,Grey,Grey,,,0.00,10,3,1
+HM-SS-010-V2,HM-SS-010,Beige,Beige,,,0.00,28,3,1
+HM-SS-011-V1,HM-SS-011,White,,,White,0.00,25,3,1
+HM-SS-011-V2,HM-SS-011,Grey,,,Grey,0.00,22,3,1
+HM-SS-012-V1,HM-SS-012,White,,,White,0.00,25,3,1
+HM-SS-012-V2,HM-SS-012,Oak,,,Oak,0.00,32,3,1
+HM-SS-013-V1,HM-SS-013,Oak,,,Oak,0.00,15,3,1
+HM-SS-013-V2,HM-SS-013,White,,,White,0.00,33,3,1
+HM-SS-014-V1,HM-SS-014,Black,Black,,,0.00,11,3,1
+HM-SS-014-V2,HM-SS-014,Brown,Brown,,,0.00,27,3,1
+HM-SS-015-V1,HM-SS-015,Walnut,,,Walnut,0.00,13,3,1
+HM-SS-015-V2,HM-SS-015,Black,,,Black,0.00,33,3,1
+HM-SS-016-V1,HM-SS-016,Wood Grain,,,Wood Grain,0.00,0,3,1
+HM-AC-001-V1,HM-AC-001,Clear,,,Clear,0.00,32,3,1
+HM-AC-002-V1,HM-AC-002,Clear,,,Clear,0.00,28,3,1
+HM-AC-003-V1,HM-AC-003,Beige,,,Beige,0.00,5,3,1
+HM-AC-003-V2,HM-AC-003,Black,,,Black,0.00,30,3,1
+HM-AC-004-V1,HM-AC-004,Grey,Grey,,,0.00,21,3,1
+HM-AC-004-V2,HM-AC-004,Beige,Beige,,,0.00,7,3,1
+HM-AC-004-V3,HM-AC-004,Navy,Navy,,,0.00,7,3,1
+HM-AC-005-V1,HM-AC-005,Clear,,,Clear,0.00,37,3,1
+HM-AC-006-V1,HM-AC-006,Black,,,Black,0.00,40,3,1
+HM-AC-006-V2,HM-AC-006,Silver,,,Silver,0.00,30,3,1
+HM-AC-007-V1,HM-AC-007,Natural,,,Natural,0.00,29,3,1
+HM-AC-007-V2,HM-AC-007,Black,,,Black,0.00,8,3,1
+HM-AC-008-V1,HM-AC-008,White,,,White,0.00,5,3,1
+HM-AC-009-V1,HM-AC-009,Black,,,Black,0.00,23,3,1
+HM-BD-001-V1,HM-BD-001,Grey,Grey,,,0.00,12,3,1
+HM-BD-001-V2,HM-BD-001,Beige,Beige,,,0.00,23,3,1
+HM-BD-002-V1,HM-BD-002,Walnut,,,Walnut,0.00,21,3,1
+HM-BD-002-V2,HM-BD-002,White,,,White,0.00,28,3,1
+HM-BD-003-V1,HM-BD-003,Natural Oak,,,Natural Oak,0.00,21,3,1
+HM-BD-003-V2,HM-BD-003,Walnut,,,Walnut,0.00,23,3,1
+HM-BD-004-V1,HM-BD-004,Walnut,,,Walnut,0.00,28,3,1
+HM-BD-004-V2,HM-BD-004,White,,,White,0.00,16,3,1
+HM-BD-005-V1,HM-BD-005,Natural,,,Natural,0.00,5,3,1
+HM-BD-005-V2,HM-BD-005,White,,,White,0.00,12,3,1
+HM-BD-006-V1,HM-BD-006,Oak,,,Oak,0.00,39,3,1
+HM-BD-006-V2,HM-BD-006,White,,,White,0.00,40,3,1
+HM-BD-007-V1,HM-BD-007,Grey,Grey,,,0.00,12,3,1
+HM-BD-007-V2,HM-BD-007,Navy,Navy,,,0.00,12,3,1

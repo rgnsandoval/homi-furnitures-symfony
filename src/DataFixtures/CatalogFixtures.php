@@ -15,7 +15,7 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * Loads the owner's CSV catalog from fixtures-data/ when it is present, otherwise the built-in sample catalog.
- * Images come from assets/seed/products/. A missing image becomes a generated placeholder, so no image is ever broken.
+ * Images come from project_images/. A missing image becomes a generated placeholder, so no image is ever broken.
  */
 class CatalogFixtures extends Fixture
 {
@@ -175,13 +175,12 @@ class CatalogFixtures extends Fixture
             $categories[$row['slug']] = (new Category())
                 ->setName($row['name'])
                 ->setSlug($row['slug'])
-                ->setDescription($row['description'] ?? null ?: null)
-                ->setDisplayOrder((int) ($row['display_order'] ?? 0));
+                ->setDisplayOrder((int) ($row['displayOrder'] ?? 0));
             $manager->persist($categories[$row['slug']]);
         }
         foreach ($this->readCsv('categories.csv') as $row) {
-            if (!empty($row['parent_slug'])) {
-                $categories[$row['slug']]->setParent($categories[$row['parent_slug']]);
+            if (!empty($row['parent'])) {
+                $categories[$row['slug']]->setParent($categories[$row['parent']]);
             }
         }
 
@@ -199,43 +198,47 @@ class CatalogFixtures extends Fixture
                 ->setSlug($row['slug'])
                 ->setDescription($row['description'])
                 ->setPrice($row['price'])
-                ->setCostPrice($row['cost_price'])
-                ->setSalePrice($row['sale_price'] ?? null ?: null)
-                ->setStatus(Product::STATUS_ACTIVE)
-                ->setIsFeatured('1' === ($row['featured'] ?? '0'))
+                ->setCostPrice($row['costPrice'])
+                ->setSalePrice($row['salePrice'] ?: null)
+                ->setStatus($row['status'])
+                ->setIsFeatured('1' === $row['isFeatured'])
                 ->setMaterial($row['material'])
-                ->setDefaultColor($row['color'] ?? null ?: null)
-                ->setWidthCm($row['width_cm'] ?? null ?: null)
-                ->setDepthCm($row['depth_cm'] ?? null ?: null)
-                ->setHeightCm($row['height_cm'] ?? null ?: null)
-                ->setWeightKg($row['weight_kg'] ?? null ?: null)
-                ->setAssemblyRequired('1' === ($row['assembly_required'] ?? '0'))
-                ->setWarrantyMonths(isset($row['warranty_months']) && '' !== $row['warranty_months'] ? (int) $row['warranty_months'] : null)
-                ->setLeadTimeDays((int) ($row['lead_time_days'] ?? 0))
+                ->setDefaultColor($row['defaultColor'] ?: null)
+                ->setWidthCm($row['widthCm'] ?: null)
+                ->setDepthCm($row['depthCm'] ?: null)
+                ->setHeightCm($row['heightCm'] ?: null)
+                ->setWeightKg($row['weightKg'] ?: null)
+                ->setAssemblyRequired('1' === $row['assemblyRequired'])
+                ->setWarrantyMonths('' !== $row['warrantyMonths'] ? (int) $row['warrantyMonths'] : null)
+                ->setLeadTimeDays((int) $row['leadTimeDays'])
+                ->setSpecifications($row['specifications'] ? json_decode($row['specifications'], true, flags: JSON_THROW_ON_ERROR) : null)
                 ->setCategory($categories[$row['category_slug']])
-                ->setBrand($brands[$row['brand'] ?? ''] ?? null)
+                ->setBrand($brands[$row['brand']] ?? null)
                 ->setImage($this->copyImage($row['slug']));
             $manager->persist($product);
+            $manager->persist((new ProductImage())->setFilename((string) $product->getImage())->setAltText($row['name'])->setProduct($product));
             $products[$row['sku']] = $product;
             $this->addReference(self::PRODUCT_PREFIX.($index + 1), $product);
         }
 
+        $positions = array_flip(array_keys($products));
         $counts = [];
         foreach ($this->readCsv('variants.csv') as $row) {
             $product = $products[$row['product_sku']];
             $variant = (new ProductVariant())
                 ->setSku($row['sku'])
                 ->setName($row['name'])
-                ->setColor($row['color'] ?? null ?: null)
-                ->setSize($row['size'] ?? null ?: null)
-                ->setFinish($row['finish'] ?? null ?: null)
-                ->setPriceAdjustment($row['price_adjustment'] ?? null ?: '0.00')
+                ->setColor($row['color'] ?: null)
+                ->setSize($row['size'] ?: null)
+                ->setFinish($row['finish'] ?: null)
+                ->setPriceAdjustment($row['priceAdjustment'] ?: '0.00')
                 ->setStock((int) $row['stock'])
-                ->setLowStockThreshold((int) ($row['low_stock_threshold'] ?? 5));
+                ->setLowStockThreshold((int) $row['lowStockThreshold'])
+                ->setIsActive('1' === $row['isActive']);
             $product->addVariant($variant);
             $manager->persist($variant);
 
-            $position = array_search($product->getSku(), array_keys($products), true) + 1;
+            $position = $positions[$product->getSku()] + 1;
             $counts[$position] = ($counts[$position] ?? 0) + 1;
             $this->addReference(self::VARIANT_PREFIX.$position.'-'.$counts[$position], $variant);
         }
@@ -267,7 +270,7 @@ class CatalogFixtures extends Fixture
     private function copyImage(string $slug): string
     {
         foreach (['jpg', 'png', 'webp', 'svg'] as $extension) {
-            $source = $this->projectDir."/assets/seed/products/$slug.$extension";
+            $source = $this->projectDir."/project_images/$slug.$extension";
             if (is_file($source)) {
                 $this->filesystem->copy($source, $this->projectDir."/public/uploads/products/$slug.$extension", true);
 
