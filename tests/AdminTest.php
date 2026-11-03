@@ -8,7 +8,9 @@ use App\Entity\Category;
 use App\Entity\DiscountCode;
 use App\Entity\Inquiry;
 use App\Entity\Order;
+use App\Entity\OrderStatusHistory;
 use App\Entity\Payment;
+use App\Entity\PaymentStatusHistory;
 use App\Entity\Product;
 use App\Entity\ProductImage;
 use App\Entity\ProductVariant;
@@ -262,6 +264,71 @@ class AdminTest extends BaseWebTest
         $this->assertSame('Damaged in warehouse', $saved->getCancelReason());
         $this->assertContains('order.transition', $this->auditActions());
         $this->assertContains('order.cancel', $this->auditActions());
+    }
+
+    public function testFraudOrderIsCancelledAndCustomerBlockedThenDeleted(): void
+    {
+        $customer = $this->makeUser();
+        $variant = $this->makeVariant(null, 5);
+        $order = $this->makeOrder($customer, Order::STATUS_PENDING, Payment::STATUS_PENDING, '2500.00', $variant, 2);
+        $variant->setStock(3);
+        $this->em->flush();
+        $id = $order->getId();
+        $number = $order->getOrderNumber();
+        $paymentId = $order->getPayment()->getId();
+        $this->loginAdmin();
+
+        $crawler = $this->client->request('GET', '/admin/orders/'.$id);
+        $this->assertStringContainsString('Only cancelled orders can be deleted', $crawler->filter('#danger-zone')->text());
+        $this->client->submit($crawler->selectButton('Flag as fraud and cancel')->form(['note' => 'Fake bank slip']));
+        $crawler = $this->client->followRedirect();
+
+        $this->em->clear();
+        $saved = $this->em->getRepository(Order::class)->find($id);
+        $this->assertSame(Order::STATUS_CANCELLED, $saved->getStatus());
+        $this->assertSame('Fraud: Fake bank slip', $saved->getCancelReason());
+        $this->assertSame(Payment::STATUS_FAILED, $saved->getPayment()->getStatus());
+        $this->assertSame(5, $this->em->getRepository(ProductVariant::class)->find($variant->getId())->getStock());
+        $this->assertFalse($this->em->getRepository(User::class)->find($customer->getId())->isActive());
+        $this->assertContains('order.fraud', $this->auditActions());
+
+        // A wrong confirmation keeps the order.
+        $this->client->submit($crawler->selectButton('Delete order permanently')->form(['confirm' => 'nope']));
+        $this->client->followRedirect();
+        $this->assertSelectorTextContains('.flash-error', 'Type the order number');
+        $this->em->clear();
+        $this->assertNotNull($this->em->getRepository(Order::class)->find($id));
+
+        $crawler = $this->client->request('GET', '/admin/orders/'.$id);
+        $this->client->submit($crawler->selectButton('Delete order permanently')->form(['confirm' => $number]));
+        $this->assertResponseRedirects('/admin/orders');
+        $this->em->clear();
+        $this->assertNull($this->em->getRepository(Order::class)->find($id));
+        $this->assertNull($this->em->getRepository(Payment::class)->find($paymentId));
+        $this->assertSame([], $this->em->getRepository(OrderStatusHistory::class)->findBy(['parentOrder' => $id]));
+        $this->assertSame([], $this->em->getRepository(PaymentStatusHistory::class)->findBy(['payment' => $paymentId]));
+        $this->assertContains('order.delete', $this->auditActions());
+    }
+
+    public function testOrdersHoldingMoneyOrNotCancelledCannotBeDeleted(): void
+    {
+        $customer = $this->makeUser();
+        $open = $this->makeOrder($customer);
+        $paid = $this->makeOrder($customer, Order::STATUS_CANCELLED, Payment::STATUS_PAID);
+        $this->loginAdmin();
+
+        foreach ([$open, $paid] as $order) {
+            $crawler = $this->client->request('GET', '/admin/orders/'.$order->getId());
+            $token = $crawler->filter('form input[name=_token]')->first()->attr('value');
+            $this->client->request('POST', '/admin/orders/'.$order->getId().'/delete', ['_token' => $token, 'confirm' => $order->getOrderNumber()]);
+            $this->client->followRedirect();
+            $this->assertSelectorExists('.flash-error');
+        }
+
+        $this->em->clear();
+        $this->assertNotNull($this->em->getRepository(Order::class)->find($open->getId()));
+        $this->assertNotNull($this->em->getRepository(Order::class)->find($paid->getId()));
+        $this->assertNotContains('order.delete', $this->auditActions());
     }
 
     public function testInvalidTransitionShowsErrorInsteadOfCrashing(): void
