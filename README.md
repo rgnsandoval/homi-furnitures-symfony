@@ -56,16 +56,16 @@ docker compose exec -T php php bin/console app:stock:check        # exits 1 if a
 
 ## Loading your own catalog
 
-Place these files in `fixtures-data/` and reload the fixtures. No code changes are needed. Without `products.csv`, a built-in sample catalog is loaded. The demo orders use the first 31 products, so a smaller catalog needs matching changes to the demo data.
+The catalog in `fixtures-data/` (301 products, 654 variants) is loaded with the fixtures. Replace these files and reload to use another catalog. Without `products.csv`, a built-in sample catalog is loaded. The demo orders use the first 31 products, so a smaller catalog needs matching changes to the demo data.
 
 | File | Columns |
 |---|---|
-| `categories.csv` | `name, slug, description, display_order, parent_slug` |
+| `categories.csv` | `name, slug, parent, displayOrder` |
 | `brands.csv` | `name` |
-| `products.csv` | `sku, name, slug, description, price, cost_price, sale_price, material, color, width_cm, depth_cm, height_cm, weight_kg, assembly_required, warranty_months, lead_time_days, category_slug, brand, featured` |
-| `variants.csv` | `product_sku, sku, name, color, size, finish, price_adjustment, stock, low_stock_threshold` |
+| `products.csv` | `sku, name, slug, brand, category_parent, category, category_slug, price, costPrice, salePrice, status, isFeatured, image, material, defaultColor, widthCm, depthCm, heightCm, weightKg, assemblyRequired, warrantyMonths, leadTimeDays, specifications, description` |
+| `variants.csv` | `sku, product_sku, name, color, size, finish, priceAdjustment, stock, lowStockThreshold, isActive` |
 
-Product images are read from `assets/seed/products/<slug>.jpg`, `.png`, `.webp` or `.svg`. A product with no image gets a generated placeholder.
+Product images are read from `project_images/<slug>.jpg`, `.png`, `.webp` or `.svg`. A product with no image gets a generated placeholder.
 
 ## How orders work
 

@@ -1,0 +1,101 @@
+name,slug,parent,displayOrder
+Living Room,living-room,,1
+Sofas & Sectionals,sofas-and-sectionals,living-room,1
+Armchairs & Accent Chairs,armchairs-and-accent-chairs,living-room,2
+Recliners & Lounge Chairs,recliners-and-lounge-chairs,living-room,3
+Coffee Tables,coffee-tables,living-room,4
+Side & End Tables,side-and-end-tables,living-room,5
+Console Tables,console-tables,living-room,6
+TV Stands & Media Consoles,tv-stands-and-media-consoles,living-room,7
+Wall Units & Entertainment Centers,wall-units-and-entertainment-centers,living-room,8
+Bookcases & Display Shelves,bookcases-and-display-shelves,living-room,9
+"Ottomans, Poufs & Benches",ottomans-poufs-and-benches,living-room,10
+Futons & Daybeds,futons-and-daybeds,living-room,11
+Room Dividers & Screens,room-dividers-and-screens,living-room,12
+Bean Bags & Floor Seating,bean-bags-and-floor-seating,living-room,13
+Bedroom,bedroom,,2
+Bed Frames,bed-frames,bedroom,1
+Headboards,headboards,bedroom,2
+Mattresses,mattresses,bedroom,3
+Bunk & Loft Beds,bunk-and-loft-beds,bedroom,4
+Nightstands & Bedside Tables,nightstands-and-bedside-tables,bedroom,5
+Dressers & Chests,dressers-and-chests,bedroom,6
+Wardrobes & Armoires,wardrobes-and-armoires,bedroom,7
+Vanity & Dressing Tables,vanity-and-dressing-tables,bedroom,8
+Mirrors,mirrors,bedroom,9
+Under-Bed Storage & Bedroom Accessories,under-bed-storage-and-bedroom-accessories,bedroom,10
+Dining Room,dining-room,,3
+Dining Tables,dining-tables,dining-room,1
+Dining Chairs,dining-chairs,dining-room,2
+Dining Sets,dining-sets,dining-room,3
+Dining Benches,dining-benches,dining-room,4
+Bar Stools & Bar Tables,bar-stools-and-bar-tables,dining-room,5
+Buffets & Sideboards,buffets-and-sideboards,dining-room,6
+China Cabinets & Hutches,china-cabinets-and-hutches,dining-room,7
+Bar Carts & Wine Storage,bar-carts-and-wine-storage,dining-room,8
+Serving Trolleys,serving-trolleys,dining-room,9
+Kitchen,kitchen,,4
+Kitchen Islands & Carts,kitchen-islands-and-carts,kitchen,1
+Pantry & Kitchen Cabinets,pantry-and-kitchen-cabinets,kitchen,2
+Kitchen Racks & Organizers,kitchen-racks-and-organizers,kitchen,3
+Breakfast Nooks & Kitchen Stools,breakfast-nooks-and-kitchen-stools,kitchen,4
+Home Office,home-office,,5
+Desks,desks,home-office,1
+Office Chairs,office-chairs,home-office,2
+Filing & Storage Cabinets,filing-and-storage-cabinets,home-office,3
+Desk Accessories & Organizers,desk-accessories-and-organizers,home-office,4
+Meeting & Conference Tables,meeting-and-conference-tables,home-office,5
+Kids & Nursery,kids-and-nursery,,6
+Kids Beds,kids-beds,kids-and-nursery,1
+Cribs & Bassinets,cribs-and-bassinets,kids-and-nursery,2
+"Kids Desks, Tables & Chairs",kids-desks-tables-and-chairs,kids-and-nursery,3
+Toy Storage & Kids Furniture,toy-storage-and-kids-furniture,kids-and-nursery,4
+Play Furniture & Feeding,play-furniture-and-feeding,kids-and-nursery,5
+Outdoor & Patio,outdoor-and-patio,,7
+Patio Dining Sets,patio-dining-sets,outdoor-and-patio,1
+Outdoor Sofas & Lounge Sets,outdoor-sofas-and-lounge-sets,outdoor-and-patio,2
+Garden Chairs & Benches,garden-chairs-and-benches,outdoor-and-patio,3
+Outdoor Tables,outdoor-tables,outdoor-and-patio,4
+"Hammocks, Swings & Hanging Chairs",hammocks-swings-and-hanging-chairs,outdoor-and-patio,5
+Sun Loungers & Daybeds,sun-loungers-and-daybeds,outdoor-and-patio,6
+"Umbrellas, Gazebos & Pergolas",umbrellas-gazebos-and-pergolas,outdoor-and-patio,7
+"Planters, Outdoor Storage & Fire Pits",planters-outdoor-storage-and-fire-pits,outdoor-and-patio,8
+Storage & Organization,storage-and-organization,,8
+Shoe Racks & Cabinets,shoe-racks-and-cabinets,storage-and-organization,1
+Shelving Units,shelving-units,storage-and-organization,2
+Cabinets & Storage Chests,cabinets-and-storage-chests,storage-and-organization,3
+"Hall Trees, Racks & Wall Shelves",hall-trees-racks-and-wall-shelves,storage-and-organization,4
+Closet Systems & Laundry,closet-systems-and-laundry,storage-and-organization,5
+Entryway & Hallway,entryway-and-hallway,,9
+Entryway Furniture,entryway-furniture,entryway-and-hallway,1
+Bathroom Furniture,bathroom-furniture,,10
+Vanities & Cabinets,vanities-and-cabinets,bathroom-furniture,1
+Bathroom Storage,bathroom-storage,bathroom-furniture,2
+Lighting,lighting,,11
+Floor & Table Lamps,floor-and-table-lamps,lighting,1
+Pendant Lights & Chandeliers,pendant-lights-and-chandeliers,lighting,2
+"Wall, Ceiling & Desk Lights",wall-ceiling-and-desk-lights,lighting,3
+Decor & Accessories,decor-and-accessories,,12
+"Wall Art, Frames & Clocks",wall-art-frames-and-clocks,decor-and-accessories,1
+"Vases, Plants & Trays",vases-plants-and-trays,decor-and-accessories,2
+Cushions & Throws,cushions-and-throws,decor-and-accessories,3
+Curtains & Rods,curtains-and-rods,decor-and-accessories,4
+Rugs & Flooring Accents,rugs-and-flooring-accents,,13
+Area Rugs & Runners,area-rugs-and-runners,rugs-and-flooring-accents,1
+Door Mats & Specialty Rugs,door-mats-and-specialty-rugs,rugs-and-flooring-accents,2
+Bedding & Linen,bedding-and-linen,,14
+"Sheets, Duvets & Pillows",sheets-duvets-and-pillows,bedding-and-linen,1
+Commercial & Hospitality,commercial-and-hospitality,,15
+Restaurant & Cafe Furniture,restaurant-and-cafe-furniture,commercial-and-hospitality,1
+"Salon, Waiting Room & Reception",salon-waiting-room-and-reception,commercial-and-hospitality,2
+Hotel & Classroom,hotel-and-classroom,commercial-and-hospitality,3
+Specialty & Seasonal,specialty-and-seasonal,,16
+"Gaming, Hobby & Music",gaming-hobby-and-music,specialty-and-seasonal,1
+Pet Furniture,pet-furniture,specialty-and-seasonal,2
+Space-Saving & Multifunction,space-saving-and-multifunction,specialty-and-seasonal,3
+Home Theater & Game Room,home-theater-and-game-room,specialty-and-seasonal,4
+"Assembly, Care & Accessories",assembly-care-and-accessories,,17
+Furniture Care & Protection,furniture-care-and-protection,assembly-care-and-accessories,1
+"Hardware, Wheels & Safety",hardware-wheels-and-safety,assembly-care-and-accessories,2
+Bundles,bundles,,18
+Room Sets,room-sets,bundles,1
