@@ -38,6 +38,19 @@
             <label>Reason <input name="reason" maxlength="255" required></label>
             <button type="submit">Cancel order</button>
         </form>
+
+        <section id="fraud" class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+            <h2 class="mt-0">Suspected fraud?</h2>
+            <p class="text-sm text-stone-600">Cancels the order, puts the stock back and marks an unpaid payment as failed. You can also deactivate the customer so they cannot log in or order again.</p>
+            <form method="post" action="{{ path('app_admin_order_fraud', {id: order.id}) }}" onsubmit="return confirm('Flag {{ order.orderNumber }} as fraud and cancel it?')">
+                <input type="hidden" name="_token" value="{{ token }}">
+                <label>What looked wrong (optional) <input name="note" maxlength="240" placeholder="e.g. fake bank proof, mismatched name"></label>
+                {% if 'ROLE_ADMIN' not in order.customer.roles %}
+                    <label class="flex items-center gap-2"><input type="checkbox" name="block" value="1" checked> Deactivate {{ order.customer.email }}</label>
+                {% endif %}
+                <button type="submit" class="mt-2" style="background: var(--color-clay)">Flag as fraud and cancel</button>
+            </form>
+        </section>
     {% endif %}
 
     <h2>Tracking and notes</h2>
@@ -54,4 +67,18 @@
             <li>{{ entry.createdAt|date('M j, Y g:i A') }}: {{ entry.fromStatus ?? 'new' }} to {{ entry.toStatus }}{% if entry.changedBy %} by {{ entry.changedBy.email }}{% endif %}{% if entry.note %} ({{ entry.note }}){% endif %}</li>
         {% endfor %}
     </ol>
+
+    <section id="danger-zone" class="mt-10 rounded-2xl border border-red-200 p-5">
+        <h2 class="mt-0 text-clay">Danger zone</h2>
+        {% if deleteBlocker %}
+            <p class="mb-0 text-sm text-stone-600"><strong>Delete order:</strong> {{ deleteBlocker }}</p>
+        {% else %}
+            <p class="text-sm text-stone-600">Permanently deletes this order with its items, payment and history. This cannot be undone; a summary is kept in the audit log.</p>
+            <form method="post" action="{{ path('app_admin_order_delete', {id: order.id}) }}">
+                <input type="hidden" name="_token" value="{{ token }}">
+                <label>Type <strong>{{ order.orderNumber }}</strong> to confirm <input name="confirm" autocomplete="off" required pattern="{{ order.orderNumber }}"></label>
+                <button type="submit" class="mt-2" style="background: var(--color-clay)">Delete order permanently</button>
+            </form>
+        {% endif %}
+    </section>
 {% endblock %}

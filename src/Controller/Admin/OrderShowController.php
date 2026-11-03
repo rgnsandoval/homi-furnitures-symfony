@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Order;
+use App\Entity\Payment;
 use App\Entity\User;
 use App\Repository\AuditLogRepository;
 use App\Repository\OrderRepository;
@@ -23,6 +24,12 @@ final class OrderShowController extends AbstractController
             'history' => $orders->statusHistory($order),
             'nextStatuses' => array_values(array_diff($transitions->allowedFrom((string) $order->getStatus()), [Order::STATUS_CANCELLED])),
             'canCancel' => in_array(Order::STATUS_CANCELLED, $transitions->allowedFrom((string) $order->getStatus()), true),
+            'deleteBlocker' => match (true) {
+                Order::STATUS_CANCELLED !== $order->getStatus() => 'Only cancelled orders can be deleted.',
+                Payment::STATUS_PAID === $order->getPayment()?->getStatus() => 'Refund the paid payment before deleting.',
+                $orders->hasReturnRequests($order) => 'A return request is on file, so this order is kept.',
+                default => null,
+            },
         ]);
     }
 
@@ -63,6 +70,80 @@ final class OrderShowController extends AbstractController
         }
 
         return $this->redirectToRoute('app_admin_order_show', ['id' => $order->getId()], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * Cancels a suspicious order in one step, putting stock back and failing an unpaid payment,
+     * and can deactivate the customer so they cannot place another.
+     */
+    #[Route('/admin/orders/{id}/fraud', name: 'app_admin_order_fraud', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function fraud(Order $order, Request $request, OrderTransitionService $transitions, AuditLogRepository $audit, EntityManagerInterface $em): Response
+    {
+        $this->checkToken($request, $order);
+        $note = mb_substr(trim($request->request->getString('note')), 0, 240);
+        $reason = 'Fraud'.('' === $note ? '' : ': '.$note);
+
+        try {
+            $transitions->cancel($order, $reason, $this->admin());
+        } catch (\DomainException $e) {
+            $this->addFlash('error', $e->getMessage());
+
+            return $this->redirectToRoute('app_admin_order_show', ['id' => $order->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        $customer = $order->getCustomer();
+        $blocked = false;
+        if ($request->request->getBoolean('block') && null !== $customer && $customer !== $this->admin() && !in_array('ROLE_ADMIN', $customer->getRoles(), true) && $customer->isActive()) {
+            $customer->setIsActive(false);
+            $em->flush();
+            $blocked = true;
+            $audit->record($this->admin(), 'user.deactivate', 'User', (int) $customer->getId(), ['reason' => 'Fraud on '.$order->getOrderNumber()]);
+        }
+
+        $audit->record($this->admin(), 'order.fraud', 'Order', (int) $order->getId(), ['reason' => $reason, 'total' => $order->getTotal(), 'customerBlocked' => $blocked]);
+        $this->addFlash('success', 'Order flagged as fraud and cancelled'.($blocked ? '; the customer account is deactivated.' : '.'));
+
+        return $this->redirectToRoute('app_admin_order_show', ['id' => $order->getId()], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * Permanently deletes a cancelled order. Orders with money still held, or with a return on file, stay for the books.
+     */
+    #[Route('/admin/orders/{id}/delete', name: 'app_admin_order_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function delete(Order $order, Request $request, OrderRepository $orders, AuditLogRepository $audit): Response
+    {
+        $this->checkToken($request, $order);
+        $number = (string) $order->getOrderNumber();
+
+        $problem = match (true) {
+            Order::STATUS_CANCELLED !== $order->getStatus() => 'Only cancelled orders can be deleted. Cancel it or flag it as fraud first.',
+            Payment::STATUS_PAID === $order->getPayment()?->getStatus() => 'This order has a paid payment. Refund it before deleting the order.',
+            $orders->hasReturnRequests($order) => 'This order has a return request on file and cannot be deleted.',
+            trim($request->request->getString('confirm')) !== $number => 'Type the order number exactly to confirm the deletion.',
+            default => null,
+        };
+        if (null !== $problem) {
+            $this->addFlash('error', $problem);
+
+            return $this->redirectToRoute('app_admin_order_show', ['id' => $order->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        $id = (int) $order->getId();
+        $snapshot = [
+            'orderNumber' => $number,
+            'customer' => $order->getCustomer()?->getEmail(),
+            'total' => $order->getTotal(),
+            'createdAt' => $order->getCreatedAt()?->format(\DATE_ATOM),
+            'cancelReason' => $order->getCancelReason(),
+            'payment' => $order->getPayment() ? $order->getPayment()->getMethod().' / '.$order->getPayment()->getStatus() : null,
+            'items' => array_map(static fn ($item) => $item->getQuantity().' x '.$item->getProductName().' - '.$item->getVariantName(), $order->getItems()->toArray()),
+        ];
+
+        $orders->deleteWithHistory($order);
+        $audit->record($this->admin(), 'order.delete', 'Order', $id, $snapshot);
+        $this->addFlash('success', sprintf('Order %s was deleted.', $number));
+
+        return $this->redirectToRoute('app_admin_order', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/admin/orders/{id}/details', name: 'app_admin_order_details', requirements: ['id' => '\d+'], methods: ['POST'])]

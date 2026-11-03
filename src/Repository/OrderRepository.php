@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Order;
 use App\Entity\OrderStatusHistory;
 use App\Entity\Payment;
+use App\Entity\PaymentStatusHistory;
+use App\Entity\ReturnRequest;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -212,5 +214,37 @@ class OrderRepository extends ServiceEntityRepository
             ->orderBy('h.createdAt', 'ASC')
             ->addOrderBy('h.id', 'ASC')
             ->getQuery()->getResult();
+    }
+
+    public function hasReturnRequests(Order $order): bool
+    {
+        return (int) $this->getEntityManager()->createQueryBuilder()
+            ->select('COUNT(r.id)')
+            ->from(ReturnRequest::class, 'r')
+            ->andWhere('r.parentOrder = :order')->setParameter('order', $order)
+            ->getQuery()->getSingleScalarResult() > 0;
+    }
+
+    /**
+     * Permanently removes an order with its items, payment and both status histories, in one transaction.
+     * Callers decide whether the order may go; this only does the deleting.
+     */
+    public function deleteWithHistory(Order $order): void
+    {
+        $em = $this->getEntityManager();
+        $em->wrapInTransaction(function () use ($em, $order): void {
+            if (null !== $payment = $order->getPayment()) {
+                $em->createQueryBuilder()->delete(PaymentStatusHistory::class, 'ph')
+                    ->andWhere('ph.payment = :payment')->setParameter('payment', $payment)
+                    ->getQuery()->execute();
+            }
+            $em->createQueryBuilder()->delete(OrderStatusHistory::class, 'oh')
+                ->andWhere('oh.parentOrder = :order')->setParameter('order', $order)
+                ->getQuery()->execute();
+
+            // Items go through orphanRemoval and the payment through cascade remove.
+            $em->remove($order);
+            $em->flush();
+        });
     }
 }
