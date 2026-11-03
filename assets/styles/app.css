@@ -1,3 +1,126 @@
-body {
-    background-color: skyblue;
+@import 'tailwindcss';
+
+@source "../../templates";
+@source "../controllers";
+
+@theme {
+  --color-army-50: #f4f6ec;
+  --color-army-100: #e7ebd3;
+  --color-army-200: #cfd8a9;
+  --color-army-300: #b0be7a;
+  --color-army-400: #8c9d52;
+  --color-army-500: #6f7f3a;
+  --color-army-600: #5b6a2e;
+  --color-army-700: #4b5320;
+  --color-army-800: #3a4219;
+  --color-army-900: #2b3213;
+  --color-army-950: #1a1f0b;
+  --color-clay: #b5543a;
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-display: Manrope, Inter, ui-sans-serif, system-ui, sans-serif;
 }
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
+  body {
+    min-width: 320px;
+    background: white;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  button, summary { cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  :focus-visible { outline: 2px solid var(--color-army-600); outline-offset: 2px; }
+}
+
+@layer components {
+  .page-container { width: 100%; max-width: 80rem; margin-inline: auto; padding-inline: 1rem; }
+  .font-display { font-family: var(--font-display); }
+  .icon-button { display: grid; width: 2.75rem; height: 2.75rem; flex: none; place-items: center; border-radius: 999px; color: var(--color-army-950); transition: 200ms ease-out; }
+  .icon-button:hover { background: var(--color-army-50); }
+  .count-badge { position: absolute; right: 0; top: 0; display: grid; min-width: 1rem; height: 1rem; place-items: center; border-radius: 999px; background: var(--color-clay); padding-inline: .2rem; font-size: .625rem; font-weight: 700; color: white; }
+  .search-field { height: 2.75rem; width: 100%; border: 1px solid var(--color-stone-200); border-radius: 999px; background: rgb(245 245 244 / .8); padding-inline: 2.75rem 1rem; font-size: .875rem; color: var(--color-army-950); outline: none; transition: 200ms; }
+  .search-field:focus { border-color: var(--color-army-500); background: white; box-shadow: 0 0 0 2px var(--color-army-100); }
+  .eyebrow { font-size: .75rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--color-army-600); }
+  .button-light, .button-glass { display: inline-flex; min-height: 3.25rem; align-items: center; justify-content: center; gap: .625rem; border-radius: 999px; padding-inline: 1.5rem; font-size: .875rem; font-weight: 700; transition: 200ms ease-out; }
+  .button-light { background: white; color: var(--color-army-950); }
+  .button-light:hover { transform: translateY(-2px); background: var(--color-army-50); }
+  .button-glass { border: 1px solid rgb(255 255 255 / .35); background: rgb(255 255 255 / .08); color: white; backdrop-filter: blur(8px); }
+  .button-glass:hover { background: rgb(255 255 255 / .16); }
+  .room-card { position: relative; display: block; min-height: 22rem; overflow: hidden; border-radius: 1.5rem; background: var(--color-army-100); }
+  .pill-filter { display: inline-flex; height: 2.75rem; flex: none; align-items: center; border: 1px solid var(--color-stone-200); border-radius: 999px; background: white; padding-inline: 1.25rem; font-size: .875rem; font-weight: 700; color: var(--color-stone-700); transition: 200ms; }
+  .pill-filter:hover { border-color: var(--color-army-400); }
+  .pill-filter.is-active { border-color: var(--color-army-700); background: var(--color-army-700); color: white; }
+  .nav-link { border-radius: 999px; padding: .5rem 1rem; font-size: .875rem; font-weight: 600; color: var(--color-stone-700); transition: 200ms; }
+  .nav-link:hover { background: var(--color-army-50); color: var(--color-army-900); }
+  .menu-link { display: block; border-radius: .75rem; padding: .625rem .75rem; font-size: .875rem; font-weight: 600; color: var(--color-army-950); }
+  .menu-link:hover { background: var(--color-army-50); }
+
+  .btn { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; gap: .5rem; border-radius: 999px; padding-inline: 1.25rem; font-size: .875rem; font-weight: 700; transition: 200ms ease-out; }
+  .btn-primary { background: var(--color-army-700); color: white; }
+  .btn-primary:hover { background: var(--color-army-600); }
+  .btn-secondary { border: 1px solid var(--color-stone-300); background: white; color: var(--color-army-950); }
+  .btn-secondary:hover { border-color: var(--color-army-400); background: var(--color-army-50); }
+
+  .field { display: block; font-size: .875rem; font-weight: 600; color: var(--color-army-950); }
+  .card { border: 1px solid var(--color-stone-200); border-radius: 1.5rem; background: white; padding: 1.5rem; }
+  @media (min-width: 640px) { .card { padding: 2rem; } }
+
+  /* Controls in plain forms, so every generated Symfony form matches the design. */
+  .ui input:not([type=checkbox], [type=radio], [type=hidden], [type=file]), .ui select, .ui textarea,
+  .field-control {
+    display: block; width: 100%; min-height: 2.75rem; margin-top: .375rem; border: 1px solid var(--color-stone-300); border-radius: .75rem; background: white;
+    padding: .5rem .875rem; font-size: .875rem; font-weight: 400; color: var(--color-army-950); outline: none; transition: 200ms;
+  }
+  .ui input:focus:not([type=checkbox], [type=radio], [type=file]), .ui select:focus, .ui textarea:focus, .field-control:focus {
+    border-color: var(--color-army-500); box-shadow: 0 0 0 2px var(--color-army-100);
+  }
+  .ui input:disabled, .ui select:disabled, .ui textarea:disabled { background: var(--color-stone-100); color: var(--color-stone-500); }
+  .ui input[type=checkbox], .ui input[type=radio] { width: 1.05rem; height: 1.05rem; accent-color: var(--color-army-700); }
+  .ui input[type=file] { display: block; width: 100%; margin-top: .375rem; font-size: .875rem; }
+  .ui input[type=file]::file-selector-button { margin-right: .75rem; border: 1px solid var(--color-stone-300); border-radius: 999px; background: white; padding: .4rem 1rem; font-weight: 600; cursor: pointer; }
+
+  /* The base look of content pages: account, checkout and the whole admin area. */
+  .ui h1 { font-family: var(--font-display); font-size: 1.875rem; font-weight: 800; line-height: 1.15; letter-spacing: -.025em; color: var(--color-army-950); margin-bottom: 1.5rem; }
+  .ui h2 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--color-army-950); margin-top: 2.5rem; margin-bottom: .875rem; }
+  .ui h3 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-army-950); margin-top: 1.5rem; margin-bottom: .625rem; }
+  .ui p { margin-bottom: .75rem; line-height: 1.6; }
+  .ui a:not(.btn, .pill-filter) { font-weight: 600; color: var(--color-army-700); }
+  .ui a:not(.btn, .pill-filter):hover { color: var(--color-army-500); text-decoration: underline; }
+  .ui label { font-size: .875rem; font-weight: 600; color: var(--color-army-950); }
+  .ui form > div > div, .ui form > div:not([class]) { margin-bottom: 1rem; }
+  .ui form ul { margin-top: .25rem; font-size: .8125rem; color: var(--color-clay); }
+  .ui table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+  .ui thead th { border-bottom: 1px solid var(--color-stone-300); padding: .625rem .75rem; text-align: left; font-size: .6875rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--color-stone-500); white-space: nowrap; }
+  .ui tbody th { padding: .625rem .75rem; text-align: left; font-weight: 600; color: var(--color-army-950); }
+  .ui tbody td { border-bottom: 1px solid var(--color-stone-100); padding: .75rem; vertical-align: middle; }
+  .ui tbody tr:hover { background: rgb(244 246 236 / .5); }
+  .ui td form { display: inline-flex; flex-wrap: wrap; align-items: center; gap: .375rem; }
+  .ui td input:not([type=checkbox], [type=radio], [type=hidden], [type=file]), .ui td select { display: inline-block; width: auto; min-height: 2.25rem; margin-top: 0; }
+  .ui dl { display: grid; grid-template-columns: minmax(8rem, max-content) 1fr; gap: .5rem 1.5rem; font-size: .875rem; }
+  .ui dt { font-weight: 600; color: var(--color-army-950); }
+  .ui dd { color: var(--color-stone-600); }
+  .ui button:not(.icon-button, .btn, .unstyled) {
+    display: inline-flex; min-height: 2.5rem; align-items: center; justify-content: center; border-radius: 999px; background: var(--color-army-700);
+    padding-inline: 1.125rem; font-size: .8125rem; font-weight: 700; color: white; transition: 200ms ease-out;
+  }
+  .ui button:not(.icon-button, .btn, .unstyled):hover { background: var(--color-army-600); }
+  .ui .table-wrap { overflow-x: auto; }
+
+  .pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2.5rem; font-size: .875rem; color: var(--color-stone-500); }
+  .pagination a { display: inline-flex; min-height: 2.75rem; align-items: center; border: 1px solid var(--color-stone-300); border-radius: 999px; background: white; padding-inline: 1.25rem; font-weight: 700; color: var(--color-army-950); }
+  .pagination a:hover { border-color: var(--color-army-400); text-decoration: none; }
+
+  .status-pill { display: inline-flex; border-radius: 999px; background: var(--color-army-100); padding: .2rem .7rem; font-size: .75rem; font-weight: 700; color: var(--color-army-800); }
+  .status-pill.is-cancelled, .status-pill.is-rejected { background: #f6e4df; color: #8a3a25; }
+  .status-pill.is-pending, .status-pill.is-requested { background: #f5ecd6; color: #76591a; }
+}
+
+@media (min-width: 640px) { .page-container { padding-inline: 1.5rem; } }
+@media (min-width: 1024px) { .page-container { padding-inline: 2rem; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
