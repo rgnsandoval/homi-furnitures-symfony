@@ -10,18 +10,22 @@
                 {{ filters.q ? 'Results for “' ~ filters.q ~ '”' : 'Shop' }}
             </h1>
 
-            <div class="no-scrollbar mt-8 flex gap-2 overflow-x-auto pb-2">
-                <a class="pill-filter {{ filters.room == '' ? 'is-active' }}" href="{{ path('app_shop') }}">All pieces</a>
-                {% for room in rooms %}
-                    <a class="pill-filter {{ filters.room == room.slug ? 'is-active' }}" href="{{ path('app_shop', {room: room.slug}) }}">{{ room.name }}</a>
-                {% endfor %}
-            </div>
+            <twig:RoomPills class="mt-8" :rooms="rooms" :active="filters.room" :showAll="true" />
 
-            <div class="mt-8 grid gap-8 lg:grid-cols-[17rem_1fr]">
-                <details class="ui h-fit rounded-3xl border border-stone-200 bg-white p-5 lg:sticky lg:top-24" {{ app.request.query.count > 0 ? 'open' }}>
-                    <summary class="font-display flex items-center justify-between font-bold text-army-950">Filter and sort <twig:Icon name="chevron" class="size-4 text-stone-400" /></summary>
+            {% set query = app.request.query.all %}
+            {% set activeFilters = 0 %}
+            {% for key in ['q', 'brand', 'material', 'color', 'minPrice', 'maxPrice', 'maxWidth', 'maxDepth', 'maxHeight', 'inStock'] %}
+                {% if query[key] is defined and query[key] is not same as('') %}{% set activeFilters = activeFilters + 1 %}{% endif %}
+            {% endfor %}
+
+            <div class="mt-8 grid gap-8 lg:grid-cols-[17rem_1fr]" data-controller="filters">
+                <details class="ui group h-fit rounded-3xl border border-stone-200 bg-white p-5 lg:sticky lg:top-24" data-filters-target="panel" {{ activeFilters > 0 ? 'open' }}>
+                    <summary class="font-display flex cursor-pointer list-none items-center justify-between font-bold text-army-950">
+                        <span class="flex items-center gap-2">Filters{% if activeFilters > 0 %}<span class="grid size-6 place-items-center rounded-full bg-army-700 text-xs text-white">{{ activeFilters }}</span>{% endif %}</span>
+                        <twig:Icon name="chevron" class="size-4 text-stone-400 transition group-open:rotate-90" />
+                    </summary>
                     <form method="get" action="{{ path('app_shop') }}" class="mt-4 space-y-3">
-                        <label class="field">Search <input type="search" name="q" value="{{ filters.q }}"></label>
+                        <label class="field">Search <input id="site-search-panel" type="search" name="q" value="{{ filters.q }}" placeholder="Sofa, oak, rattan…"></label>
                         <label class="field">Room
                             <select name="room">
                                 <option value="">Any</option>
@@ -57,14 +61,7 @@
                             <label class="field text-xs">Max H (cm) <input name="maxHeight" inputmode="decimal" value="{{ filters.maxHeight }}"></label>
                         </div>
                         <label class="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" name="inStock" value="1" {{ filters.inStock ? 'checked' }}> In stock</label>
-                        <label class="field">Sort
-                            <select name="sort">
-                                <option value="newest" {{ sort == 'newest' ? 'selected' }}>Newest</option>
-                                <option value="price_asc" {{ sort == 'price_asc' ? 'selected' }}>Price: low to high</option>
-                                <option value="price_desc" {{ sort == 'price_desc' ? 'selected' }}>Price: high to low</option>
-                                <option value="name" {{ sort == 'name' ? 'selected' }}>Name</option>
-                            </select>
-                        </label>
+                        <input type="hidden" name="sort" value="{{ sort }}">
                         <div class="flex items-center gap-3 pt-1">
                             <button type="submit" class="btn btn-primary flex-1">Apply</button>
                             <a href="{{ path('app_shop') }}" class="btn btn-secondary">Clear</a>
@@ -73,7 +70,25 @@
                 </details>
 
                 <div>
-                    <p class="text-sm text-stone-500">{{ products|length }} {{ products|length == 1 ? 'product' : 'products' }}</p>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <p class="text-sm text-stone-500">
+                            <span class="font-semibold text-army-950">{{ products|length }}</span> {{ products|length == 1 ? 'product' : 'products' }}
+                            {% if activeFilters > 0 %}· <a class="font-semibold text-army-700 hover:underline" href="{{ path('app_shop', filters.room ? {room: filters.room} : {}) }}">Clear filters</a>{% endif %}
+                        </p>
+                        <form method="get" action="{{ path('app_shop') }}" class="flex items-center gap-2">
+                            {% for key, value in query %}
+                                {% if key not in ['sort', 'page'] and value is not iterable %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}
+                            {% endfor %}
+                            <label for="sort-by" class="text-sm text-stone-500">Sort by</label>
+                            <select id="sort-by" name="sort" class="h-10 rounded-full border border-stone-200 bg-white pl-4 pr-9 text-sm font-semibold text-army-950 outline-none focus:border-army-500" data-action="filters#submit">
+                                <option value="newest" {{ sort == 'newest' ? 'selected' }}>Newest</option>
+                                <option value="price_asc" {{ sort == 'price_asc' ? 'selected' }}>Price: low to high</option>
+                                <option value="price_desc" {{ sort == 'price_desc' ? 'selected' }}>Price: high to low</option>
+                                <option value="name" {{ sort == 'name' ? 'selected' }}>Name</option>
+                            </select>
+                            <noscript><button type="submit" class="btn btn-secondary">Sort</button></noscript>
+                        </form>
+                    </div>
                     {% if products|length == 0 %}
                         <div class="mt-4 rounded-3xl border border-dashed border-stone-300 bg-white px-6 py-16 text-center">
                             <twig:Icon name="search" class="mx-auto size-8 text-stone-400" />

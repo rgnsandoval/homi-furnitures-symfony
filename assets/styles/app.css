@@ -51,12 +51,12 @@
   .pill-filter { display: inline-flex; height: 2.75rem; flex: none; align-items: center; border: 1px solid var(--color-stone-200); border-radius: 999px; background: white; padding-inline: 1.25rem; font-size: .875rem; font-weight: 700; color: var(--color-stone-700); transition: 200ms; }
   .pill-filter:hover { border-color: var(--color-army-400); }
   .pill-filter.is-active { border-color: var(--color-army-700); background: var(--color-army-700); color: white; }
-  .nav-link { border-radius: 999px; padding: .5rem 1rem; font-size: .875rem; font-weight: 600; color: var(--color-stone-700); transition: 200ms; }
+  .nav-link { white-space: nowrap; border-radius: 999px; padding: .5rem 1rem; font-size: .875rem; font-weight: 600; color: var(--color-stone-700); transition: 200ms; }
   .nav-link:hover { background: var(--color-army-50); color: var(--color-army-900); }
   .menu-link { display: block; border-radius: .75rem; padding: .625rem .75rem; font-size: .875rem; font-weight: 600; color: var(--color-army-950); }
   .menu-link:hover { background: var(--color-army-50); }
 
-  .btn { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; gap: .5rem; border-radius: 999px; padding-inline: 1.25rem; font-size: .875rem; font-weight: 700; transition: 200ms ease-out; }
+  .btn { white-space: nowrap; display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; gap: .5rem; border-radius: 999px; padding-inline: 1.25rem; font-size: .875rem; font-weight: 700; transition: 200ms ease-out; }
   .btn-primary { background: var(--color-army-700); color: white; }
   .btn-primary:hover { background: var(--color-army-600); }
   .btn-secondary { border: 1px solid var(--color-stone-300); background: white; color: var(--color-army-950); }

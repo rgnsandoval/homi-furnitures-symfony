@@ -35,27 +35,14 @@
                     <a class="nav-link" href="{{ path('app_shop', {room: 'bundles'}) }}">Collections</a>
                     <a class="nav-link" href="{{ path('app_guide') }}">Fit guide</a>
                 </nav>
-                <form method="get" action="{{ path('app_shop') }}" class="relative ml-auto hidden w-full max-w-sm md:block" role="search">
+                <form method="get" action="{{ path('app_shop') }}" class="relative ml-auto hidden w-full min-w-0 max-w-xs md:block lg:hidden xl:block xl:max-w-sm" role="search">
                     <label class="sr-only" for="site-search">Search furniture</label>
                     <twig:Icon name="search" class="absolute left-4 top-3 size-5 text-stone-500" />
                     <input class="search-field" id="site-search" type="search" name="q" placeholder="Search furniture and rooms" value="{{ app.request.query.get('q') }}">
                 </form>
-                <div class="ml-auto flex items-center md:ml-0">
-                    <details class="relative hidden sm:block" data-controller="dropdown">
-                        <summary class="icon-button cursor-pointer list-none" aria-label="Account"><twig:Icon name="user" /></summary>
-                        <div class="absolute right-0 mt-2 w-52 rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
-                            {% if app.user %}
-                                <a class="menu-link" href="{{ path('app_account') }}">Account</a>
-                                <a class="menu-link" href="{{ path('app_orders') }}">Orders</a>
-                                {% if is_granted('ROLE_ADMIN') %}<a class="menu-link" href="{{ path('app_admin_dashboard') }}">Admin</a>{% endif %}
-                                <a class="menu-link" href="{{ logout_path() }}">Log out</a>
-                            {% else %}
-                                <a class="menu-link" href="{{ path('app_login') }}">Log in</a>
-                                <a class="menu-link" href="{{ path('app_register') }}">Register</a>
-                            {% endif %}
-                        </div>
-                    </details>
-                    <a class="icon-button relative hidden sm:grid" href="{{ path('app_wishlist') }}" aria-label="Wishlist, {{ wishlist_count() }} saved items">
+                <div class="ml-auto flex items-center gap-1 md:ml-0 lg:ml-auto xl:ml-0">
+                    <a class="icon-button hidden lg:grid xl:hidden" href="{{ path('app_shop') }}#site-search-panel" aria-label="Search furniture"><twig:Icon name="search" /></a>
+                    <a class="icon-button relative" href="{{ path('app_wishlist') }}" aria-label="Wishlist, {{ wishlist_count() }} saved items">
                         <twig:Icon name="heart" :filled="wishlist_count() > 0" />
                         {% if wishlist_count() > 0 %}<span class="count-badge">{{ wishlist_count() }}</span>{% endif %}
                     </a>
@@ -63,6 +50,36 @@
                         <twig:Icon name="bag" />
                         {% if cart_count() > 0 %}<span class="count-badge">{{ cart_count() }}</span>{% endif %}
                     </a>
+                    {% if app.user %}
+                        {% set displayName = app.user.fullName ?: app.user.email %}
+                        <details class="relative ml-1" data-controller="dropdown">
+                            <summary class="flex h-11 cursor-pointer list-none items-center gap-2 rounded-full border border-stone-200 py-1 pl-1 pr-1 transition hover:border-army-400 lg:pr-3" aria-label="Account menu for {{ displayName }}">
+                                <span class="grid size-9 place-items-center rounded-full bg-army-700 text-sm font-bold text-white" aria-hidden="true">{{ displayName|first|upper }}</span>
+                                <span class="hidden max-w-28 truncate text-sm font-semibold text-army-950 lg:block">{{ displayName|split(' ')|first }}</span>
+                                <twig:Icon name="chevron" class="hidden size-3.5 rotate-90 text-stone-400 lg:block" />
+                            </summary>
+                            <div class="absolute right-0 mt-2 w-64 rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                                <div class="border-b border-stone-100 px-3 pb-3 pt-2">
+                                    <p class="truncate text-sm font-bold text-army-950">{{ displayName }}</p>
+                                    <p class="truncate text-xs text-stone-500">{{ app.user.email }}</p>
+                                </div>
+                                <div class="py-1">
+                                    <a class="menu-link" href="{{ path('app_account') }}">My account</a>
+                                    <a class="menu-link" href="{{ path('app_orders') }}">Orders</a>
+                                    <a class="menu-link" href="{{ path('app_return_list') }}">Returns</a>
+                                    <a class="menu-link" href="{{ path('app_wishlist') }}">Wishlist</a>
+                                    {% if is_granted('ROLE_ADMIN') %}<a class="menu-link" href="{{ path('app_admin_dashboard') }}">Admin dashboard</a>{% endif %}
+                                </div>
+                                <div class="border-t border-stone-100 pt-1">
+                                    <a class="menu-link text-clay" href="{{ logout_path() }}">Log out</a>
+                                </div>
+                            </div>
+                        </details>
+                    {% else %}
+                        <a class="icon-button sm:hidden" href="{{ path('app_login') }}" aria-label="Log in"><twig:Icon name="user" /></a>
+                        <a class="btn ml-1 hidden px-4 text-army-950 hover:bg-army-50 sm:inline-flex" href="{{ path('app_login') }}">Log in</a>
+                        <a class="btn btn-primary hidden sm:inline-flex" href="{{ path('app_register') }}">Sign up</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="border-t border-stone-100 p-3 md:hidden">
@@ -127,12 +144,28 @@
             </div>
         </footer>
 
-        <dialog class="m-0 h-full max-h-none w-[88%] max-w-sm bg-white p-6 shadow-2xl backdrop:bg-army-950/55 backdrop:backdrop-blur-sm" data-quick-view-target="menu" aria-label="Navigation">
+        <dialog class="m-0 h-full max-h-none w-[88%] max-w-sm overflow-y-auto bg-white p-6 shadow-2xl backdrop:bg-army-950/55 backdrop:backdrop-blur-sm" data-quick-view-target="menu" aria-label="Navigation">
             <div class="flex items-center justify-between">
                 <span class="font-display text-2xl font-extrabold tracking-[-.07em] text-army-950">HOMI</span>
                 <button type="button" class="icon-button" aria-label="Close menu" data-action="quick-view#closeMenu"><twig:Icon name="close" /></button>
             </div>
-            <nav class="mt-10 space-y-1" aria-label="Mobile">
+            {% if app.user %}
+                {% set menuName = app.user.fullName ?: app.user.email %}
+                <div class="mt-8 flex items-center gap-3 rounded-2xl bg-army-50 p-3">
+                    <span class="grid size-11 shrink-0 place-items-center rounded-full bg-army-700 font-bold text-white" aria-hidden="true">{{ menuName|first|upper }}</span>
+                    <div class="min-w-0">
+                        <p class="truncate font-bold text-army-950">{{ menuName }}</p>
+                        <p class="truncate text-xs text-stone-500">{{ app.user.email }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="mt-8 grid grid-cols-2 gap-2">
+                    <a class="btn btn-secondary" href="{{ path('app_login') }}">Log in</a>
+                    <a class="btn btn-primary" href="{{ path('app_register') }}">Sign up</a>
+                </div>
+            {% endif %}
+            <p class="mt-8 px-3 text-xs font-bold uppercase tracking-widest text-stone-400">Shop</p>
+            <nav class="mt-2 space-y-1" aria-label="Mobile">
                 {% for item in [
                     {label: 'New in', url: path('app_shop', {sort: 'newest'})},
                     {label: 'Furniture', url: path('app_shop')},
@@ -141,12 +174,27 @@
                     {label: 'Bedroom', url: path('app_shop', {room: 'bedroom'})},
                     {label: 'Collections', url: path('app_shop', {room: 'bundles'})},
                     {label: 'Fit guide', url: path('app_guide')},
-                    {label: 'Wishlist', url: path('app_wishlist')},
-                    {label: app.user ? 'Account' : 'Log in', url: app.user ? path('app_account') : path('app_login')},
+                    {label: 'Contact us', url: path('app_contact')},
                 ] %}
                     <a class="flex min-h-12 items-center justify-between rounded-xl px-3 font-semibold text-army-950 hover:bg-army-50" href="{{ item.url }}">{{ item.label }}<twig:Icon name="chevron" class="size-4 text-stone-400" /></a>
                 {% endfor %}
             </nav>
+            {% if app.user %}
+                <p class="mt-8 px-3 text-xs font-bold uppercase tracking-widest text-stone-400">Your account</p>
+                <nav class="mt-2 space-y-1" aria-label="Account">
+                    {% set accountItems = [
+                        {label: 'My account', url: path('app_account')},
+                        {label: 'Orders', url: path('app_orders')},
+                        {label: 'Returns', url: path('app_return_list')},
+                        {label: 'Wishlist', url: path('app_wishlist')},
+                    ] %}
+                    {% if is_granted('ROLE_ADMIN') %}{% set accountItems = accountItems|merge([{label: 'Admin dashboard', url: path('app_admin_dashboard')}]) %}{% endif %}
+                    {% for item in accountItems %}
+                        <a class="flex min-h-12 items-center justify-between rounded-xl px-3 font-semibold text-army-950 hover:bg-army-50" href="{{ item.url }}">{{ item.label }}<twig:Icon name="chevron" class="size-4 text-stone-400" /></a>
+                    {% endfor %}
+                    <a class="flex min-h-12 items-center rounded-xl px-3 font-semibold text-clay hover:bg-army-50" href="{{ logout_path() }}">Log out</a>
+                </nav>
+            {% endif %}
         </dialog>
 
         <dialog class="m-auto w-[calc(100%-2rem)] max-w-4xl overflow-hidden rounded-3xl bg-white p-0 shadow-2xl backdrop:bg-army-950/60 backdrop:backdrop-blur-sm" data-quick-view-target="dialog" aria-label="Quick view">
@@ -171,6 +219,9 @@
                             <input type="hidden" name="variant" data-quick-view-target="variant">
                             <button type="submit" class="w-full rounded-full bg-army-700 px-6 py-3.5 font-semibold text-white transition hover:bg-army-600 active:scale-[.98]">Add to bag</button>
                         </form>
+                    {% else %}
+                        <a class="btn btn-primary mt-8 w-full py-3.5" href="{{ path('app_login') }}">Log in to buy</a>
+                        <p class="mt-2 text-center text-xs text-stone-500">New here? <a class="font-semibold text-army-700" href="{{ path('app_register') }}">Create an account</a></p>
                     {% endif %}
                     <a class="mt-4 text-center font-semibold text-army-700" data-quick-view-target="link" href="#">View full details</a>
                 </div>

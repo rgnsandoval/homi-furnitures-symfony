@@ -56,11 +56,7 @@
                 </a>
             {% endfor %}
         </div>
-        <div class="no-scrollbar mt-6 flex gap-2 overflow-x-auto pb-2">
-            {% for room in rooms %}
-                <a class="pill-filter" href="{{ path('app_shop', {room: room.slug}) }}">{{ room.name }}</a>
-            {% endfor %}
-        </div>
+        <twig:RoomPills class="mt-6" :rooms="rooms" />
     </section>
 
     <section class="bg-army-50 py-20 md:py-28" id="shop">
