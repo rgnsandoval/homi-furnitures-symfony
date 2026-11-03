@@ -22,7 +22,10 @@ docker compose up -d --build
 docker compose exec -T php composer install
 docker compose exec -T php php bin/console doctrine:migrations:migrate --no-interaction
 docker compose exec -T -e APP_SEEDING=1 php php bin/console doctrine:fixtures:load --no-interaction
+docker compose exec -T php php bin/console tailwind:build
 ```
+
+Tailwind builds the stylesheet into `var/tailwind/`. Run `tailwind:build --watch` while editing templates and `tailwind:build --minify` before deploying.
 
 ## Environment variables
 
