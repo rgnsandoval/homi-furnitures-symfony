@@ -44,6 +44,7 @@ class Category
     private ?bool $isActive = true;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?self $parent = null;
 
     /**
