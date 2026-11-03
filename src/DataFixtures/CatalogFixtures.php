@@ -214,7 +214,9 @@ class CatalogFixtures extends Fixture
                 ->setSpecifications($row['specifications'] ? json_decode($row['specifications'], true, flags: JSON_THROW_ON_ERROR) : null)
                 ->setCategory($categories[$row['category_slug']])
                 ->setBrand($brands[$row['brand']] ?? null)
-                ->setImage($this->copyImage($row['slug']));
+                ->setImage($this->copyImage($row['slug']))
+                // A minute apart in catalog order, so "newest" lists the catalog from the top.
+                ->setCreatedAt(new \DateTimeImmutable(sprintf('-%d minutes', $index)));
             $manager->persist($product);
             $manager->persist((new ProductImage())->setFilename((string) $product->getImage())->setAltText($row['name'])->setProduct($product));
             $products[$row['sku']] = $product;
