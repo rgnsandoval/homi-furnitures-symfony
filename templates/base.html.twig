@@ -4,37 +4,188 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Homi Furniture{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <meta name="description" content="Modern furniture designed to bring ease, warmth, and lasting character into every room.">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%234b5320%22/><text x=%2216%22 y=%2223%22 font-family=%22sans-serif%22 font-size=%2220%22 font-weight=%22800%22 text-anchor=%22middle%22 fill=%22white%22>H</text></svg>">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;700;800&display=swap">
         {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
-        <nav aria-label="Main">
-            <a href="{{ path('app_home') }}">Home</a>
-            <a href="{{ path('app_shop') }}">Shop</a>
-            <a href="{{ path('app_guide') }}">Fit guide</a>
-            <a href="{{ path('app_contact') }}">Contact</a>
-            {% if app.user %}
-                <a href="{{ path('app_cart') }}">Cart</a>
-                <a href="{{ path('app_wishlist') }}">Wishlist</a>
-                <a href="{{ path('app_orders') }}">Orders</a>
-                <a href="{{ path('app_account') }}">Account</a>
-                {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('app_admin_dashboard') }}">Admin</a>{% endif %}
-                <a href="{{ logout_path() }}">Log out</a>
-            {% else %}
-                <a href="{{ path('app_login') }}">Log in</a>
-                <a href="{{ path('app_register') }}">Register</a>
-            {% endif %}
-        </nav>
-        {% for type, messages in app.flashes(['success', 'error']) %}
-            {% for message in messages %}
-                <div class="flash flash-{{ type }}" role="alert">{{ message }}</div>
+    <body class="min-h-screen bg-white text-stone-700" data-controller="quick-view">
+        <a href="#top" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-white focus:p-3">Skip to content</a>
+        {% set threshold = shop_setting('free_shipping_threshold') %}
+        <div class="bg-army-950 px-4 py-2.5 text-center text-xs font-semibold tracking-wide text-white print:hidden">
+            Free delivery on orders over {{ threshold|peso }}
+        </div>
+
+        <header class="sticky top-0 z-40 border-b border-stone-200/80 bg-white/85 backdrop-blur-xl print:hidden">
+            <div class="page-container flex h-[76px] items-center gap-5">
+                <button type="button" class="icon-button lg:hidden" aria-label="Open navigation" data-action="quick-view#openMenu"><twig:Icon name="menu" /></button>
+                <a class="font-display text-2xl font-extrabold tracking-[-0.07em] text-army-950 sm:text-3xl" href="{{ path('app_home') }}">HOMI</a>
+                <nav class="hidden items-center gap-1 lg:flex" aria-label="Main">
+                    <a class="nav-link" href="{{ path('app_shop', {sort: 'newest'}) }}">New in</a>
+                    <a class="nav-link" href="{{ path('app_shop') }}">Furniture</a>
+                    <a class="nav-link" href="{{ path('app_home') }}#rooms">Rooms</a>
+                    <a class="nav-link" href="{{ path('app_shop', {room: 'bundles'}) }}">Collections</a>
+                    <a class="nav-link" href="{{ path('app_guide') }}">Fit guide</a>
+                </nav>
+                <form method="get" action="{{ path('app_shop') }}" class="relative ml-auto hidden w-full max-w-sm md:block" role="search">
+                    <label class="sr-only" for="site-search">Search furniture</label>
+                    <twig:Icon name="search" class="absolute left-4 top-3 size-5 text-stone-500" />
+                    <input class="search-field" id="site-search" type="search" name="q" placeholder="Search furniture and rooms" value="{{ app.request.query.get('q') }}">
+                </form>
+                <div class="ml-auto flex items-center md:ml-0">
+                    <details class="relative hidden sm:block" data-controller="dropdown">
+                        <summary class="icon-button cursor-pointer list-none" aria-label="Account"><twig:Icon name="user" /></summary>
+                        <div class="absolute right-0 mt-2 w-52 rounded-2xl border border-stone-200 bg-white p-2 shadow-xl">
+                            {% if app.user %}
+                                <a class="menu-link" href="{{ path('app_account') }}">Account</a>
+                                <a class="menu-link" href="{{ path('app_orders') }}">Orders</a>
+                                {% if is_granted('ROLE_ADMIN') %}<a class="menu-link" href="{{ path('app_admin_dashboard') }}">Admin</a>{% endif %}
+                                <a class="menu-link" href="{{ logout_path() }}">Log out</a>
+                            {% else %}
+                                <a class="menu-link" href="{{ path('app_login') }}">Log in</a>
+                                <a class="menu-link" href="{{ path('app_register') }}">Register</a>
+                            {% endif %}
+                        </div>
+                    </details>
+                    <a class="icon-button relative hidden sm:grid" href="{{ path('app_wishlist') }}" aria-label="Wishlist, {{ wishlist_count() }} saved items">
+                        <twig:Icon name="heart" :filled="wishlist_count() > 0" />
+                        {% if wishlist_count() > 0 %}<span class="count-badge">{{ wishlist_count() }}</span>{% endif %}
+                    </a>
+                    <a class="icon-button relative" href="{{ path('app_cart') }}" aria-label="Cart, {{ cart_count() }} items">
+                        <twig:Icon name="bag" />
+                        {% if cart_count() > 0 %}<span class="count-badge">{{ cart_count() }}</span>{% endif %}
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-stone-100 p-3 md:hidden">
+                <form method="get" action="{{ path('app_shop') }}" class="relative block" role="search">
+                    <twig:Icon name="search" class="absolute left-4 top-3 size-5 text-stone-500" />
+                    <input class="search-field" type="search" name="q" aria-label="Search furniture" placeholder="Search furniture and rooms" value="{{ app.request.query.get('q') }}">
+                </form>
+            </div>
+        </header>
+
+        <main id="top">
+            {% block main %}
+                <div class="page-container ui py-12 md:py-16">
+                    {% block body %}{% endblock %}
+                </div>
+            {% endblock %}
+        </main>
+
+        <footer class="bg-army-950 text-stone-400 print:hidden">
+            <div class="page-container grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+                <div>
+                    <a class="font-display text-3xl font-extrabold tracking-[-.07em] text-white" href="{{ path('app_home') }}">HOMI</a>
+                    <p class="mt-5 max-w-sm text-sm leading-6">Modern furniture designed to bring ease, warmth, and lasting character into every room.</p>
+                    <p class="mt-7 text-xs text-stone-500">Room photography by Prydumano Design, Pipcke, ONNO, Lotus Design N Print, Bhautik Patel, Katsia Jazwinska, Simeon Galabov, 刘 强, and Spacejoy on Unsplash. Product images are AI-generated illustrations.</p>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-white">Shop</h3>
+                    <ul class="mt-5 space-y-3 text-sm">
+                        <li><a class="transition hover:text-white" href="{{ path('app_shop', {sort: 'newest'}) }}">New arrivals</a></li>
+                        <li><a class="transition hover:text-white" href="{{ path('app_shop', {room: 'living-room'}) }}">Living room</a></li>
+                        <li><a class="transition hover:text-white" href="{{ path('app_shop', {room: 'dining-room'}) }}">Dining room</a></li>
+                        <li><a class="transition hover:text-white" href="{{ path('app_shop', {room: 'bedroom'}) }}">Bedroom</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-white">Help</h3>
+                    <ul class="mt-5 space-y-3 text-sm">
+                        <li><a class="transition hover:text-white" href="{{ path('app_guide') }}">Material and fit guide</a></li>
+                        <li><a class="transition hover:text-white" href="{{ path('app_contact') }}">Contact</a></li>
+                        <li><a class="transition hover:text-white" href="{{ path('app_orders') }}">Your orders</a></li>
+                        <li><a class="transition hover:text-white" href="{{ path('app_return_list') }}">Your returns</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-white">Account</h3>
+                    <ul class="mt-5 space-y-3 text-sm">
+                        {% if app.user %}
+                            <li><a class="transition hover:text-white" href="{{ path('app_account') }}">Your account</a></li>
+                            <li><a class="transition hover:text-white" href="{{ path('app_wishlist') }}">Wishlist</a></li>
+                            <li><a class="transition hover:text-white" href="{{ logout_path() }}">Log out</a></li>
+                        {% else %}
+                            <li><a class="transition hover:text-white" href="{{ path('app_login') }}">Log in</a></li>
+                            <li><a class="transition hover:text-white" href="{{ path('app_register') }}">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-army-800">
+                <div class="page-container py-6 text-xs">
+                    <p>&copy; {{ 'now'|date('Y') }} Homi Furniture. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+        <dialog class="m-0 h-full max-h-none w-[88%] max-w-sm bg-white p-6 shadow-2xl backdrop:bg-army-950/55 backdrop:backdrop-blur-sm" data-quick-view-target="menu" aria-label="Navigation">
+            <div class="flex items-center justify-between">
+                <span class="font-display text-2xl font-extrabold tracking-[-.07em] text-army-950">HOMI</span>
+                <button type="button" class="icon-button" aria-label="Close menu" data-action="quick-view#closeMenu"><twig:Icon name="close" /></button>
+            </div>
+            <nav class="mt-10 space-y-1" aria-label="Mobile">
+                {% for item in [
+                    {label: 'New in', url: path('app_shop', {sort: 'newest'})},
+                    {label: 'Furniture', url: path('app_shop')},
+                    {label: 'Living room', url: path('app_shop', {room: 'living-room'})},
+                    {label: 'Dining room', url: path('app_shop', {room: 'dining-room'})},
+                    {label: 'Bedroom', url: path('app_shop', {room: 'bedroom'})},
+                    {label: 'Collections', url: path('app_shop', {room: 'bundles'})},
+                    {label: 'Fit guide', url: path('app_guide')},
+                    {label: 'Wishlist', url: path('app_wishlist')},
+                    {label: app.user ? 'Account' : 'Log in', url: app.user ? path('app_account') : path('app_login')},
+                ] %}
+                    <a class="flex min-h-12 items-center justify-between rounded-xl px-3 font-semibold text-army-950 hover:bg-army-50" href="{{ item.url }}">{{ item.label }}<twig:Icon name="chevron" class="size-4 text-stone-400" /></a>
+                {% endfor %}
+            </nav>
+        </dialog>
+
+        <dialog class="m-auto w-[calc(100%-2rem)] max-w-4xl overflow-hidden rounded-3xl bg-white p-0 shadow-2xl backdrop:bg-army-950/60 backdrop:backdrop-blur-sm" data-quick-view-target="dialog" aria-label="Quick view">
+            <div class="relative grid max-h-[90vh] overflow-auto md:grid-cols-2">
+                <button type="button" class="icon-button absolute right-4 top-4 z-10 bg-white shadow" aria-label="Close quick view" data-action="quick-view#close"><twig:Icon name="close" /></button>
+                <div class="min-h-80 bg-army-50"><img class="h-full w-full object-cover" data-quick-view-target="image" alt=""></div>
+                <div class="flex flex-col justify-center p-7 sm:p-10">
+                    <p class="eyebrow" data-quick-view-target="type"></p>
+                    <h2 class="font-display mt-3 text-3xl font-extrabold text-army-950" data-quick-view-target="name"></h2>
+                    <p class="mt-4 flex items-baseline gap-3">
+                        <span class="text-2xl font-bold tabular-nums text-army-950" data-quick-view-target="price"></span>
+                        <span class="text-sm tabular-nums text-stone-400 line-through" data-quick-view-target="old"></span>
+                    </p>
+                    <p class="mt-5 leading-7 text-stone-600" data-quick-view-target="description"></p>
+                    <div data-quick-view-target="colorBlock">
+                        <p class="mt-6 text-sm font-semibold text-army-950">Available finishes</p>
+                        <div class="mt-3 flex flex-wrap gap-2" data-quick-view-target="colors"></div>
+                    </div>
+                    {% if app.user %}
+                        <form method="post" action="{{ path('app_cart_add') }}" class="mt-8" data-quick-view-target="form">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
+                            <input type="hidden" name="variant" data-quick-view-target="variant">
+                            <button type="submit" class="w-full rounded-full bg-army-700 px-6 py-3.5 font-semibold text-white transition hover:bg-army-600 active:scale-[.98]">Add to bag</button>
+                        </form>
+                    {% endif %}
+                    <a class="mt-4 text-center font-semibold text-army-700" data-quick-view-target="link" href="#">View full details</a>
+                </div>
+            </div>
+        </dialog>
+
+        <div class="fixed bottom-5 left-1/2 z-[60] flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 flex-col items-center gap-2 print:hidden">
+            {% for type, messages in app.flashes(['success', 'error']) %}
+                {% for message in messages %}
+                    <div class="flash flash-{{ type }} flex items-center gap-3 rounded-full px-5 py-3 text-sm font-semibold text-white shadow-xl {{ type == 'error' ? 'bg-clay' : 'bg-army-950' }}" role="alert" data-controller="toast">
+                        {% if type == 'success' %}<span class="grid size-6 shrink-0 place-items-center rounded-full bg-army-500"><twig:Icon name="check" class="size-4" /></span>{% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-        {% block body %}{% endblock %}
+        </div>
     </body>
 </html>

@@ -2,72 +2,95 @@
 
 {% block title %}Shop - Homi Furniture{% endblock %}
 
-{% block body %}
-    <h1>Shop</h1>
+{% block main %}
+    <div class="bg-army-50 pb-20 pt-12 md:pt-16">
+        <div class="page-container">
+            <p class="eyebrow">Designed to stay</p>
+            <h1 class="font-display mt-3 text-4xl font-extrabold tracking-tight text-army-950 sm:text-5xl">
+                {{ filters.q ? 'Results for “' ~ filters.q ~ '”' : 'Shop' }}
+            </h1>
 
-    <p>
-        Rooms:
-        {% for room in rooms %}
-            <a href="{{ path('app_shop', {room: room.slug}) }}">{{ room.name }}</a>
-        {% endfor %}
-    </p>
-
-    <form method="get" action="{{ path('app_shop') }}">
-        <label>Search <input type="search" name="q" value="{{ filters.q }}"></label>
-        <label>Room
-            <select name="room">
-                <option value="">Any</option>
+            <div class="no-scrollbar mt-8 flex gap-2 overflow-x-auto pb-2">
+                <a class="pill-filter {{ filters.room == '' ? 'is-active' }}" href="{{ path('app_shop') }}">All pieces</a>
                 {% for room in rooms %}
-                    <option value="{{ room.slug }}" {{ filters.room == room.slug ? 'selected' }}>{{ room.name }}</option>
+                    <a class="pill-filter {{ filters.room == room.slug ? 'is-active' }}" href="{{ path('app_shop', {room: room.slug}) }}">{{ room.name }}</a>
                 {% endfor %}
-            </select>
-        </label>
-        <label>Brand
-            <select name="brand">
-                <option value="">Any</option>
-                {% for brand in brands %}
-                    <option value="{{ brand.id }}" {{ filters.brand == brand.id ? 'selected' }}>{{ brand.name }}</option>
-                {% endfor %}
-            </select>
-        </label>
-        <label>Material
-            <select name="material">
-                <option value="">Any</option>
-                {% for material in materials %}
-                    <option value="{{ material }}" {{ filters.material == material ? 'selected' }}>{{ material }}</option>
-                {% endfor %}
-            </select>
-        </label>
-        <label>Color <input name="color" value="{{ filters.color }}"></label>
-        <label>Min price <input name="minPrice" inputmode="decimal" value="{{ filters.minPrice }}"></label>
-        <label>Max price <input name="maxPrice" inputmode="decimal" value="{{ filters.maxPrice }}"></label>
-        <label>Max width (cm) <input name="maxWidth" inputmode="decimal" value="{{ filters.maxWidth }}"></label>
-        <label>Max depth (cm) <input name="maxDepth" inputmode="decimal" value="{{ filters.maxDepth }}"></label>
-        <label>Max height (cm) <input name="maxHeight" inputmode="decimal" value="{{ filters.maxHeight }}"></label>
-        <label><input type="checkbox" name="inStock" value="1" {{ filters.inStock ? 'checked' }}> In stock</label>
-        <label>Sort
-            <select name="sort">
-                <option value="newest" {{ sort == 'newest' ? 'selected' }}>Newest</option>
-                <option value="price_asc" {{ sort == 'price_asc' ? 'selected' }}>Price: low to high</option>
-                <option value="price_desc" {{ sort == 'price_desc' ? 'selected' }}>Price: high to low</option>
-                <option value="name" {{ sort == 'name' ? 'selected' }}>Name</option>
-            </select>
-        </label>
-        <button type="submit">Apply</button>
-    </form>
+            </div>
 
-    <p>{{ products|length }} products</p>
-    <ul id="products">
-        {% for product in products %}
-            <li>
-                <a href="{{ path('app_product', {slug: product.slug}) }}">{{ product.name }}</a>
-                {% if product.onSale %}<s>{{ product.price|peso }}</s>{% endif %}
-                {{ product.effectivePrice|peso }}
-            </li>
-        {% else %}
-            <li>No products match these filters.</li>
-        {% endfor %}
-    </ul>
+            <div class="mt-8 grid gap-8 lg:grid-cols-[17rem_1fr]">
+                <details class="ui h-fit rounded-3xl border border-stone-200 bg-white p-5 lg:sticky lg:top-24" {{ app.request.query.count > 0 ? 'open' }}>
+                    <summary class="font-display flex items-center justify-between font-bold text-army-950">Filter and sort <twig:Icon name="chevron" class="size-4 text-stone-400" /></summary>
+                    <form method="get" action="{{ path('app_shop') }}" class="mt-4 space-y-3">
+                        <label class="field">Search <input type="search" name="q" value="{{ filters.q }}"></label>
+                        <label class="field">Room
+                            <select name="room">
+                                <option value="">Any</option>
+                                {% for room in rooms %}
+                                    <option value="{{ room.slug }}" {{ filters.room == room.slug ? 'selected' }}>{{ room.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <label class="field">Brand
+                            <select name="brand">
+                                <option value="">Any</option>
+                                {% for brand in brands %}
+                                    <option value="{{ brand.id }}" {{ filters.brand == brand.id ? 'selected' }}>{{ brand.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <label class="field">Material
+                            <select name="material">
+                                <option value="">Any</option>
+                                {% for material in materials %}
+                                    <option value="{{ material }}" {{ filters.material == material ? 'selected' }}>{{ material }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <label class="field">Color <input name="color" value="{{ filters.color }}"></label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="field">Min price <input name="minPrice" inputmode="decimal" value="{{ filters.minPrice }}"></label>
+                            <label class="field">Max price <input name="maxPrice" inputmode="decimal" value="{{ filters.maxPrice }}"></label>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="field text-xs">Max W (cm) <input name="maxWidth" inputmode="decimal" value="{{ filters.maxWidth }}"></label>
+                            <label class="field text-xs">Max D (cm) <input name="maxDepth" inputmode="decimal" value="{{ filters.maxDepth }}"></label>
+                            <label class="field text-xs">Max H (cm) <input name="maxHeight" inputmode="decimal" value="{{ filters.maxHeight }}"></label>
+                        </div>
+                        <label class="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" name="inStock" value="1" {{ filters.inStock ? 'checked' }}> In stock</label>
+                        <label class="field">Sort
+                            <select name="sort">
+                                <option value="newest" {{ sort == 'newest' ? 'selected' }}>Newest</option>
+                                <option value="price_asc" {{ sort == 'price_asc' ? 'selected' }}>Price: low to high</option>
+                                <option value="price_desc" {{ sort == 'price_desc' ? 'selected' }}>Price: high to low</option>
+                                <option value="name" {{ sort == 'name' ? 'selected' }}>Name</option>
+                            </select>
+                        </label>
+                        <div class="flex items-center gap-3 pt-1">
+                            <button type="submit" class="btn btn-primary flex-1">Apply</button>
+                            <a href="{{ path('app_shop') }}" class="btn btn-secondary">Clear</a>
+                        </div>
+                    </form>
+                </details>
 
-    <twig:Pagination :total="products|length" :page="page" />
+                <div>
+                    <p class="text-sm text-stone-500">{{ products|length }} {{ products|length == 1 ? 'product' : 'products' }}</p>
+                    {% if products|length == 0 %}
+                        <div class="mt-4 rounded-3xl border border-dashed border-stone-300 bg-white px-6 py-16 text-center">
+                            <twig:Icon name="search" class="mx-auto size-8 text-stone-400" />
+                            <h2 class="font-display mt-4 text-xl font-bold text-army-950">Nothing matches just yet</h2>
+                            <p class="mt-2 text-sm text-stone-500">No products match these filters. Try another room, piece, or collection.</p>
+                            <a class="mt-5 inline-block font-semibold text-army-700" href="{{ path('app_shop') }}">Clear filters</a>
+                        </div>
+                    {% else %}
+                        <ul id="products" class="mt-4 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-3">
+                            {% for product in products %}
+                                <li><twig:ProductCard :product="product" /></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <twig:Pagination :total="products|length" :page="page" />
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
