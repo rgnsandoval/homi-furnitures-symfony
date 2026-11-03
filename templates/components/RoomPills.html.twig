@@ -1,0 +1,22 @@
+{#
+    Room filter pills: the first few rooms show, the rest open with "More rooms" (a CSS-only toggle).
+    On phones the row scrolls sideways instead, so every room stays one swipe away.
+#}
+{% props rooms, active = null, showAll = false, visible = 8 %}
+{% set toggleId = 'more-rooms-' ~ random() %}
+<div {{ attributes.defaults({class: 'no-scrollbar flex gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:overflow-visible'}) }}>
+    {% if showAll %}
+        <a class="pill-filter {{ active is empty ? 'is-active' }}" href="{{ path('app_shop') }}">All pieces</a>
+    {% endif %}
+    {% for room in rooms|slice(0, visible) %}
+        <a class="pill-filter {{ active == room.slug ? 'is-active' }}" href="{{ path('app_shop', {room: room.slug}) }}">{{ room.name }}</a>
+    {% endfor %}
+    {% set extra = rooms|slice(visible) %}
+    {% if extra is not empty %}
+        <input type="checkbox" id="{{ toggleId }}" class="peer sr-only">
+        {% for room in extra %}
+            <a class="pill-filter {{ active == room.slug ? 'is-active' : 'sm:hidden sm:peer-checked:inline-flex' }}" href="{{ path('app_shop', {room: room.slug}) }}">{{ room.name }}</a>
+        {% endfor %}
+        <label for="{{ toggleId }}" class="pill-filter hidden cursor-pointer gap-1 border-dashed text-army-700 peer-focus-visible:ring-2 peer-focus-visible:ring-army-500 sm:inline-flex sm:peer-checked:hidden">More rooms <span class="text-stone-400">+{{ extra|length }}</span></label>
+    {% endif %}
+</div>
