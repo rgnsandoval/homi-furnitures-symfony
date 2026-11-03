@@ -7,6 +7,7 @@ use App\Entity\Payment;
 use App\Entity\User;
 use App\Repository\AuditLogRepository;
 use App\Repository\OrderRepository;
+use App\Service\OrderDeletionService;
 use App\Service\OrderTransitionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,19 +18,19 @@ use Symfony\Component\Routing\Attribute\Route;
 final class OrderShowController extends AbstractController
 {
     #[Route('/admin/orders/{id}', name: 'app_admin_order_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function index(Order $order, OrderRepository $orders, OrderTransitionService $transitions): Response
+    public function index(Order $order, OrderRepository $orders, OrderTransitionService $transitions, OrderDeletionService $deletion): Response
     {
         return $this->render('admin/order_show/index.html.twig', [
             'order' => $order,
             'history' => $orders->statusHistory($order),
             'nextStatuses' => array_values(array_diff($transitions->allowedFrom((string) $order->getStatus()), [Order::STATUS_CANCELLED])),
             'canCancel' => in_array(Order::STATUS_CANCELLED, $transitions->allowedFrom((string) $order->getStatus()), true),
-            'deleteBlocker' => match (true) {
-                Order::STATUS_CANCELLED !== $order->getStatus() => 'Only cancelled orders can be deleted.',
-                Payment::STATUS_PAID === $order->getPayment()?->getStatus() => 'Refund the paid payment before deleting.',
-                $orders->hasReturnRequests($order) => 'A return request is on file, so this order is kept.',
-                default => null,
-            },
+            'deleteEffects' => array_values(array_filter([
+                $deletion->restocksOnDelete($order) ? 'The items go back into stock and any voucher use is released.' : null,
+                in_array($order->getStatus(), [Order::STATUS_SHIPPED, Order::STATUS_DELIVERED], true) ? 'The goods have already left, so nothing is restocked.' : null,
+                Payment::STATUS_PAID === $order->getPayment()?->getStatus() ? sprintf('Its paid payment of PHP %s is removed and will no longer count as revenue. Refund the customer separately if the money was real.', $order->getPayment()->getAmount()) : null,
+                $orders->hasReturnRequests($order) ? 'Its return request is deleted too.' : null,
+            ])),
         ]);
     }
 
@@ -107,41 +108,25 @@ final class OrderShowController extends AbstractController
     }
 
     /**
-     * Permanently deletes a cancelled order. Orders with money still held, or with a return on file, stay for the books.
+     * Permanently deletes an order of any status (fraud, test or duplicate orders). Stock the order still held goes back;
+     * the audit log keeps a summary of what was removed.
      */
     #[Route('/admin/orders/{id}/delete', name: 'app_admin_order_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function delete(Order $order, Request $request, OrderRepository $orders, AuditLogRepository $audit): Response
+    public function delete(Order $order, Request $request, OrderDeletionService $deletion, AuditLogRepository $audit): Response
     {
         $this->checkToken($request, $order);
         $number = (string) $order->getOrderNumber();
 
-        $problem = match (true) {
-            Order::STATUS_CANCELLED !== $order->getStatus() => 'Only cancelled orders can be deleted. Cancel it or flag it as fraud first.',
-            Payment::STATUS_PAID === $order->getPayment()?->getStatus() => 'This order has a paid payment. Refund it before deleting the order.',
-            $orders->hasReturnRequests($order) => 'This order has a return request on file and cannot be deleted.',
-            trim($request->request->getString('confirm')) !== $number => 'Type the order number exactly to confirm the deletion.',
-            default => null,
-        };
-        if (null !== $problem) {
-            $this->addFlash('error', $problem);
+        if (trim($request->request->getString('confirm')) !== $number) {
+            $this->addFlash('error', 'Type the order number exactly to confirm the deletion.');
 
             return $this->redirectToRoute('app_admin_order_show', ['id' => $order->getId()], Response::HTTP_SEE_OTHER);
         }
 
         $id = (int) $order->getId();
-        $snapshot = [
-            'orderNumber' => $number,
-            'customer' => $order->getCustomer()?->getEmail(),
-            'total' => $order->getTotal(),
-            'createdAt' => $order->getCreatedAt()?->format(\DATE_ATOM),
-            'cancelReason' => $order->getCancelReason(),
-            'payment' => $order->getPayment() ? $order->getPayment()->getMethod().' / '.$order->getPayment()->getStatus() : null,
-            'items' => array_map(static fn ($item) => $item->getQuantity().' x '.$item->getProductName().' - '.$item->getVariantName(), $order->getItems()->toArray()),
-        ];
-
-        $orders->deleteWithHistory($order);
-        $audit->record($this->admin(), 'order.delete', 'Order', $id, $snapshot);
-        $this->addFlash('success', sprintf('Order %s was deleted.', $number));
+        $summary = $deletion->delete($order, $this->admin());
+        $audit->record($this->admin(), 'order.delete', 'Order', $id, $summary);
+        $this->addFlash('success', sprintf('Order %s was deleted%s.', $number, $summary['restocked'] ? ' and its items are back in stock' : ''));
 
         return $this->redirectToRoute('app_admin_order', [], Response::HTTP_SEE_OTHER);
     }

@@ -279,7 +279,7 @@ class AdminTest extends BaseWebTest
         $this->loginAdmin();
 
         $crawler = $this->client->request('GET', '/admin/orders/'.$id);
-        $this->assertStringContainsString('Only cancelled orders can be deleted', $crawler->filter('#danger-zone')->text());
+        $this->assertStringContainsString('items go back into stock', $crawler->filter('#danger-zone')->text());
         $this->client->submit($crawler->selectButton('Flag as fraud and cancel')->form(['note' => 'Fake bank slip']));
         $crawler = $this->client->followRedirect();
 
@@ -310,25 +310,33 @@ class AdminTest extends BaseWebTest
         $this->assertContains('order.delete', $this->auditActions());
     }
 
-    public function testOrdersHoldingMoneyOrNotCancelledCannotBeDeleted(): void
+    public function testAnyOrderCanBeDeletedAndOnlyHeldStockComesBack(): void
     {
         $customer = $this->makeUser();
-        $open = $this->makeOrder($customer);
-        $paid = $this->makeOrder($customer, Order::STATUS_CANCELLED, Payment::STATUS_PAID);
+        $heldVariant = $this->makeVariant(null, 4);
+        $pending = $this->makeOrder($customer, Order::STATUS_PENDING, Payment::STATUS_PAID, '3000.00', $heldVariant, 3);
+        $shippedVariant = $this->makeVariant(null, 4);
+        $delivered = $this->makeOrder($customer, Order::STATUS_DELIVERED, Payment::STATUS_PAID, '3000.00', $shippedVariant, 3);
         $this->loginAdmin();
 
-        foreach ([$open, $paid] as $order) {
+        $crawler = $this->client->request('GET', '/admin/orders/'.$delivered->getId());
+        $danger = $crawler->filter('#danger-zone')->text();
+        $this->assertStringContainsString('nothing is restocked', $danger);
+        $this->assertStringContainsString('no longer count as revenue', $danger);
+
+        foreach ([$pending, $delivered] as $order) {
             $crawler = $this->client->request('GET', '/admin/orders/'.$order->getId());
-            $token = $crawler->filter('form input[name=_token]')->first()->attr('value');
-            $this->client->request('POST', '/admin/orders/'.$order->getId().'/delete', ['_token' => $token, 'confirm' => $order->getOrderNumber()]);
-            $this->client->followRedirect();
-            $this->assertSelectorExists('.flash-error');
+            $this->client->submit($crawler->selectButton('Delete order permanently')->form(['confirm' => $order->getOrderNumber()]));
+            $this->assertResponseRedirects('/admin/orders');
         }
 
         $this->em->clear();
-        $this->assertNotNull($this->em->getRepository(Order::class)->find($open->getId()));
-        $this->assertNotNull($this->em->getRepository(Order::class)->find($paid->getId()));
-        $this->assertNotContains('order.delete', $this->auditActions());
+        $this->assertNull($this->em->getRepository(Order::class)->find($pending->getId()));
+        $this->assertNull($this->em->getRepository(Order::class)->find($delivered->getId()));
+        // The pending order still held its 3 units; the delivered one's left the warehouse.
+        $this->assertSame(7, $this->em->getRepository(ProductVariant::class)->find($heldVariant->getId())->getStock());
+        $this->assertSame(4, $this->em->getRepository(ProductVariant::class)->find($shippedVariant->getId())->getStock());
+        $this->assertCount(2, array_filter($this->auditActions(), static fn (string $a): bool => 'order.delete' === $a));
     }
 
     public function testInvalidTransitionShowsErrorInsteadOfCrashing(): void
