@@ -4,8 +4,10 @@
 
 {% block body %}
     <h1>Contact us</h1>
+    <div class="card max-w-xl">
     {{ form_start(form) }}
         {{ form_widget(form) }}
         <button type="submit">Send message</button>
     {{ form_end(form) }}
+    </div>
 {% endblock %}

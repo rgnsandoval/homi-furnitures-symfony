@@ -1,25 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Register - Homi Furniture{% endblock %}
 
-{% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+{% block main %}
+    <div class="page-container ui grid min-h-[70vh] place-items-center py-12">
+        <div class="card w-full max-w-md">
+            {% for flash_error in app.flashes('verify_email_error') %}
+                <div class="mb-4 rounded-xl bg-[#f6e4df] px-4 py-3 text-sm font-semibold text-[#8a3a25]" role="alert">{{ flash_error }}</div>
+            {% endfor %}
 
-    <h1>Register</h1>
+            <p class="eyebrow">Join Homi</p>
+            <h1 class="mt-3">Register</h1>
 
-    {{ form_errors(registrationForm) }}
+            {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.fullName) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.phone) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            {{ form_start(registrationForm) }}
+                {{ form_row(registrationForm.fullName) }}
+                {{ form_row(registrationForm.email) }}
+                {{ form_row(registrationForm.phone) }}
+                {{ form_row(registrationForm.plainPassword, {
+                    label: 'Password'
+                }) }}
+                <div class="flex items-start gap-2 [&_label]:font-normal">{{ form_row(registrationForm.agreeTerms) }}</div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                <button type="submit" class="btn btn-primary mt-2 w-full">Register</button>
+            {{ form_end(registrationForm) }}
+            <p class="mt-5 text-center text-sm">Already have an account? <a href="{{ path('app_login') }}">Log in</a></p>
+        </div>
+    </div>
 {% endblock %}

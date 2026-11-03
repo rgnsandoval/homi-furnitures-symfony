@@ -3,7 +3,10 @@
 {% block title %}Invoice {{ order.orderNumber }} - Homi Furniture{% endblock %}
 
 {% block body %}
-    <h1>Invoice {{ order.orderNumber }}</h1>
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <h1>Invoice {{ order.orderNumber }}</h1>
+        <button type="button" class="btn btn-secondary print:hidden" onclick="window.print()">Print</button>
+    </div>
     <p>Date: {{ order.createdAt|date('F j, Y') }}</p>
 
     <h2>Bill to</h2>
@@ -15,14 +18,17 @@
         {{ address.phone }}
     </address>
 
-    <table>
+    <div class="table-wrap">
+
+        <table>
         <thead><tr><th>Item</th><th>Quantity</th><th>Unit price</th></tr></thead>
         <tbody>
             {% for item in order.items %}
                 <tr><td>{{ item.productName }} - {{ item.variantName }}</td><td>{{ item.quantity }}</td><td>{{ item.unitPrice|peso }}</td></tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <dl>
         <dt>Subtotal</dt><dd>{{ order.subtotal|peso }}</dd>

@@ -5,7 +5,9 @@
 {% block body %}
     <h1>Address</h1>
 
-    <table class="table">
+    <div class="table-wrap">
+
+        <table class="table">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -44,7 +46,8 @@
                 <td>{{ address.isDefault ? 'Yes' : 'No' }}</td>
             </tr>
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <a href="{{ path('app_address_index') }}">back to list</a>
 

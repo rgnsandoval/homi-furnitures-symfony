@@ -5,7 +5,9 @@
 {% block body %}
     <h1>Saved addresses</h1>
 
-    <table class="table">
+    <div class="table-wrap">
+
+        <table class="table">
         <thead>
             <tr><th>Label</th><th>Recipient</th><th>Phone</th><th>Address</th><th>Default</th><th>Actions</th></tr>
         </thead>
@@ -26,7 +28,8 @@
             <tr><td colspan="6">You have no saved addresses yet.</td></tr>
         {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <twig:Pagination :total="addresses|length" :page="page" />
 
