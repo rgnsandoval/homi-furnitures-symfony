@@ -65,6 +65,13 @@ class AdminTest extends BaseWebTest
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('₱1,234.50', $crawler->filter('#revenue')->text());
         $this->assertStringContainsString($old->getOrderNumber(), $crawler->text());
+
+        $kpis = $crawler->filter('#kpis')->text();
+        $this->assertStringContainsString('Revenue', $kpis);
+        $this->assertStringContainsString('₱1,234.50', $kpis);
+        $this->assertStringContainsString('Cancellation rate', $kpis);
+        $this->assertCount(1, $crawler->filter('#out-of-stock li a'));
+        $this->assertCount(30, $crawler->filter('[aria-label^="Bar chart"] > div'));
     }
 
     public function testCategoryAndBrandCrud(): void

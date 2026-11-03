@@ -2,94 +2,220 @@
 
 {% block title %}Dashboard - Admin{% endblock %}
 
+{% macro delta(kpi, lowerIsBetter = false, unit = '%') %}
+    {% if kpi.change is null %}
+        <span class="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-semibold text-stone-500">{{ kpi.value > 0 ? 'New' : 'No data' }}</span>
+    {% else %}
+        {% set up = kpi.change > 0 %}
+        {% set flat = kpi.change == 0 %}
+        {% set good = flat ? null : (up != lowerIsBetter) %}
+        <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold tabular-nums {{ good is null ? 'bg-stone-100 text-stone-500' : (good ? 'bg-army-100 text-army-800' : 'bg-red-50 text-clay') }}">
+            {{ flat ? '→' : (up ? '↑' : '↓') }} {{ kpi.change|abs }}{{ unit }}
+        </span>
+    {% endif %}
+{% endmacro %}
+
+{% macro duration(hours) %}{% apply spaceless %}
+    {% if hours <= 0 %}—{% elseif hours >= 48 %}{{ (hours / 24)|number_format(1) }} days{% else %}{{ hours|number_format(1) }} hrs{% endif %}
+{% endapply %}{% endmacro %}
+
 {% block body %}
-    <h1>Admin dashboard</h1>
+    {% set statusColors = {pending: 'bg-amber-400', confirmed: 'bg-sky-500', packed: 'bg-indigo-500', shipped: 'bg-army-500', delivered: 'bg-army-800', cancelled: 'bg-clay'} %}
 
-    <p><a href="{{ path('app_admin_inquiry') }}">Open inquiries ({{ openInquiries }})</a></p>
-
-    <h2>Revenue</h2>
-    <div class="table-wrap">
-        <table id="revenue">
-        <thead><tr><th>Period</th><th>Revenue</th><th>Change</th></tr></thead>
-        <tbody>
-            {% for label, period in revenue %}
-                <tr><td>{{ label }}</td><td>{{ period.amount|peso }}</td><td>{{ period.change is null ? 'n/a' : period.change ~ '%' }}</td></tr>
-            {% endfor %}
-        </tbody>
-        </table>
+    <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <p class="eyebrow mb-1">Overview</p>
+            <h1 class="mb-0">Dashboard</h1>
+        </div>
+        <p class="mb-0 text-sm text-stone-500">Last {{ kpiDays }} days compared with the {{ kpiDays }} days before · {{ 'now'|date('M j, Y g:i A') }}</p>
     </div>
 
-    <h2>This month</h2>
-    <dl>
-        <dt>Average order value</dt><dd>{{ averageOrderValue|peso }}</dd>
-        <dt>New users</dt><dd>{{ newUsers }}</dd>
-        <dt>Cancellation rate</dt><dd>{{ cancellationRate }}%</dd>
-        <dt>Inventory value at cost</dt><dd>{{ inventoryValue|peso }}</dd>
-    </dl>
-
-    <h2>Orders by status</h2>
-    <ul>
-        {% for status, count in ordersByStatus %}
-            <li>{{ status|capitalize }}: {{ count }}</li>
+    {# Headline KPIs #}
+    <section class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Key performance indicators" id="kpis">
+        {% set cards = [
+            {label: 'Revenue', hint: 'Paid and delivered orders', value: kpis.revenue.value|peso, kpi: kpis.revenue, previous: kpis.revenue.previous|peso},
+            {label: 'Orders placed', hint: 'All orders, any status', value: kpis.orders.value, kpi: kpis.orders, previous: kpis.orders.previous},
+            {label: 'Average order value', hint: 'Revenue ÷ delivered orders', value: kpis.averageOrderValue.value|peso, kpi: kpis.averageOrderValue, previous: kpis.averageOrderValue.previous|peso},
+            {label: 'New customers', hint: 'Accounts created', value: kpis.newCustomers.value, kpi: kpis.newCustomers, previous: kpis.newCustomers.previous},
+            {label: 'Cancellation rate', hint: 'Cancelled ÷ orders placed', value: kpis.cancellationRate.value ~ '%', kpi: kpis.cancellationRate, previous: kpis.cancellationRate.previous ~ '%', lower: true, unit: ' pts'},
+            {label: 'Time to deliver', hint: 'Order placed → delivered', value: _self.duration(kpis.fulfillmentHours.value), kpi: kpis.fulfillmentHours, previous: _self.duration(kpis.fulfillmentHours.previous), lower: true},
+        ] %}
+        {% for card in cards %}
+            <article class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+                <div class="flex items-start justify-between gap-3">
+                    <h2 class="m-0 text-sm font-semibold text-stone-500">{{ card.label }}</h2>
+                    {{ _self.delta(card.kpi, card.lower ?? false, card.unit ?? '%') }}
+                </div>
+                <p class="font-display mb-0 mt-3 text-3xl font-extrabold tabular-nums tracking-tight text-army-950">{{ card.value }}</p>
+                <p class="mb-0 mt-2 text-xs text-stone-500">{{ card.hint }} · previous {{ card.previous }}</p>
+            </article>
         {% endfor %}
-    </ul>
+    </section>
 
-    <h2>Pending longer than {{ escalationHours }} hours ({{ overdueOrders|length }})</h2>
-    <ul>
-        {% for order in overdueOrders|slice(0, 20) %}
-            <li><a href="{{ path('app_admin_order_show', {id: order.id}) }}">{{ order.orderNumber }}</a> since {{ order.createdAt|date('M j, g:i A') }}</li>
-        {% else %}
-            <li>None.</li>
+    {# Things that need someone today #}
+    <section class="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6" aria-label="Needs attention">
+        {% set ops = [
+            {label: 'Pending orders', value: operations.pending, url: path('app_admin_order', {status: 'pending'}), warn: operations.pending > 0},
+            {label: 'Overdue ' ~ escalationHours ~ 'h+', value: operations.overdue, url: path('app_admin_order', {status: 'pending'}), warn: operations.overdue > 0},
+            {label: 'In progress', value: operations.inProgress, url: path('app_admin_order'), warn: false},
+            {label: 'Low stock', value: operations.lowStock, url: '#low-stock', warn: operations.lowStock > 0},
+            {label: 'Out of stock', value: operations.outOfStock, url: '#out-of-stock', warn: operations.outOfStock > 0},
+            {label: 'Open inquiries', value: operations.openInquiries, url: path('app_admin_inquiry'), warn: operations.openInquiries > 0},
+        ] %}
+        {% for op in ops %}
+            <a href="{{ op.url }}" class="group block rounded-2xl border p-4 no-underline transition hover:-translate-y-0.5 hover:shadow-md {{ op.warn ? 'border-amber-200 bg-amber-50' : 'border-stone-200 bg-white' }}" style="text-decoration: none">
+                <span class="block text-xs font-semibold {{ op.warn ? 'text-amber-800' : 'text-stone-500' }}">{{ op.label }}</span>
+                <span class="font-display mt-1 block text-2xl font-extrabold tabular-nums text-army-950">{{ op.value }}</span>
+            </a>
         {% endfor %}
-    </ul>
+    </section>
 
-    <h2>Low stock ({{ lowStock|length }})</h2>
-    <ul>
-        {% for variant in lowStock|slice(0, 20) %}
-            <li>{{ variant }}: {{ variant.stock }} left</li>
-        {% else %}
-            <li>None.</li>
-        {% endfor %}
-    </ul>
+    <div class="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+        {# Sales trend chart #}
+        <section class="min-w-0 rounded-3xl border border-stone-200 bg-white p-5 xl:col-span-2">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h2 class="m-0 text-lg">Sales, last 30 days</h2>
+                <span class="text-xs text-stone-500">Delivered revenue per day</span>
+            </div>
+            <div class="mt-6 flex h-48 items-end gap-[3px]" role="img" aria-label="Bar chart of daily delivered revenue over the last 30 days">
+                {% for row in salesTrend %}
+                    <div class="group relative flex h-full flex-1 items-end">
+                        <div class="w-full rounded-t {{ row.orders > 0 ? 'bg-army-600 group-hover:bg-army-800' : 'bg-stone-100' }}" style="height: {{ row.orders > 0 ? max(row.height, 3) : 2 }}%"></div>
+                        <div class="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-army-950 px-2.5 py-1.5 text-xs text-white shadow-lg group-hover:block">
+                            {{ row.day|date('M j') }} · {{ row.revenue|peso }} · {{ row.orders }} {{ row.orders == 1 ? 'order' : 'orders' }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="mt-2 flex justify-between text-xs text-stone-400">
+                <span>{{ (salesTrend|first).day|date('M j') }}</span>
+                <span>{{ salesTrend[15].day|date('M j') }}</span>
+                <span>{{ (salesTrend|last).day|date('M j') }}</span>
+            </div>
+            <details class="mt-4">
+                <summary class="cursor-pointer text-sm font-semibold text-army-700">Show as table</summary>
+                <div class="table-wrap mt-3">
+                    <table id="sales-trend">
+                        <thead><tr><th>Day</th><th>Orders</th><th>Revenue</th></tr></thead>
+                        <tbody>
+                            {% for row in salesTrend|filter(r => r.orders > 0) %}
+                                <tr><td>{{ row.day }}</td><td>{{ row.orders }}</td><td>{{ row.revenue|peso }}</td></tr>
+                            {% else %}
+                                <tr><td colspan="3">No sales yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        </section>
 
-    <h2>Out of stock ({{ outOfStock|length }})</h2>
-    <ul>
-        {% for variant in outOfStock|slice(0, 20) %}
-            <li>{{ variant }}</li>
-        {% else %}
-            <li>None.</li>
-        {% endfor %}
-    </ul>
+        {# Orders by status #}
+        <section class="rounded-3xl border border-stone-200 bg-white p-5">
+            <h2 class="m-0 text-lg">Orders by status</h2>
+            {% set totalOrders = ordersByStatus|reduce((sum, r) => sum + r.count, 0) %}
+            <p class="mb-0 mt-1 text-xs text-stone-500">{{ totalOrders }} orders all time</p>
+            <div class="mt-5 flex h-3 overflow-hidden rounded-full bg-stone-100">
+                {% for row in ordersByStatus %}
+                    <div class="{{ statusColors[row.status] ?? 'bg-stone-400' }}" style="width: {{ row.share }}%" title="{{ row.status|capitalize }}: {{ row.count }}"></div>
+                {% endfor %}
+            </div>
+            <ul class="mt-5 space-y-1">
+                {% for row in ordersByStatus %}
+                    <li>
+                        <a href="{{ path('app_admin_order', {status: row.status}) }}" class="flex items-center justify-between rounded-xl px-2 py-1.5 text-sm text-army-950 hover:bg-army-50" style="text-decoration: none">
+                            <span class="flex items-center gap-2"><span class="size-2.5 rounded-full {{ statusColors[row.status] ?? 'bg-stone-400' }}"></span>{{ row.status|capitalize }}</span>
+                            <span class="tabular-nums text-stone-500">{{ row.count }} · {{ row.share }}%</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="text-sm text-stone-500">No orders yet.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
 
-    <h2>Best sellers</h2>
-    <ol>
-        {% for row in bestSellers %}
-            <li>{{ row.product.name }}: {{ row.sold }} sold</li>
-        {% else %}
-            <li>No sales yet.</li>
-        {% endfor %}
-    </ol>
+    <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {# Revenue by category #}
+        <section class="rounded-3xl border border-stone-200 bg-white p-5">
+            <h2 class="m-0 text-lg">Revenue by category</h2>
+            <p class="mb-0 mt-1 text-xs text-stone-500">Last {{ kpiDays }} days</p>
+            <ul class="mt-5 space-y-3">
+                {% for row in revenueByCategory|slice(0, 8) %}
+                    <li>
+                        <div class="flex justify-between gap-3 text-sm"><span class="truncate font-semibold text-army-950">{{ row.name }}</span><span class="tabular-nums text-stone-600">{{ row.revenue|peso }}</span></div>
+                        <div class="mt-1.5 h-2 rounded-full bg-stone-100"><div class="h-2 rounded-full bg-army-600" style="width: {{ max(row.width, 2) }}%"></div></div>
+                    </li>
+                {% else %}
+                    <li class="text-sm text-stone-500">No revenue in this window yet.</li>
+                {% endfor %}
+            </ul>
+        </section>
 
-    <h2>Revenue by category this month</h2>
-    <ul>
-        {% for row in revenueByCategory %}
-            <li>{{ row.name }}: {{ row.revenue|peso }}</li>
-        {% else %}
-            <li>No revenue yet.</li>
-        {% endfor %}
-    </ul>
+        {# Best sellers #}
+        <section class="rounded-3xl border border-stone-200 bg-white p-5">
+            <h2 class="m-0 text-lg">Best sellers</h2>
+            <p class="mb-0 mt-1 text-xs text-stone-500">Units sold, all time</p>
+            <ol class="mt-4 space-y-1">
+                {% for row in bestSellers %}
+                    <li class="flex items-center gap-3 rounded-xl px-2 py-2">
+                        <span class="grid size-7 shrink-0 place-items-center rounded-full {{ loop.first ? 'bg-army-700 text-white' : 'bg-army-50 text-army-800' }} text-xs font-bold">{{ loop.index }}</span>
+                        <span class="min-w-0 flex-1 truncate text-sm font-semibold text-army-950">{{ row.product.name }}</span>
+                        <span class="text-sm tabular-nums text-stone-500">{{ row.sold }} sold</span>
+                    </li>
+                {% else %}
+                    <li class="text-sm text-stone-500">No sales yet.</li>
+                {% endfor %}
+            </ol>
+        </section>
+    </div>
 
-    <h2>Sales trend, last 30 days</h2>
-    <div class="table-wrap">
-        <table id="sales-trend">
-        <thead><tr><th>Day</th><th>Orders</th><th>Revenue</th></tr></thead>
-        <tbody>
-            {% for row in salesTrend %}
-                <tr><td>{{ row.day }}</td><td>{{ row.orders }}</td><td>{{ row.revenue|peso }}</td></tr>
-            {% else %}
-                <tr><td colspan="3">No sales yet.</td></tr>
+    {# Revenue by calendar period #}
+    <section class="mt-6 rounded-3xl border border-stone-200 bg-white p-5">
+        <h2 class="m-0 text-lg">Revenue by period</h2>
+        <p class="mb-0 mt-1 text-xs text-stone-500">Each period compared with the same stretch of the one before. Inventory at cost: {{ inventoryValue|peso }}</p>
+        <div class="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4" id="revenue">
+            {% for label, period in revenue %}
+                <div class="rounded-2xl bg-army-50 p-4">
+                    <p class="mb-0 text-xs font-semibold text-stone-500">{{ label }}</p>
+                    <p class="font-display mb-0 mt-1 text-xl font-extrabold tabular-nums text-army-950">{{ period.amount|peso }}</p>
+                    <p class="mb-0 mt-1 text-xs tabular-nums {{ period.change is null ? 'text-stone-400' : (period.change >= 0 ? 'text-army-700' : 'text-clay') }}">
+                        {{ period.change is null ? 'No earlier sales' : (period.change >= 0 ? '↑ ' : '↓ ') ~ period.change|abs ~ '%' }}
+                    </p>
+                </div>
             {% endfor %}
-        </tbody>
-        </table>
+        </div>
+    </section>
+
+    {# Attention lists #}
+    <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {% set lists = [
+            {id: 'overdue', title: 'Pending over ' ~ escalationHours ~ ' hours', rows: overdueOrders, kind: 'order'},
+            {id: 'low-stock', title: 'Low stock', rows: lowStock, kind: 'low'},
+            {id: 'out-of-stock', title: 'Out of stock', rows: outOfStock, kind: 'out'},
+        ] %}
+        {% for list in lists %}
+            <section class="rounded-3xl border border-stone-200 bg-white p-5" id="{{ list.id }}">
+                <div class="flex items-center justify-between">
+                    <h2 class="m-0 text-lg">{{ list.title }}</h2>
+                    <span class="rounded-full px-2.5 py-0.5 text-xs font-bold {{ list.rows|length > 0 ? 'bg-amber-100 text-amber-800' : 'bg-army-100 text-army-800' }}">{{ list.rows|length }}</span>
+                </div>
+                <ul class="mt-3 divide-y divide-stone-100">
+                    {% for item in list.rows|slice(0, 6) %}
+                        <li class="flex items-center justify-between gap-3 py-2 text-sm">
+                            {% if list.kind == 'order' %}
+                                <a href="{{ path('app_admin_order_show', {id: item.id}) }}">{{ item.orderNumber }}</a>
+                                <span class="text-xs text-stone-500">since {{ item.createdAt|date('M j, g:i A') }}</span>
+                            {% else %}
+                                <a class="min-w-0 truncate" href="{{ path('app_admin_stock', {id: item.id}) }}">{{ item }}</a>
+                                <span class="shrink-0 text-xs font-semibold {{ list.kind == 'out' ? 'text-clay' : 'text-amber-700' }}">{{ list.kind == 'out' ? 'Restock' : item.stock ~ ' left' }}</span>
+                            {% endif %}
+                        </li>
+                    {% else %}
+                        <li class="py-2 text-sm text-stone-500">All clear.</li>
+                    {% endfor %}
+                </ul>
+                {% if list.rows|length > 6 %}<p class="mb-0 mt-2 text-xs text-stone-500">and {{ list.rows|length - 6 }} more</p>{% endif %}
+            </section>
+        {% endfor %}
     </div>
 {% endblock %}
