@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}Sales report - Admin{% endblock %}
 
@@ -21,7 +21,8 @@
     </dl>
 
     <h2>By day</h2>
-    <table>
+    <div class="table-wrap">
+        <table>
         <thead><tr><th>Day</th><th>Orders</th><th>Revenue</th></tr></thead>
         <tbody>
             {% for row in days %}
@@ -30,7 +31,8 @@
                 <tr><td colspan="3">No sales in this range.</td></tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <h2>By category</h2>
     <ul>

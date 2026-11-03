@@ -1,11 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}Audit log - Admin{% endblock %}
 
 {% block body %}
     <h1>Audit log</h1>
 
-    <table>
+    <div class="table-wrap">
+
+        <table>
         <thead><tr><th>When</th><th>Admin</th><th>Action</th><th>Record</th><th>Detail</th></tr></thead>
         <tbody>
             {% for entry in entries %}
@@ -20,7 +22,8 @@
                 <tr><td colspan="5">Nothing recorded yet.</td></tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <twig:Pagination :total="entries|length" :page="page" />
 {% endblock %}

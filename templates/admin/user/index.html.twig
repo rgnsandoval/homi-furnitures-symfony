@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}Users - Admin{% endblock %}
 
@@ -10,7 +10,9 @@
         <button type="submit">Search</button>
     </form>
 
-    <table>
+    <div class="table-wrap">
+
+        <table>
         <thead><tr><th>Name</th><th>Email</th><th>Roles</th><th>Verified</th><th>Status</th><th></th></tr></thead>
         <tbody>
             {% for user in users %}
@@ -31,7 +33,8 @@
                 <tr><td colspan="6">No users found.</td></tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <twig:Pagination :total="users|length" :page="page" />
 {% endblock %}

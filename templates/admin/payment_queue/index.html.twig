@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}Payment queues - Admin{% endblock %}
 
@@ -6,7 +6,8 @@
     <h1>Payment queues</h1>
 
     <h2>Bank transfers to verify</h2>
-    <table id="bank-queue">
+    <div class="table-wrap">
+        <table id="bank-queue">
         <tbody>
             {% for payment in bankTransfers %}
                 {% set token = csrf_token('payment' ~ payment.id) %}
@@ -29,11 +30,13 @@
                 <tr><td>Nothing to verify.</td></tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
     <twig:Pagination :total="bankTransfers|length" :page="bankPage" param="bankPage" />
 
     <h2>Cash on delivery to collect</h2>
-    <table id="cod-queue">
+    <div class="table-wrap">
+        <table id="cod-queue">
         <tbody>
             {% for payment in collectableCod %}
                 <tr>
@@ -50,11 +53,13 @@
                 <tr><td>Nothing to collect.</td></tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
     <twig:Pagination :total="collectableCod|length" :page="codPage" param="codPage" />
 
     <h2>Paid payments</h2>
-    <table id="paid-list">
+    <div class="table-wrap">
+        <table id="paid-list">
         <tbody>
             {% for payment in paid %}
                 <tr>
@@ -72,6 +77,7 @@
                 <tr><td>No paid payments.</td></tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
     <twig:Pagination :total="paid|length" :page="paidPage" param="paidPage" />
 {% endblock %}

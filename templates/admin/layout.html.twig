@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <div class="page-container py-8 md:py-12">
+        <div class="grid gap-8 lg:grid-cols-[14rem_1fr]">
+            <aside class="lg:sticky lg:top-24 lg:h-fit">
+                <p class="eyebrow mb-3">Admin</p>
+                <nav aria-label="Admin" class="no-scrollbar flex gap-1 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
+                    {% set current = app.request.attributes.get('_route') %}
+                    {% for item in [
+                        {label: 'Dashboard', route: 'app_admin_dashboard'},
+                        {label: 'Orders', route: 'app_admin_order'},
+                        {label: 'Payments', route: 'app_admin_payment'},
+                        {label: 'Payment queues', route: 'app_admin_payment_queue'},
+                        {label: 'Returns', route: 'app_admin_return'},
+                        {label: 'Products', route: 'app_admin_product_index'},
+                        {label: 'Variants and stock', route: 'app_admin_product_variant_index'},
+                        {label: 'Categories', route: 'app_admin_category_index'},
+                        {label: 'Brands', route: 'app_admin_brand_index'},
+                        {label: 'Discount codes', route: 'app_admin_discount_code_index'},
+                        {label: 'Users', route: 'app_admin_user'},
+                        {label: 'Reviews', route: 'app_admin_review'},
+                        {label: 'Inquiries', route: 'app_admin_inquiry'},
+                        {label: 'Sales report', route: 'app_admin_report'},
+                        {label: 'Settings', route: 'app_admin_platform_setting_index'},
+                        {label: 'Audit log', route: 'app_admin_audit_log'},
+                    ] %}
+                        {% set active = current == item.route or (current starts with item.route|replace({'_index': ''}) ~ '_' and item.route != 'app_admin_dashboard') %}
+                        <a href="{{ path(item.route) }}" class="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold {{ active ? 'bg-army-700 text-white' : 'text-stone-700 hover:bg-army-50 hover:text-army-900' }}" {{ active ? 'aria-current="page"' }}>{{ item.label }}</a>
+                    {% endfor %}
+                </nav>
+            </aside>
+            <div class="ui min-w-0">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}Orders - Admin{% endblock %}
 
@@ -20,7 +20,9 @@
         <button type="submit">Filter</button>
     </form>
 
-    <table>
+    <div class="table-wrap">
+
+        <table>
         <thead><tr><th>Order</th><th>Customer</th><th>Placed</th><th>Status</th><th>Payment</th><th>Total</th></tr></thead>
         <tbody>
             {% for order in orders %}
@@ -36,7 +38,8 @@
                 <tr><td colspan="6">No orders found.</td></tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <twig:Pagination :total="orders|length" :page="page" />
 {% endblock %}
